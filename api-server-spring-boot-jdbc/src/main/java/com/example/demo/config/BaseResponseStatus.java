@@ -25,11 +25,26 @@ public enum BaseResponseStatus {
     // users
     USERS_EMPTY_USER_ID(false, 2010, "유저 아이디 값을 확인해주세요."),
 
-    // [POST] /users
-    POST_USERS_EMPTY_EMAIL(false, 2015, "이메일을 입력해주세요."),
-    POST_USERS_INVALID_EMAIL(false, 2016, "이메일 형식을 확인해주세요."),
-    POST_USERS_EXISTS_EMAIL(false,2017,"중복된 이메일입니다."),
+    // [POST] /app/users
+    POST_USERS_EMPTY_PHONE_NUMBER(false, 2015, "전화번호를 입력해주세요."),
+    POST_USERS_EMPTY_EMAIL_ADDRESS(false, 2016, "이메일을 입력해주세요."),
+    POST_USERS_INVALID_EMAIL_ADDRESS(false, 2017, "이메일 형식을 확인해주세요."),
+    POST_USERS_INVALID_PHONE_NUMBER(false,2018,"전화번호 형식을 확인해주세요."),
+    POST_USERS_EMPTY_BIRTH_DATE(false,2019,"생년월일을 입력해주세요."),
+    POST_USERS_INVALID_BIRTH_DATE(false,2020,"유효하지 않은 생년월일입니다."),
+    POST_USERS_EMPTY_NICKNAME(false,2021,"닉네임을 입력해주세요."),
+    POST_USERS_INVALID_NICKNAME(false,2022, "닉네임에는 영문자, 숫자, 마침표, 밑줄만 사용 가능합니다."),
+    POST_USERS_EMPTY_PASSWORD(false,2023,"비밀번호를 입력해주세요."),
+    POST_USERS_INVALID_PASSWORD(false,2024,"비밀번호를 6자 이상 입력해주세요."),
+    POST_USERS_EXISTS_EMAIL_ADDRESS(false,2025,"중복된 이메일입니다."),
+    POST_USERS_EXISTS_PHONE_NUMBER(false,2026,"중복된 전화번호입니다."),
+    POST_USERS_EXISTS_NICKNAME(false,2027,"중복된 닉네임입니다."),
 
+    //post /app/users/login
+    POST_USERS_EMPTY_ID(false,2028,"전화번호, 이메일 주소 또는 사용자 이름을 입력해주세요."),
+    POST_USERS_ID_NOT_EXIST(false,2029,"해당 전화번호, 이메일 주소 또는 사용자 이름을 가진 유저가 존재하지 않습니다."),
+    POST_USERS_ACCOUNT_INACTIVE(false,2030,"해당 계정은 비활성화 상태입니다."),
+    POST_USERS_ACCOUNT_DELETED(false,2031,"해당 계정은 더이상 존재하지 않습니다."),
 
 
     /**
