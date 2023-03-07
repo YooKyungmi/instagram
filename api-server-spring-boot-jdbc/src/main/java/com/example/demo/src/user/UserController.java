@@ -124,4 +124,27 @@ public class UserController {
         }
     }
 
+    /**
+     * 로그인 API
+     * [POST] /app/users/login
+     * @return BaseResponse<PostLoginRes>
+     */
+    @ResponseBody
+    @PostMapping("/login")
+    public BaseResponse<PostLoginRes> login(@RequestBody PostLoginReq postLoginReq) {
+        if(postLoginReq.getId()==null){
+            return new BaseResponse<>(POST_USERS_EMPTY_ID);
+        }
+        if(postLoginReq.getPassword()==null){
+            return new BaseResponse<>(POST_USERS_EMPTY_PASSWORD);
+        }
+        try{
+            PostLoginRes postLoginRes = userProvider.login(postLoginReq);
+            return new BaseResponse<>(postLoginRes);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
+
 }

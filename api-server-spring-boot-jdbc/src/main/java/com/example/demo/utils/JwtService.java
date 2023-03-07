@@ -21,14 +21,14 @@ public class JwtService {
 
     /*
     JWT 생성
-    @param userIdx
+    @param userId
     @return String
      */
     public String createJwt(int userId){
         Date now = new Date();
         return Jwts.builder()
                 .setHeaderParam("type","jwt")
-                .claim("userIdx",userId)
+                .claim("userId",userId)
                 .setIssuedAt(now)
                 .setExpiration(new Date(System.currentTimeMillis()+1*(1000*60*60*24*365)))
                 .signWith(SignatureAlgorithm.HS256, Secret.JWT_SECRET_KEY)
@@ -45,7 +45,7 @@ public class JwtService {
     }
 
     /*
-    JWT에서 userIdx 추출
+    JWT에서 userId 추출
     @return int
     @throws BaseException
      */

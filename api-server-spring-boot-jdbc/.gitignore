@@ -3,5 +3,5 @@ logs/
 build/
 .gradle/
 .idea/
-Secret.class
-application.yml
+*.yml
+/src/main/java/com/example/demo/config/secret/*

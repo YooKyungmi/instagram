@@ -40,6 +40,11 @@ public enum BaseResponseStatus {
     POST_USERS_EXISTS_PHONE_NUMBER(false,2026,"중복된 전화번호입니다."),
     POST_USERS_EXISTS_NICKNAME(false,2027,"중복된 닉네임입니다."),
 
+    //post /app/users/login
+    POST_USERS_EMPTY_ID(false,2028,"전화번호, 이메일 주소 또는 사용자 이름을 입력해주세요."),
+    POST_USERS_ID_NOT_EXIST(false,2029,"해당 전화번호, 이메일 주소 또는 사용자 이름을 가진 유저가 존재하지 않습니다."),
+    POST_USERS_ACCOUNT_INACTIVE(false,2030,"해당 계정은 비활성화 상태입니다."),
+    POST_USERS_ACCOUNT_DELETED(false,2031,"해당 계정은 더이상 존재하지 않습니다."),
 
 
     /**
