@@ -3,3 +3,5 @@ logs/
 build/
 .gradle/
 .idea/
+Secret.class
+application.yml
