@@ -2,10 +2,10 @@ package com.example.demo.src.user;
 
 
 import com.example.demo.config.BaseException;
-import com.example.demo.config.BaseResponseStatus;
+import com.example.demo.config.secret.Secret;
 import com.example.demo.src.user.model.*;
+import com.example.demo.utils.AES128;
 import com.example.demo.utils.JwtService;
-import com.example.demo.utils.SHA256;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,69 +31,29 @@ public class UserProvider {
         this.jwtService = jwtService;
     }
 
-    public List<GetUserRes> getUsers() throws BaseException{
+    public int checkEmailAddress(String email) throws BaseException{
         try{
-            List<GetUserRes> getUserRes = userDao.getUsers();
-            return getUserRes;
-        }
-        catch (Exception exception) {
-            logger.error("App - getUserRes Provider Error", exception);
-            throw new BaseException(DATABASE_ERROR);
-        }
-    }
-
-    public List<GetUserRes> getUsersByEmail(String email) throws BaseException {
-        try {
-            List<GetUserRes> getUsersRes = userDao.getUsersByEmail(email);
-            return getUsersRes;
-        } catch (Exception exception) {
-            logger.error("App - getUsersByEmail Provider Error", exception);
-            throw new BaseException(DATABASE_ERROR);
-        }
-    }
-
-
-    public GetUserRes getUser(int userIdx) throws BaseException {
-        try {
-            GetUserRes getUserRes = userDao.getUser(userIdx);
-            return getUserRes;
-        } catch (Exception exception) {
-            logger.error("App - getUser Provider Error", exception);
-            throw new BaseException(DATABASE_ERROR);
-        }
-    }
-
-    public int checkEmail(String email) throws BaseException{
-        try{
-            return userDao.checkEmail(email);
+            return userDao.checkEmailAddress(email);
         } catch (Exception exception){
-            logger.error("App - checkEmail Provider Error", exception);
+            logger.error("App - checkEmailAddress Provider Error", exception);
             throw new BaseException(DATABASE_ERROR);
         }
     }
 
-    public PostLoginRes logIn(PostLoginReq postLoginReq) throws BaseException {
-        try {
-            User user = userDao.getPwd(postLoginReq);
+    public int checkPhoneNumber(String phoneNumber) throws BaseException {
+        try{
+            return userDao.checkPhoneNumber(phoneNumber);
+        } catch (Exception exception){
+            logger.error("App - checkPhoneNumber Provider Error", exception);
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 
-            String encryptPwd;
-            try {
-                encryptPwd = new SHA256().encrypt(postLoginReq.getPassword());
-            } catch (Exception exception) {
-                logger.error("App - logIn Provider Encrypt Error", exception);
-                throw new BaseException(PASSWORD_DECRYPTION_ERROR);
-            }
-
-            if(user.getPassword().equals(encryptPwd)){
-                int userIdx = user.getUserIdx();
-                String jwt = jwtService.createJwt(userIdx);
-                return new PostLoginRes(userIdx,jwt);
-            }
-            else{
-                throw new BaseException(FAILED_TO_LOGIN);
-            }
-        } catch (Exception exception) {
-            logger.error("App - logIn Provider Error", exception);
+    public int checkNickname(String nickName) throws BaseException {
+        try{
+            return userDao.checkPhoneNumber(nickName);
+        } catch (Exception exception){
+            logger.error("App - checkNickname Provider Error", exception);
             throw new BaseException(DATABASE_ERROR);
         }
     }
