@@ -2,20 +2,17 @@ package com.example.demo.src.user;
 
 
 import com.example.demo.config.BaseException;
-import com.example.demo.config.BaseResponseStatus;
+import com.example.demo.config.secret.Secret;
 import com.example.demo.src.user.model.*;
+import com.example.demo.utils.AES128;
 import com.example.demo.utils.JwtService;
-import com.example.demo.utils.SHA256;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 import static com.example.demo.config.BaseResponseStatus.*;
 
-//Provider : Read의 비즈니스 로직 처리
 @Service
 public class UserProvider {
 
@@ -31,70 +28,69 @@ public class UserProvider {
         this.jwtService = jwtService;
     }
 
-    public List<GetUserRes> getUsers() throws BaseException{
-        try{
-            List<GetUserRes> getUserRes = userDao.getUsers();
-            return getUserRes;
-        }
-        catch (Exception exception) {
-            logger.error("App - getUserRes Provider Error", exception);
-            throw new BaseException(DATABASE_ERROR);
-        }
-    }
-
-    public List<GetUserRes> getUsersByEmail(String email) throws BaseException {
+    public int checkEmailAddress(String email) throws BaseException {
         try {
-            List<GetUserRes> getUsersRes = userDao.getUsersByEmail(email);
-            return getUsersRes;
+            return userDao.checkEmailAddress(email);
         } catch (Exception exception) {
-            logger.error("App - getUsersByEmail Provider Error", exception);
+            logger.error("App - checkEmailAddress Provider Error", exception);
             throw new BaseException(DATABASE_ERROR);
         }
     }
 
-
-    public GetUserRes getUser(int userIdx) throws BaseException {
+    public int checkPhoneNumber(String phoneNumber) throws BaseException {
         try {
-            GetUserRes getUserRes = userDao.getUser(userIdx);
-            return getUserRes;
+            return userDao.checkPhoneNumber(phoneNumber);
         } catch (Exception exception) {
-            logger.error("App - getUser Provider Error", exception);
+            logger.error("App - checkPhoneNumber Provider Error", exception);
             throw new BaseException(DATABASE_ERROR);
         }
     }
 
-    public int checkEmail(String email) throws BaseException{
-        try{
-            return userDao.checkEmail(email);
-        } catch (Exception exception){
-            logger.error("App - checkEmail Provider Error", exception);
-            throw new BaseException(DATABASE_ERROR);
-        }
-    }
-
-    public PostLoginRes logIn(PostLoginReq postLoginReq) throws BaseException {
+    public int checkNickname(String nickName) throws BaseException {
         try {
-            User user = userDao.getPwd(postLoginReq);
-
-            String encryptPwd;
-            try {
-                encryptPwd = new SHA256().encrypt(postLoginReq.getPassword());
-            } catch (Exception exception) {
-                logger.error("App - logIn Provider Encrypt Error", exception);
-                throw new BaseException(PASSWORD_DECRYPTION_ERROR);
-            }
-
-            if(user.getPassword().equals(encryptPwd)){
-                int userIdx = user.getUserIdx();
-                String jwt = jwtService.createJwt(userIdx);
-                return new PostLoginRes(userIdx,jwt);
-            }
-            else{
-                throw new BaseException(FAILED_TO_LOGIN);
-            }
+            return userDao.checkNickname(nickName);
         } catch (Exception exception) {
-            logger.error("App - logIn Provider Error", exception);
+            logger.error("App - checkNickname Provider Error", exception);
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    public PostLoginRes login(PostLoginReq postLoginReq) throws BaseException {
+        if (checkNickname(postLoginReq.getId()) == 0 && checkPhoneNumber(postLoginReq.getId()) == 0 && checkEmailAddress(postLoginReq.getId()) == 0) {
+            throw new BaseException(POST_USERS_ID_NOT_EXIST);
+        }
+        User user = new User();
+        try {
+            user = userDao.findUserById(postLoginReq.getId());
+        } catch (Exception exception) {
+            logger.error("App - login Provider Error", exception);
+            throw new BaseException(DATABASE_ERROR);
+        }
+        String password;
+        try {
+            password = new AES128(Secret.USER_INFO_PASSWORD_KEY).decrypt(user.getPassword());
+        } catch (Exception exception) {
+            logger.error("App - login Provider Decrypt Error", exception);
+            throw new BaseException(PASSWORD_DECRYPTION_ERROR);
+        }
+        if (postLoginReq.getPassword().equals(password)) {
+            throwIfInvalidUserStatus(user);
+            int userId = user.getUserId();
+            String jwt = jwtService.createJwt(userId);
+            return new PostLoginRes(userId, jwt);
+        } else {
+            throw new BaseException(FAILED_TO_LOGIN);
+        }
+    }
+
+    private void throwIfInvalidUserStatus(User user) throws BaseException {
+        if (user.getAccountStatus().equals("INACTIVE")) {
+            throw new BaseException(POST_USERS_ACCOUNT_INACTIVE);
+        }
+        if (user.getAccountStatus().equals("DELETED")) {
+            throw new BaseException(POST_USERS_ACCOUNT_DELETED);
+        }
+
+    }
+
 }
