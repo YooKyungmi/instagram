@@ -128,7 +128,7 @@ public class FollowProvider {
                     .followingCount(followDao.getFollowingCount(userId))
                     .connectedCount(followDao.getConnectedFriendCount(onlineUserId,userId))
                     .build();
-            List<Integer> followingIdList = followDao.getConnectedFollowId(onlineUserId, userId);
+            List<Integer> followingIdList = followDao.getConnectedFollows(onlineUserId, userId);
             List<GetFollowUserInfoRes> getFollowUserInfoResList = new ArrayList<>();
             followingIdList.stream().forEach(id -> {
                 try {
