@@ -3,6 +3,7 @@ package com.example.demo.src.follow;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
+import com.example.demo.src.follow.model.GetConnectedFollowRes;
 import com.example.demo.src.follow.model.GetFollowerRes;
 import com.example.demo.src.follow.model.GetFollowingRes;
 import com.example.demo.src.user.UserProvider;
@@ -41,7 +42,7 @@ public class FollowController {
      * 팔로워 조회 API
      * [GET] /app/follows/followers?user-id=
      *
-     * @return BaseResponse<List<GetFollowerRes>>
+     * @return BaseResponse<GetFollowerRes>
      */
     @GetMapping("/followers")
     public BaseResponse<GetFollowerRes> getFollowers(@RequestParam("user-id") Integer userId) {
@@ -58,7 +59,7 @@ public class FollowController {
      * 팔로잉 조회 API
      * [GET] /app/follows/followings?user-id=
      *
-     * @return BaseResponse<List<GetFollowerRes>>
+     * @return BaseResponse<GetFollowingRes>
      */
     @GetMapping("/followings")
     public BaseResponse<GetFollowingRes> getFollowings(@RequestParam("user-id") Integer userId) {
@@ -66,6 +67,23 @@ public class FollowController {
             int userIdByJwt = jwtService.getUserId();
             GetFollowingRes getFollowingRes = followProvider.getFollowings(userIdByJwt, userId);
             return new BaseResponse<>(getFollowingRes);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    /**
+     * 함께 아는 친구 조회 API
+     * [GET] /app/follows/connected-follows?user-id=
+     *
+     * @return BaseResponse<GetConnectedFriendRes>
+     */
+    @GetMapping("/connected-follows")
+    public BaseResponse<GetConnectedFollowRes> getConnectedFollows(@RequestParam("user-id") Integer userId) {
+        try{
+            int userIdByJwt = jwtService.getUserId();
+            GetConnectedFollowRes getConnectedFollowRes = followProvider.getConnectedFollows(userIdByJwt, userId);
+            return new BaseResponse<>(getConnectedFollowRes);
         } catch(BaseException exception){
             return new BaseResponse<>((exception.getStatus()));
         }

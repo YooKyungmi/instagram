@@ -1,9 +1,9 @@
 package com.example.demo.src.follow;
 
 import com.example.demo.config.BaseException;
-import com.example.demo.src.follow.model.GetFollowerInfoRes;
+import com.example.demo.src.follow.model.GetConnectedFollowRes;
 import com.example.demo.src.follow.model.GetFollowerRes;
-import com.example.demo.src.follow.model.GetFollowingInfoRes;
+import com.example.demo.src.follow.model.GetFollowUserInfoRes;
 import com.example.demo.src.follow.model.GetFollowingRes;
 import com.example.demo.src.story.StoryDao;
 import com.example.demo.src.user.UserDao;
@@ -80,33 +80,17 @@ public class FollowProvider {
                     .connectedCount(followDao.getConnectedFriendCount(onlineUserId,userId))
                     .build();
             List<Integer> followerIdList = followDao.getFollowers(userId);
-            List<GetFollowerInfoRes> getFollowerInfoResList = new ArrayList<>();
+            List<GetFollowUserInfoRes> getFollowerInfoResList = new ArrayList<>();
             followerIdList.stream().forEach(id -> {
                 try {
-                    getFollowerInfoResList.add(buildGetFollowerRes(onlineUserId, id));
+                    getFollowerInfoResList.add(buildGetFollowUserRes(onlineUserId, id));
                 } catch (BaseException e) {
                     throw new RuntimeException(e);
                 }
             });
-            getFollowerRes.setGetFollowerInfoResList(getFollowerInfoResList);
+            getFollowerRes.setGetFollowUserInfoResList(getFollowerInfoResList);
             return getFollowerRes;
         } catch (Exception exception) {
-            logger.error("App - getFollowers Provider Error", exception);
-            throw new BaseException(DATABASE_ERROR);
-        }
-    }
-
-    private GetFollowerInfoRes buildGetFollowerRes(int onlineUserId, int id) throws BaseException {
-        try {
-            User user = userDao.getUser(id);
-            return GetFollowerInfoRes.builder()
-                    .name(user.getName())
-                    .nickname(user.getNickname())
-                    .profileImageUrl(user.getProfileImageUrl())
-                    .followStatus(followDao.checkFollowing(onlineUserId, id))
-                    .storyStatus(storyDao.checkStory(id))
-                    .build();
-        }catch (Exception exception) {
             logger.error("App - getFollowers Provider Error", exception);
             throw new BaseException(DATABASE_ERROR);
         }
@@ -121,26 +105,56 @@ public class FollowProvider {
                     .connectedCount(followDao.getConnectedFriendCount(onlineUserId,userId))
                     .build();
             List<Integer> followingIdList = followDao.getFollowings(userId);
-            List<GetFollowingInfoRes> getFollowingInfoResList = new ArrayList<>();
+            List<GetFollowUserInfoRes> getFollowUserInfoResList = new ArrayList<>();
             followingIdList.stream().forEach(id -> {
                 try {
-                    getFollowingInfoResList.add(buildGetFollowingRes(onlineUserId, id));
+                    getFollowUserInfoResList.add(buildGetFollowUserRes(onlineUserId, id));
                 } catch (BaseException e) {
                     throw new RuntimeException(e);
                 }
             });
-            getFollowingRes.setGetFollowingInfoResList(getFollowingInfoResList);
+            getFollowingRes.setGetFollowUserInfoResList(getFollowUserInfoResList);
             return getFollowingRes;
         } catch (Exception exception) {
             logger.error("App - getFollowings Provider Error", exception);
             throw new BaseException(DATABASE_ERROR);
         }
     }
+    public GetConnectedFollowRes getConnectedFollows(int onlineUserId, int userId) throws BaseException {
+        throwIfInvalidUserIdDetected(userId);
+        try {
+            GetConnectedFollowRes getConnectedFollowRes = GetConnectedFollowRes.builder()
+                    .followerCount(followDao.getFollowerCount(userId))
+                    .followingCount(followDao.getFollowingCount(userId))
+                    .connectedCount(followDao.getConnectedFriendCount(onlineUserId,userId))
+                    .build();
+            List<Integer> followingIdList = followDao.getConnectedFollowId(onlineUserId, userId);
+            List<GetFollowUserInfoRes> getFollowUserInfoResList = new ArrayList<>();
+            followingIdList.stream().forEach(id -> {
+                try {
+                    getFollowUserInfoResList.add(buildGetFollowUserRes(onlineUserId, id));
+                } catch (BaseException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            getConnectedFollowRes.setGetFollowUserInfoResList(getFollowUserInfoResList);
+            return getConnectedFollowRes;
+        } catch (Exception exception) {
+            logger.error("App - getFollowings Provider Error", exception);
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 
-    private GetFollowingInfoRes buildGetFollowingRes(int onlineUserId, int id) throws BaseException {
+    private void throwIfInvalidUserIdDetected(int userId) throws BaseException {
+        if(userDao.checkUserId(userId)==0){
+            throw new BaseException(GET_USERS_INVALID_USER_ID);
+        }
+    }
+
+    private GetFollowUserInfoRes buildGetFollowUserRes(int onlineUserId, int id) throws BaseException {
         try {
             User user = userDao.getUser(id);
-            return GetFollowingInfoRes.builder()
+            return GetFollowUserInfoRes.builder()
                     .name(user.getName())
                     .nickname(user.getNickname())
                     .profileImageUrl(user.getProfileImageUrl())
@@ -153,9 +167,4 @@ public class FollowProvider {
         }
     }
 
-    private void throwIfInvalidUserIdDetected(int userId) throws BaseException {
-        if(userDao.checkUserId(userId)==0){
-            throw new BaseException(GET_USERS_INVALID_USER_ID);
-        }
-    }
 }

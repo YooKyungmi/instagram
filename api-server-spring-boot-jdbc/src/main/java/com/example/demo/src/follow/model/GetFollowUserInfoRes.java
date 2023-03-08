@@ -8,7 +8,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class GetFollowerInfoRes {
+public class GetFollowUserInfoRes {
 
     private String nickname;
     private String name;

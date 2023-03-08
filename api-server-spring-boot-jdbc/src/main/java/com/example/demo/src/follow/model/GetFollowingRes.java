@@ -19,6 +19,6 @@ public class GetFollowingRes {
     @JsonProperty("connected_count")
     private int connectedCount;
     @JsonProperty("followings")
-    private List<GetFollowingInfoRes> getFollowingInfoResList;
+    private List<GetFollowUserInfoRes> getFollowUserInfoResList;
 
 }
