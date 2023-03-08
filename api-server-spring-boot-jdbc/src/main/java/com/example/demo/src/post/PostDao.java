@@ -74,9 +74,6 @@ public class PostDao {
 
     }
 
-
-
-
     public int getPostCount(int userId) {
         String getPostCountQuery = "Select count(postId) from Post where userId = ?";
         int getPostCountParams = userId;

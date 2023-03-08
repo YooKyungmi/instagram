@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import static com.example.demo.config.BaseResponseStatus.DATABASE_ERROR;
 
 @Service
-public class PostProvider implements com.example.demo.src.user.spi.PostProvider {
+public class PostProvider {
     private final PostDao postDao;
     private final JwtService jwtService;
 
@@ -34,7 +34,6 @@ public class PostProvider implements com.example.demo.src.user.spi.PostProvider 
         }
     }
 
-    @Override
     public int getPostCount(int userId) throws BaseException {
         try {
             return postDao.getPostCount(userId);
