@@ -1,16 +1,28 @@
 package com.example.demo.src.user.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @AllArgsConstructor
+@Builder
+@NoArgsConstructor
 public class User {
-    private int userIdx;
-    private String ID;
-    private String userName;
+    private int userId;
+    private String phoneNumber;
+    private String emailAddress;
+    private String birthDate;
+    private String nickname;
     private String password;
-    private String email;
+    private String profileImageUrl;
+    private String name;
+    private String introduce;
+    private String gender;
+    private String accountStatus;
+    private int status;
+    private String createdAt;
+    private String updatedAt;
 }

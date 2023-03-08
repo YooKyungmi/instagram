@@ -9,16 +9,16 @@ import com.example.demo.utils.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
-
 import static com.example.demo.config.BaseResponseStatus.*;
-import static com.example.demo.utils.ValidationRegex.isRegexEmail;
+import static com.example.demo.utils.ValidationRegex.*;
 
 @RestController
 @RequestMapping("/app/users")
 public class UserController {
     final Logger logger = LoggerFactory.getLogger(this.getClass());
+
+    private final String defaultProfileImageUrl = "https://trudylin.s3.ap-northeast-2.amazonaws.com/postPhoto/profile+Image.png";
+
 
     @Autowired
     private final UserProvider userProvider;
@@ -27,94 +27,118 @@ public class UserController {
     @Autowired
     private final JwtService jwtService;
 
-
-
-
-    public UserController(UserProvider userProvider, UserService userService, JwtService jwtService){
+    public UserController(UserProvider userProvider, UserService userService, JwtService jwtService) {
         this.userProvider = userProvider;
         this.userService = userService;
         this.jwtService = jwtService;
     }
 
     /**
-     * 회원 조회 API
-     * [GET] /users
-     * 회원 번호 및 이메일 검색 조회 API
-     * [GET] /users? Email=
-     * @return BaseResponse<List<GetUserRes>>
-     */
-    //Query String
-    @ResponseBody
-    @GetMapping("") // (GET) 127.0.0.1:9000/app/users
-    public BaseResponse<List<GetUserRes>> getUsers(@RequestParam(required = false) String Email) {
-        try{
-            if(Email == null){
-                List<GetUserRes> getUsersRes = userProvider.getUsers();
-                return new BaseResponse<>(getUsersRes);
-            }
-            // Get Users
-            List<GetUserRes> getUsersRes = userProvider.getUsersByEmail(Email);
-            return new BaseResponse<>(getUsersRes);
-        } catch(BaseException exception){
-            return new BaseResponse<>((exception.getStatus()));
-        }
-    }
-
-    /**
-     * 회원 1명 조회 API
-     * [GET] /users/:userIdx
-     * @return BaseResponse<GetUserRes>
-     */
-    // Path-variable
-    @ResponseBody
-    @GetMapping("/{userIdx}") // (GET) 127.0.0.1:9000/app/users/:userIdx
-    public BaseResponse<GetUserRes> getUser(@PathVariable("userIdx") int userIdx) {
-        // Get Users
-        try{
-            GetUserRes getUserRes = userProvider.getUser(userIdx);
-            return new BaseResponse<>(getUserRes);
-        } catch(BaseException exception){
-            return new BaseResponse<>((exception.getStatus()));
-        }
-
-    }
-
-    /**
-     * 회원가입 API
-     * [POST] /users
+     * 전화번호로 회원가입 API
+     * [POST] /app/users/phone
+     *
      * @return BaseResponse<PostUserRes>
      */
     // Body
     @ResponseBody
-    @PostMapping("")
-    public BaseResponse<PostUserRes> createUser(@RequestBody PostUserReq postUserReq) {
-        // TODO: email 관련한 짧은 validation 예시입니다. 그 외 더 부가적으로 추가해주세요!
-        if(postUserReq.getEmail() == null){
-            return new BaseResponse<>(POST_USERS_EMPTY_EMAIL);
+    @PostMapping("/phone")
+    public BaseResponse<PostUserRes> createUserByPhone(@RequestBody PostUserByPhoneReq postUserByPhoneReq) {
+        if (postUserByPhoneReq.getPhoneNumber() == null) {
+            return new BaseResponse<>(POST_USERS_EMPTY_PHONE_NUMBER);
         }
-        //이메일 정규표현
-        if(!isRegexEmail(postUserReq.getEmail())){
-            return new BaseResponse<>(POST_USERS_INVALID_EMAIL);
+        if(postUserByPhoneReq.getPhoneNumber()!=null && !isRegexPhoneNumber(postUserByPhoneReq.getPhoneNumber())){
+            return new BaseResponse<>(POST_USERS_INVALID_PHONE_NUMBER);
         }
-        try{
-            PostUserRes postUserRes = userService.createUser(postUserReq);
+        if(postUserByPhoneReq.getBirthDate()==null){
+            return new BaseResponse<>(POST_USERS_EMPTY_BIRTH_DATE);
+        }
+        if(!isRegexBirthDate(postUserByPhoneReq.getBirthDate())){
+            return new BaseResponse<>(POST_USERS_INVALID_BIRTH_DATE);
+        }
+        if(postUserByPhoneReq.getNickname()==null){
+            return new BaseResponse<>(POST_USERS_EMPTY_NICKNAME);
+        }
+        if(!isRegexNickname(postUserByPhoneReq.getNickname())){
+            return new BaseResponse<>(POST_USERS_INVALID_NICKNAME);
+        }
+        if(postUserByPhoneReq.getPassword()==null){
+            return new BaseResponse<>(POST_USERS_EMPTY_PASSWORD);
+        }
+        if(!isRegexPassword(postUserByPhoneReq.getPassword())){
+            return new BaseResponse<>(POST_USERS_INVALID_PASSWORD);
+        }
+        if(postUserByPhoneReq.getProfileImageUrl()==null){
+            postUserByPhoneReq.setProfileImageUrl(defaultProfileImageUrl);
+        }
+        try {
+            PostUserRes postUserRes = userService.createUserByPhone(postUserByPhoneReq);
             return new BaseResponse<>(postUserRes);
-        } catch(BaseException exception){
+        } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
         }
     }
+
+    /**
+     * 이메일로 회원가입 API
+     * [POST] /app/users/phone
+     *
+     * @return BaseResponse<PostUserRes>
+     */
+    // Body
+    @ResponseBody
+    @PostMapping("/email")
+    public BaseResponse<PostUserRes> createUserByEmail(@RequestBody PostUserByEmailReq postUserByEmailReq) {
+        if (postUserByEmailReq.getEmailAddress() == null) {
+            return new BaseResponse<>(POST_USERS_EMPTY_EMAIL_ADDRESS);
+        }
+        if (postUserByEmailReq.getEmailAddress() != null && !isRegexEmailAddress(postUserByEmailReq.getEmailAddress())) {
+            return new BaseResponse<>(POST_USERS_INVALID_EMAIL_ADDRESS);
+        }
+        if(postUserByEmailReq.getBirthDate()==null){
+            return new BaseResponse<>(POST_USERS_EMPTY_BIRTH_DATE);
+        }
+        if(!isRegexBirthDate(postUserByEmailReq.getBirthDate())){
+            return new BaseResponse<>(POST_USERS_INVALID_BIRTH_DATE);
+        }
+        if(postUserByEmailReq.getNickname()==null){
+            return new BaseResponse<>(POST_USERS_EMPTY_NICKNAME);
+        }
+        if(!isRegexNickname(postUserByEmailReq.getNickname())){
+            return new BaseResponse<>(POST_USERS_INVALID_NICKNAME);
+        }
+        if(postUserByEmailReq.getPassword()==null){
+            return new BaseResponse<>(POST_USERS_EMPTY_PASSWORD);
+        }
+        if(!isRegexPassword(postUserByEmailReq.getPassword())){
+            return new BaseResponse<>(POST_USERS_INVALID_PASSWORD);
+        }
+        if(postUserByEmailReq.getProfileImageUrl()==null){
+            postUserByEmailReq.setProfileImageUrl(defaultProfileImageUrl);
+        }
+        try {
+            PostUserRes postUserRes = userService.createUserByEmail(postUserByEmailReq);
+            return new BaseResponse<>(postUserRes);
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
     /**
      * 로그인 API
-     * [POST] /users/logIn
+     * [POST] /app/users/login
      * @return BaseResponse<PostLoginRes>
      */
     @ResponseBody
-    @PostMapping("/logIn")
-    public BaseResponse<PostLoginRes> logIn(@RequestBody PostLoginReq postLoginReq){
+    @PostMapping("/login")
+    public BaseResponse<PostLoginRes> login(@RequestBody PostLoginReq postLoginReq) {
+        if(postLoginReq.getId()==null){
+            return new BaseResponse<>(POST_USERS_EMPTY_ID);
+        }
+        if(postLoginReq.getPassword()==null){
+            return new BaseResponse<>(POST_USERS_EMPTY_PASSWORD);
+        }
         try{
-            // TODO: 로그인 값들에 대한 형식적인 validatin 처리해주셔야합니다!
-            // TODO: 유저의 status ex) 비활성화된 유저, 탈퇴한 유저 등을 관리해주고 있다면 해당 부분에 대한 validation 처리도 해주셔야합니다.
-            PostLoginRes postLoginRes = userProvider.logIn(postLoginReq);
+            PostLoginRes postLoginRes = userProvider.login(postLoginReq);
             return new BaseResponse<>(postLoginRes);
         } catch (BaseException exception){
             return new BaseResponse<>(exception.getStatus());
@@ -122,27 +146,18 @@ public class UserController {
     }
 
     /**
-     * 유저정보변경 API
-     * [PATCH] /users/:userIdx
-     * @return BaseResponse<String>
+     * 회원 조회 API
+     * [GET] /app/users/:user-id
+     *
+     * @return BaseResponse<List<GetUserRes>>
      */
-    @ResponseBody
-    @PatchMapping("/{userIdx}")
-    public BaseResponse<String> modifyUserName(@PathVariable("userIdx") int userIdx, @RequestBody User user){
-        try {
-            //jwt에서 idx 추출.
-            int userIdxByJwt = jwtService.getUserId();
-            //userIdx와 접근한 유저가 같은지 확인
-            if(userIdx != userIdxByJwt){
-                return new BaseResponse<>(INVALID_USER_JWT);
-            }
-            //같다면 유저네임 변경
-            PatchUserReq patchUserReq = new PatchUserReq(userIdx,user.getUserName());
-            userService.modifyUserName(patchUserReq);
-
-            String result = "";
-        return new BaseResponse<>(result);
-        } catch (BaseException exception) {
+    @GetMapping("/{user-id}")
+    public BaseResponse<GetUserRes> getUser(@PathVariable("user-id") Integer userId) {
+        try{
+            int userIdByJwt = jwtService.getUserId();
+            GetUserRes getUsersRes = userProvider.getUser(userIdByJwt, userId);
+            return new BaseResponse<>(getUsersRes);
+        } catch(BaseException exception){
             return new BaseResponse<>((exception.getStatus()));
         }
     }

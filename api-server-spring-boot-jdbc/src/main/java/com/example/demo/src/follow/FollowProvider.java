@@ -5,8 +5,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+
 import java.util.ArrayList;
 import java.util.Arrays;
+
 import java.util.List;
 
 import static com.example.demo.config.BaseResponseStatus.DATABASE_ERROR;
@@ -61,7 +63,6 @@ public class FollowProvider implements com.example.demo.src.user.spi.FollowProvi
             throw new BaseException(DATABASE_ERROR);
         }
     }
-
     // 구현하느라 대충 써놨습니다!!
     public List<Integer> getFollowerList(int userId){
         return Arrays.asList(1);

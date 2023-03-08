@@ -31,5 +31,4 @@ public class Post {
     private String updatedAt;
     private int status;
 
-
 }
