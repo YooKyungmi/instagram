@@ -74,7 +74,7 @@ public class FollowController {
 
     /**
      * 함께 아는 친구 조회 API
-     * [GET] /app/follows/connected-friends?user-id=
+     * [GET] /app/follows/connected-follows?user-id=
      *
      * @return BaseResponse<GetConnectedFriendRes>
      */

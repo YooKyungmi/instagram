@@ -120,7 +120,7 @@ public class FollowProvider {
             throw new BaseException(DATABASE_ERROR);
         }
     }
-    public GetConnectedFollowRes getConnectedFollows(int onlineUserId, Integer userId) throws BaseException {
+    public GetConnectedFollowRes getConnectedFollows(int onlineUserId, int userId) throws BaseException {
         throwIfInvalidUserIdDetected(userId);
         try {
             GetConnectedFollowRes getConnectedFollowRes = GetConnectedFollowRes.builder()
@@ -128,7 +128,7 @@ public class FollowProvider {
                     .followingCount(followDao.getFollowingCount(userId))
                     .connectedCount(followDao.getConnectedFriendCount(onlineUserId,userId))
                     .build();
-            List<Integer> followingIdList = followDao.getFollowings(userId);
+            List<Integer> followingIdList = followDao.getConnectedFollowId(onlineUserId, userId);
             List<GetFollowUserInfoRes> getFollowUserInfoResList = new ArrayList<>();
             followingIdList.stream().forEach(id -> {
                 try {
