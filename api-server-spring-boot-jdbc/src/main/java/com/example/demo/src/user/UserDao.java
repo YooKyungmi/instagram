@@ -7,7 +7,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Repository
 public class UserDao {
@@ -69,7 +71,7 @@ public class UserDao {
                         .userId(rs.getInt("userId"))
                         .phoneNumber(rs.getString("phoneNumber"))
                         .emailAddress(rs.getString("emailAddress"))
-                        .birthDate(LocalDate.parse(rs.getString("birthDate")))
+                        .birthDate(rs.getString("birthDate").toString())
                         .nickname(rs.getString("nickname"))
                         .password(rs.getString("password"))
                         .profileImageUrl(rs.getString("profileImageUrl"))
@@ -79,5 +81,46 @@ public class UserDao {
                         .accountStatus(rs.getString("accountStatus"))
                         .build(),
                 findUserParams);
+    }
+
+    public User getUser(int userId) {
+        String getUserQuery = "select * from User where userId = ?";
+        int getUserParams = userId;
+        return this.jdbcTemplate.queryForObject(getUserQuery,
+                (rs, rowNum) -> User.builder()
+                        .userId(rs.getInt("userId"))
+                        .phoneNumber(rs.getString("phoneNumber"))
+                        .emailAddress(rs.getString("emailAddress"))
+                        .birthDate(rs.getString("birthDate").toString())
+                        .nickname(rs.getString("nickname"))
+                        .password(rs.getString("password"))
+                        .profileImageUrl(rs.getString("profileImageUrl"))
+                        .name(rs.getString("name"))
+                        .introduce(rs.getString("introduce"))
+                        .gender(rs.getString("gender"))
+                        .accountStatus(rs.getString("accountStatus"))
+                        .status(rs.getInt("status"))
+                        .createdAt(rs.getTimestamp("createdAt").toString())
+                        .updatedAt(rs.getTimestamp("updatedAt").toString())
+                        .build(),
+                getUserParams);
+    }
+
+    public int checkUserId(int userId) {
+        String checkUserIdQuery = "select exists(select userId from User where userId = ?)";
+        int checkUserIdParams = userId;
+        return this.jdbcTemplate.queryForObject(checkUserIdQuery,
+                int.class,
+                checkUserIdParams);
+    }
+
+    public GetUserProfileRes getUserProfile(int userId) {
+        String getUserQuery = "select nickname, profileImageUrl from User where userId=?";
+        int getUserParams = userId;
+        return this.jdbcTemplate.queryForObject(getUserQuery,
+                (rs, rowNum) -> new GetUserProfileRes(
+                        rs.getString("nickname"),
+                        rs.getString("profileImageUrl")),
+                getUserParams);
     }
 }

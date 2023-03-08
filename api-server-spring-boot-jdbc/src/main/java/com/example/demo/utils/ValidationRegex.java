@@ -21,8 +21,8 @@ public class ValidationRegex {
         return matcher.find();
     }
 
-    public static boolean isRegexBirthDate(LocalDate target){
-        return target.isBefore(LocalDate.now());
+    public static boolean isRegexBirthDate(String target){
+        return LocalDate.parse(target).isBefore(LocalDate.now());
     }
 
     public static boolean isRegexNickname(String target){

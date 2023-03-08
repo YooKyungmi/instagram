@@ -14,7 +14,7 @@ public class PostUserByEmailReq {
     @JsonProperty("email_address")
     private String emailAddress;
     @JsonProperty("birth_date")
-    private LocalDate birthDate;
+    private String birthDate;
     private String nickname;
     private String password;
     @JsonProperty("profile_image_url")

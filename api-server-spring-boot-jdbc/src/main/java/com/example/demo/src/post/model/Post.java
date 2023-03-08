@@ -23,14 +23,5 @@ public class Post {
     private String photo8;
     private String photo9;
     private String photo10;
-    private String createAt; //수정 필요
-    private String ;
-    private String ;
-    private String ;
-    private String ;
-    private String ;
-    private String ;
-    private String ;
-    private String ;
 
 }

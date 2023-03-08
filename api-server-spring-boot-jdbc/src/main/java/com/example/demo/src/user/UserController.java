@@ -9,8 +9,6 @@ import com.example.demo.utils.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 import static com.example.demo.config.BaseResponseStatus.*;
 import static com.example.demo.utils.ValidationRegex.*;
 
@@ -19,7 +17,7 @@ import static com.example.demo.utils.ValidationRegex.*;
 public class UserController {
     final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final String defaultProfileImageUrl = "아직 이미지 url 추출 방식 미정";
+    private final String defaultProfileImageUrl = "https://trudylin.s3.ap-northeast-2.amazonaws.com/postPhoto/profile+Image.png";
 
 
     @Autowired
@@ -146,5 +144,23 @@ public class UserController {
             return new BaseResponse<>(exception.getStatus());
         }
     }
+
+    /**
+     * 회원 조회 API
+     * [GET] /app/users/:user-id
+     *
+     * @return BaseResponse<List<GetUserRes>>
+     */
+    @GetMapping("/{user-id}")
+    public BaseResponse<GetUserRes> getUsers(@PathVariable("user-id") Integer userId) {
+        try{
+            int userIdByJwt = jwtService.getUserId();
+            GetUserRes getUsersRes = userProvider.getUser(userIdByJwt, userId);
+            return new BaseResponse<>(getUsersRes);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
 
 }
