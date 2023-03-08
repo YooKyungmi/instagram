@@ -1,15 +1,15 @@
 package com.example.demo.src.user;
 
 
-import com.example.demo.src.user.model.*;
+import com.example.demo.src.user.model.GetUserProfileRes;
+import com.example.demo.src.user.model.PostUserByEmailReq;
+import com.example.demo.src.user.model.PostUserByPhoneReq;
+import com.example.demo.src.user.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.sql.Timestamp;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Repository
 public class UserDao {

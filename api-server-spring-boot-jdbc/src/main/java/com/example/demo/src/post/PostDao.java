@@ -95,6 +95,7 @@ public class PostDao {
                 (rs, rowNum) -> rs.getString("userId") ,photoUrl);
     }
 
+
     public int getScrapOn(int postId,int userId){
         String Query = "select status from Scrap where userId = ? and postId = ? ";
         Object[] params = new Object[]{userId,postId};
@@ -120,6 +121,7 @@ public class PostDao {
             return 0;
         }
     }
+
 
     public int getPostCount(int userId) {
         String getPostCountQuery = "Select count(postId) from Post where userId = ?";

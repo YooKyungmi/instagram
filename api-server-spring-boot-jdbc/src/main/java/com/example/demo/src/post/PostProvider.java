@@ -16,21 +16,22 @@ public class PostProvider {
     private final PostDao postDao;
     private final JwtService jwtService;
 
-    final Logger logger =  LoggerFactory.getLogger(this.getClass());
+    final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public PostProvider(PostDao postDao,JwtService jwtService){
-        this.postDao=postDao;
-        this.jwtService=jwtService;
+    public PostProvider(PostDao postDao, JwtService jwtService) {
+        this.postDao = postDao;
+        this.jwtService = jwtService;
     }
 
-    public GetPostRes getPost(int postId) throws BaseException{
+    public GetPostRes getPost(int postId) throws BaseException {
         try {
             //int userIdByJwt = jwtService.getUserId();
             GetPostRes getPostRes = postDao.getPost(postId,8);
             return getPostRes;
-        }
-        catch (Exception exception) {
+
+        } catch (Exception exception) {
+
             logger.error("App - getPost Provider Error", exception);
             throw new BaseException(DATABASE_ERROR);
         }

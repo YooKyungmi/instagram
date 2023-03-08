@@ -1,6 +1,5 @@
 package com.example.demo.src.follow;
 
-import com.example.demo.src.follow.model.GetConnectedFollowRes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -48,5 +47,37 @@ public class FollowDao {
         return this.jdbcTemplate.query(getConnectedFollowIdQuery,
                 (rs, rowNum) -> rs.getInt("followingId"),
                 getConnectedFollowIdParams);
+    }
+
+    public List<Integer> getConnectedFollows(int onlineUserId, int findingUserId) {
+        String getConnectedFollowIdQuery = "Select followingId from UserFollow where followerId = ? AND followingId IN (Select followerId from UserFollow where followingId = ?) limit 2";
+        Object[] getConnectedFollowIdParams = new Object[]{onlineUserId, findingUserId};
+        return this.jdbcTemplate.query(getConnectedFollowIdQuery,
+                (rs, rowNum) -> rs.getInt("followingId"),
+                getConnectedFollowIdParams);
+    }
+
+    public List<Integer> getFollowers(int userId) {
+        String getFollowerQuery = "Select followerId from UserFollow where followingId = ?";
+        int getFollowerParams = userId;
+        return this.jdbcTemplate.query(getFollowerQuery,
+                (rs, rowNum) -> rs.getInt("followerId"),
+                getFollowerParams);
+    }
+
+    public int checkFollowing(int onlineUserId,int userId) {
+        String checkFollowingQuery = "select exists(select followId from UserFollow where followingId = ? and followerId = ?)";
+        Object[] checkFollowingParams = new Object[]{onlineUserId, userId};
+        return this.jdbcTemplate.queryForObject(checkFollowingQuery,
+                int.class,
+                checkFollowingParams);
+    }
+
+    public List<Integer> getFollowings(int userId) {
+        String getFollowingQuery = "Select followingId from UserFollow where followerId = ?";
+        int getFollowingParams = userId;
+        return this.jdbcTemplate.query(getFollowingQuery,
+                (rs, rowNum) -> rs.getInt("followingId"),
+                getFollowingParams);
     }
 }
