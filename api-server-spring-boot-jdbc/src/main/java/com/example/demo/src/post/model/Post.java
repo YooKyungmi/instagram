@@ -30,5 +30,4 @@ public class Post {
     private String createdAt;
     private String updatedAt;
 
-
 }
