@@ -1,6 +1,5 @@
 package com.example.demo.src.follow;
 
-import com.example.demo.src.follow.model.GetConnectedFollowRes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -48,5 +47,21 @@ public class FollowDao {
         return this.jdbcTemplate.query(getConnectedFollowIdQuery,
                 (rs, rowNum) -> rs.getInt("followingId"),
                 getConnectedFollowIdParams);
+    }
+
+    public List<Integer> getFollowers(int userId) {
+        String getFollowerCountQuery = "Select followerId from UserFollow where followingId = ?";
+        int getFollowerCountParams = userId;
+        return this.jdbcTemplate.query(getFollowerCountQuery,
+                (rs, rowNum) -> rs.getInt("followerId"),
+                getFollowerCountParams);
+    }
+
+    public int checkFollowing(int onlineUserId,int userId) {
+        String checkFollowingQuery = "select exists(select followId from UserFollow where followingId = ? and followerId = ?)";
+        Object[] checkFollowingParams = new Object[]{onlineUserId, userId};
+        return this.jdbcTemplate.queryForObject(checkFollowingQuery,
+                int.class,
+                checkFollowingParams);
     }
 }
