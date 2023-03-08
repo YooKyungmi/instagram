@@ -12,36 +12,26 @@ import org.springframework.stereotype.Service;
 import static com.example.demo.config.BaseResponseStatus.DATABASE_ERROR;
 
 @Service
-public class PostProvider {
+public class PostProvider implements com.example.demo.src.user.spi.PostProvider {
     private final PostDao postDao;
     private final JwtService jwtService;
 
-    final Logger logger =  LoggerFactory.getLogger(this.getClass());
+    final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public PostProvider(PostDao postDao,JwtService jwtService){
-        this.postDao=postDao;
-        this.jwtService=jwtService;
+    public PostProvider(PostDao postDao, JwtService jwtService) {
+        this.postDao = postDao;
+        this.jwtService = jwtService;
     }
 
-    public GetPostRes getPost(int postId) throws BaseException{
+    public GetPostRes getPost(int postId) throws BaseException {
         try {
             GetPostRes getPostRes = postDao.getPost(postId);
             return getPostRes;
-        }catch (Exception exception) {
+        } catch (Exception exception) {
             logger.error("App - getPost Provider Error", exception);
             throw new BaseException(DATABASE_ERROR);
         }
-    }
-
-public class PostProvider implements com.example.demo.src.user.spi.PostProvider {
-
-    private final PostDao postDao;
-
-    final Logger logger = LoggerFactory.getLogger(this.getClass());
-
-    public PostProvider(PostDao postDao) {
-        this.postDao = postDao;
     }
 
     @Override
@@ -53,5 +43,4 @@ public class PostProvider implements com.example.demo.src.user.spi.PostProvider 
             throw new BaseException(DATABASE_ERROR);
         }
     }
-}
 }
