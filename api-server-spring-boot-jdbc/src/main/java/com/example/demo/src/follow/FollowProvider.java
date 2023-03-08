@@ -3,6 +3,8 @@ package com.example.demo.src.follow;
 import com.example.demo.config.BaseException;
 import com.example.demo.src.follow.model.GetFollowerInfoRes;
 import com.example.demo.src.follow.model.GetFollowerRes;
+import com.example.demo.src.follow.model.GetFollowingInfoRes;
+import com.example.demo.src.follow.model.GetFollowingRes;
 import com.example.demo.src.story.StoryDao;
 import com.example.demo.src.user.UserDao;
 import com.example.demo.src.user.model.User;
@@ -70,9 +72,7 @@ public class FollowProvider {
     }
 
     public GetFollowerRes getFollowers(int onlineUserId, int userId) throws BaseException {
-        if(userDao.checkUserId(userId)==0){
-            throw new BaseException(GET_USERS_INVALID_USER_ID);
-        }
+        throwIfInvalidUserIdDetected(userId);
         try {
             GetFollowerRes getFollowerRes = GetFollowerRes.builder()
                     .followerCount(followDao.getFollowerCount(userId))
@@ -83,7 +83,7 @@ public class FollowProvider {
             List<GetFollowerInfoRes> getFollowerInfoResList = new ArrayList<>();
             followerIdList.stream().forEach(id -> {
                 try {
-                    getFollowerInfoResList.add(buildGetFollowRes(onlineUserId, id));
+                    getFollowerInfoResList.add(buildGetFollowerRes(onlineUserId, id));
                 } catch (BaseException e) {
                     throw new RuntimeException(e);
                 }
@@ -96,7 +96,7 @@ public class FollowProvider {
         }
     }
 
-    private GetFollowerInfoRes buildGetFollowRes(int onlineUserId, int id) throws BaseException {
+    private GetFollowerInfoRes buildGetFollowerRes(int onlineUserId, int id) throws BaseException {
         try {
             User user = userDao.getUser(id);
             return GetFollowerInfoRes.builder()
@@ -109,6 +109,53 @@ public class FollowProvider {
         }catch (Exception exception) {
             logger.error("App - getFollowers Provider Error", exception);
             throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public GetFollowingRes getFollowings(int onlineUserId, int userId) throws BaseException {
+        throwIfInvalidUserIdDetected(userId);
+        try {
+            GetFollowingRes getFollowingRes = GetFollowingRes.builder()
+                    .followerCount(followDao.getFollowerCount(userId))
+                    .followingCount(followDao.getFollowingCount(userId))
+                    .connectedCount(followDao.getConnectedFriendCount(onlineUserId,userId))
+                    .build();
+            List<Integer> followingIdList = followDao.getFollowings(userId);
+            List<GetFollowingInfoRes> getFollowingInfoResList = new ArrayList<>();
+            followingIdList.stream().forEach(id -> {
+                try {
+                    getFollowingInfoResList.add(buildGetFollowingRes(onlineUserId, id));
+                } catch (BaseException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            getFollowingRes.setGetFollowingInfoResList(getFollowingInfoResList);
+            return getFollowingRes;
+        } catch (Exception exception) {
+            logger.error("App - getFollowings Provider Error", exception);
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    private GetFollowingInfoRes buildGetFollowingRes(int onlineUserId, int id) throws BaseException {
+        try {
+            User user = userDao.getUser(id);
+            return GetFollowingInfoRes.builder()
+                    .name(user.getName())
+                    .nickname(user.getNickname())
+                    .profileImageUrl(user.getProfileImageUrl())
+                    .followStatus(followDao.checkFollowing(onlineUserId, id))
+                    .storyStatus(storyDao.checkStory(id))
+                    .build();
+        }catch (Exception exception) {
+            logger.error("App - getFollowings Provider Error", exception);
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    private void throwIfInvalidUserIdDetected(int userId) throws BaseException {
+        if(userDao.checkUserId(userId)==0){
+            throw new BaseException(GET_USERS_INVALID_USER_ID);
         }
     }
 }

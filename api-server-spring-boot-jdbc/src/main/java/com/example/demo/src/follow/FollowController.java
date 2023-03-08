@@ -4,6 +4,7 @@ package com.example.demo.src.follow;
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
 import com.example.demo.src.follow.model.GetFollowerRes;
+import com.example.demo.src.follow.model.GetFollowingRes;
 import com.example.demo.src.user.UserProvider;
 import com.example.demo.utils.JwtService;
 import org.slf4j.Logger;
@@ -38,7 +39,7 @@ public class FollowController {
 
     /**
      * 팔로워 조회 API
-     * [GET] /app/follows?user-id=
+     * [GET] /app/follows/followers?user-id=
      *
      * @return BaseResponse<List<GetFollowerRes>>
      */
@@ -48,6 +49,23 @@ public class FollowController {
             int userIdByJwt = jwtService.getUserId();
             GetFollowerRes getFollowerRes = followProvider.getFollowers(userIdByJwt, userId);
             return new BaseResponse<>(getFollowerRes);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    /**
+     * 팔로잉 조회 API
+     * [GET] /app/follows/followings?user-id=
+     *
+     * @return BaseResponse<List<GetFollowerRes>>
+     */
+    @GetMapping("/followings")
+    public BaseResponse<GetFollowingRes> getFollowings(@RequestParam("user-id") Integer userId) {
+        try{
+            int userIdByJwt = jwtService.getUserId();
+            GetFollowingRes getFollowingRes = followProvider.getFollowings(userIdByJwt, userId);
+            return new BaseResponse<>(getFollowingRes);
         } catch(BaseException exception){
             return new BaseResponse<>((exception.getStatus()));
         }
