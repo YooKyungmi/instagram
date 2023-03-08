@@ -1,7 +1,6 @@
 package com.example.demo.src.user.spi;
 
 import com.example.demo.config.BaseException;
-import com.example.demo.src.follow.model.GetConnectedFollowRes;
 
 import java.util.List;
 
