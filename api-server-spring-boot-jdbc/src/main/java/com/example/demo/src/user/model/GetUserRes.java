@@ -5,6 +5,7 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -20,7 +21,7 @@ public class GetUserRes {
     @JsonProperty("email_address")
     private String emailAddress;
     @JsonProperty("birth_date")
-    private LocalDate birthDate;
+    private String birthDate;
     private String nickname;
     @JsonProperty("profile_image_url")
     private String profileImageUrl;
@@ -33,16 +34,14 @@ public class GetUserRes {
     private int followingCount;
     @JsonProperty("post_count")
     private int postCount;
-    @JsonProperty("connectedCount")
+    @JsonProperty("connected_count")
     private int connectedCount;
-    @JsonProperty("connected_friend_nickname_1")
-    private int connectedFriendNickname1;
-    @JsonProperty("connected_friend_nickname_2")
-    private int connectedFriendNickname2;
+    @JsonProperty("connected_friend_profiles")
+    private List<GetUserProfileRes> connectedFriendProfiles;
     @JsonProperty("account_status")
     private String accountStatus;
     @JsonProperty("created_at")
-    private LocalDateTime createdAt;
+    private String createdAt;
     @JsonProperty("updated_at")
-    private LocalDateTime updatedAt;
+    private String updatedAt;
 }

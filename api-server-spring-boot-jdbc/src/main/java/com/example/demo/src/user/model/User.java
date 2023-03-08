@@ -14,7 +14,7 @@ public class User {
     private int userId;
     private String phoneNumber;
     private String emailAddress;
-    private LocalDate birthDate;
+    private String birthDate;
     private String nickname;
     private String password;
     private String profileImageUrl;
@@ -23,6 +23,6 @@ public class User {
     private String gender;
     private String accountStatus;
     private int status;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private String createdAt;
+    private String updatedAt;
 }

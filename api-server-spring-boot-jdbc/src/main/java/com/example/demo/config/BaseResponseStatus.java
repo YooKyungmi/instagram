@@ -46,6 +46,8 @@ public enum BaseResponseStatus {
     POST_USERS_ACCOUNT_INACTIVE(false,2030,"해당 계정은 비활성화 상태입니다."),
     POST_USERS_ACCOUNT_DELETED(false,2031,"해당 계정은 더이상 존재하지 않습니다."),
 
+    //get /app/users/:user-id
+    GET_USERS_INVALID_USER_ID(false,2032, "존재하지 않는 유저입니다."),
 
     /**
      * 3000 : Response 오류
