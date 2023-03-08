@@ -50,11 +50,11 @@ public class FollowDao {
     }
 
     public List<Integer> getFollowers(int userId) {
-        String getFollowerCountQuery = "Select followerId from UserFollow where followingId = ?";
-        int getFollowerCountParams = userId;
-        return this.jdbcTemplate.query(getFollowerCountQuery,
+        String getFollowerQuery = "Select followerId from UserFollow where followingId = ?";
+        int getFollowerParams = userId;
+        return this.jdbcTemplate.query(getFollowerQuery,
                 (rs, rowNum) -> rs.getInt("followerId"),
-                getFollowerCountParams);
+                getFollowerParams);
     }
 
     public int checkFollowing(int onlineUserId,int userId) {
@@ -63,5 +63,13 @@ public class FollowDao {
         return this.jdbcTemplate.queryForObject(checkFollowingQuery,
                 int.class,
                 checkFollowingParams);
+    }
+
+    public List<Integer> getFollowings(int userId) {
+        String getFollowingQuery = "Select followingId from UserFollow where followerId = ?";
+        int getFollowingParams = userId;
+        return this.jdbcTemplate.query(getFollowingQuery,
+                (rs, rowNum) -> rs.getInt("followingId"),
+                getFollowingParams);
     }
 }
