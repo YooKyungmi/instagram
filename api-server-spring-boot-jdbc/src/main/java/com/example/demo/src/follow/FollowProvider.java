@@ -12,7 +12,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.example.demo.config.BaseResponseStatus.DATABASE_ERROR;
@@ -70,6 +73,7 @@ public class FollowProvider {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
 
     public GetFollowerRes getFollowers(int onlineUserId, int userId) throws BaseException {
         throwIfInvalidUserIdDetected(userId);

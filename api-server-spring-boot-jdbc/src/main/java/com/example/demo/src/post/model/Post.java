@@ -29,5 +29,6 @@ public class Post {
     private String photo10;
     private String createdAt;
     private String updatedAt;
+    private int status;
 
 }

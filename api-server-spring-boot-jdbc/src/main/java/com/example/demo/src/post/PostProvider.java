@@ -26,9 +26,12 @@ public class PostProvider {
 
     public GetPostRes getPost(int postId) throws BaseException {
         try {
-            GetPostRes getPostRes = postDao.getPost(postId);
+            //int userIdByJwt = jwtService.getUserId();
+            GetPostRes getPostRes = postDao.getPost(postId,8);
             return getPostRes;
+
         } catch (Exception exception) {
+
             logger.error("App - getPost Provider Error", exception);
             throw new BaseException(DATABASE_ERROR);
         }
