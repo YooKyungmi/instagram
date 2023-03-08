@@ -1,6 +1,5 @@
 package com.example.demo.src.post;
 
-
 import com.example.demo.src.post.model.GetPostRes;
 import com.example.demo.src.post.model.Post;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +11,7 @@ import javax.sql.DataSource;
 @Repository
 
 public class PostDao {
-
     private JdbcTemplate jdbcTemplate;
-
     @Autowired
     public void setDataSource(DataSource dataSource){
         this.jdbcTemplate = new JdbcTemplate(dataSource);
@@ -75,14 +72,5 @@ public class PostDao {
     }
 
 
-
-
-    public int getPostCount(int userId) {
-        String getPostCountQuery = "Select count(postId) from Post where userId = ?";
-        int getPostCountParams = userId;
-        return this.jdbcTemplate.queryForObject(getPostCountQuery,
-                int.class,
-                getPostCountParams);
-    }
 
 }
