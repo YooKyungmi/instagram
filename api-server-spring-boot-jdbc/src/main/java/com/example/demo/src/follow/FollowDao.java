@@ -49,6 +49,14 @@ public class FollowDao {
                 getConnectedFollowIdParams);
     }
 
+    public List<Integer> getConnectedFollows(int onlineUserId, int findingUserId) {
+        String getConnectedFollowIdQuery = "Select followingId from UserFollow where followerId = ? AND followingId IN (Select followerId from UserFollow where followingId = ?) limit 2";
+        Object[] getConnectedFollowIdParams = new Object[]{onlineUserId, findingUserId};
+        return this.jdbcTemplate.query(getConnectedFollowIdQuery,
+                (rs, rowNum) -> rs.getInt("followingId"),
+                getConnectedFollowIdParams);
+    }
+
     public List<Integer> getFollowers(int userId) {
         String getFollowerQuery = "Select followerId from UserFollow where followingId = ?";
         int getFollowerParams = userId;
