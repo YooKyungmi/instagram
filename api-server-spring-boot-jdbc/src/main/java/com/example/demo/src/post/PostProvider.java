@@ -2,6 +2,7 @@ package com.example.demo.src.post;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.src.follow.FollowDao;
+import com.example.demo.src.post.model.comment.GetCommentRes;
 import com.example.demo.src.post.model.postModel.GetPostRes;
 import com.example.demo.utils.JwtService;
 import org.slf4j.Logger;
@@ -63,6 +64,28 @@ public class PostProvider {
             List<Integer> followingsList = followDao.getFollowings(userIdByJwt);
             List<GetPostRes> getPostRes = postDao.getPostFollowing(userIdByJwt,followingsList); //수정 필요
             return getPostRes;
+        } catch (Exception exception) {
+            logger.error("App - getPost Provider Error", exception);
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public List<GetCommentRes> getPostComments(int postId, int userId) throws BaseException {
+        try {
+            List<GetCommentRes> getPostCommentsList = postDao.getPostComments(postId, userId);
+            return getPostCommentsList;
+
+        } catch (Exception exception) {
+            logger.error("App - getPost Provider Error", exception);
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public List<GetCommentRes> getBigComments(int commentId, int userId) throws BaseException {
+        try {
+            List<GetCommentRes> getBigCommentsList = postDao.getBigComments(commentId, userId);
+            return getBigCommentsList;
+
         } catch (Exception exception) {
             logger.error("App - getPost Provider Error", exception);
             throw new BaseException(DATABASE_ERROR);

@@ -2,6 +2,7 @@ package com.example.demo.src.post;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
+import com.example.demo.src.post.model.comment.GetCommentRes;
 import com.example.demo.src.post.model.postModel.GetPostRes;
 import com.example.demo.utils.JwtService;
 import org.slf4j.Logger;
@@ -60,6 +61,31 @@ public class PostController {
         try{
             List<GetPostRes> getPostRes = postProvider.getPostFollowing();
             return new BaseResponse<>(getPostRes);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    @ResponseBody
+    @GetMapping("/comment/{post-id}")
+    public BaseResponse<List<GetCommentRes>> getPostComments(@PathVariable("post-id") int postId){
+        try{
+            //int userIdByJwt = jwtService.getUserId();
+            int userIdByJwt = 1;
+            List<GetCommentRes> getPostCommentRes = postProvider.getPostComments(postId,userIdByJwt);
+            return new BaseResponse<>(getPostCommentRes);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    @GetMapping("/comment/bigComment")
+    public BaseResponse<List<GetCommentRes>> getPostComments(@RequestParam("parent-id") Integer commentId){
+        try{
+            //int userIdByJwt = jwtService.getUserId();
+            int userIdByJwt = 1;
+            List<GetCommentRes> getBigCommentRes = postProvider.getBigComments(commentId,userIdByJwt);
+            return new BaseResponse<>(getBigCommentRes);
         } catch(BaseException exception){
             return new BaseResponse<>((exception.getStatus()));
         }
