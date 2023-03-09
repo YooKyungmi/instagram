@@ -53,7 +53,7 @@ public class UserController {
             return new BaseResponse<>(POST_USERS_EMPTY_BIRTH_DATE);
         }
         if(!isRegexBirthDate(postUserByPhoneReq.getBirthDate())){
-            return new BaseResponse<>(POST_USERS_INVALID_BIRTH_DATE);
+            return new BaseResponse<>(POST_USERS_INVALID_BIRTH_DATE_FORMAT);
         }
         if(postUserByPhoneReq.getNickname()==null){
             return new BaseResponse<>(POST_USERS_EMPTY_NICKNAME);
@@ -98,7 +98,7 @@ public class UserController {
             return new BaseResponse<>(POST_USERS_EMPTY_BIRTH_DATE);
         }
         if(!isRegexBirthDate(postUserByEmailReq.getBirthDate())){
-            return new BaseResponse<>(POST_USERS_INVALID_BIRTH_DATE);
+            return new BaseResponse<>(POST_USERS_INVALID_BIRTH_DATE_FORMAT);
         }
         if(postUserByEmailReq.getNickname()==null){
             return new BaseResponse<>(POST_USERS_EMPTY_NICKNAME);
