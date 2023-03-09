@@ -33,7 +33,7 @@ public class GetUserRes {
     @JsonProperty("post_count")
     private int postCount;
     @JsonProperty("connected_count")
-    private int connectedCount;
+    private Integer connectedCount;
     @JsonProperty("connected_friend_profiles")
     private List<GetUserProfileRes> connectedFriendProfiles;
     @JsonProperty("account_status")
