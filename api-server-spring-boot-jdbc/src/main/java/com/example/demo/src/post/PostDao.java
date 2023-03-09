@@ -142,13 +142,12 @@ public class PostDao {
         return getPostResList;
     }
 
-    public List<GetPostRes> getPostFollowing(int userId){
+    public List<GetPostRes> getPostFollowing(int userId,List<Integer> followingsList){
         List<GetPostRes> getPostResList  = new ArrayList<>();
-        FollowDao followDao = new FollowDao();
-        List<Integer> followingsList = followDao.getFollowings(userId);
-        String Query ="select postId from Post where userId in(?) and status = true order by createdAt DESC";
+        String followList=followingsList.toString();
+        String Query ="select postId from Post where userId in ("+followList.substring(1, followList.length()-1) +") and status = true order by createdAt DESC";
         List<Integer> postList = this.jdbcTemplate.query(Query,
-                (rs, rowNum) -> rs.getInt("postId") ,followingsList);
+                (rs, rowNum) -> rs.getInt("postId"));
         for (int postId : postList ){
             getPostResList.add(getPost(postId, userId));
         }

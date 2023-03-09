@@ -1,6 +1,7 @@
 package com.example.demo.src.post;
 
 import com.example.demo.config.BaseException;
+import com.example.demo.src.follow.FollowDao;
 import com.example.demo.src.post.model.postModel.GetPostRes;
 import com.example.demo.utils.JwtService;
 import org.slf4j.Logger;
@@ -17,13 +18,15 @@ import static com.example.demo.config.BaseResponseStatus.DATABASE_ERROR;
 public class PostProvider {
     private final PostDao postDao;
     private final JwtService jwtService;
+    private final FollowDao followDao;
 
     final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public PostProvider(PostDao postDao, JwtService jwtService) {
+    public PostProvider(PostDao postDao, JwtService jwtService,FollowDao followDao) {
         this.postDao = postDao;
         this.jwtService = jwtService;
+        this.followDao = followDao;
     }
 
     public GetPostRes getPost(int postId) throws BaseException {
@@ -57,7 +60,8 @@ public class PostProvider {
         try {
             //int userIdByJwt = jwtService.getUserId();
             int userIdByJwt = 1;
-            List<GetPostRes> getPostRes = postDao.getPostFollowing(userIdByJwt); //수정 필요
+            List<Integer> followingsList = followDao.getFollowings(userIdByJwt);
+            List<GetPostRes> getPostRes = postDao.getPostFollowing(userIdByJwt,followingsList); //수정 필요
             return getPostRes;
         } catch (Exception exception) {
             logger.error("App - getPost Provider Error", exception);

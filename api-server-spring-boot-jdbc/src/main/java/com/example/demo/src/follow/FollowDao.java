@@ -76,7 +76,6 @@ public class FollowDao {
     public List<Integer> getFollowings(int userId) {
         String getFollowingQuery = "Select followingId from UserFollow where followerId = ?";
         int getFollowingParams = userId;
-        System.out.println("getFollowingParams = " + getFollowingParams);
         return this.jdbcTemplate.query(getFollowingQuery,
                 (rs, rowNum) -> rs.getInt("followingId"),
                 getFollowingParams);
