@@ -15,14 +15,17 @@ public class ValidationRegex {
     }
 
     public static boolean isRegexPhoneNumber(String target) {
-        String regex = "^01(?:0|1|[6-9])[.-]?(\\d{3}|\\d{4})[.-]?(\\d{4})$";
+        String regex = "^01(?:0|1|[6-9])(\\d{3}|\\d{4})(\\d{4})$";
         Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(target);
         return matcher.find();
     }
 
     public static boolean isRegexBirthDate(String target){
-        return LocalDate.parse(target).isBefore(LocalDate.now());
+        String regex = "\\d{4}-\\d{1,2}-\\d{1,2}";
+        Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(target);
+        return matcher.find();
     }
 
     public static boolean isRegexNickname(String target){

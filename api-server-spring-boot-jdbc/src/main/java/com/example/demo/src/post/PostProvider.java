@@ -30,10 +30,8 @@ public class PostProvider {
         this.followDao = followDao;
     }
 
-    public GetPostRes getPost(int postId) throws BaseException {
+    public GetPostRes getPost(int userIdByJwt,int postId) throws BaseException {
         try {
-            //int userIdByJwt = jwtService.getUserId();
-            int userIdByJwt=8;
             GetPostRes getPostRes = postDao.getPost(postId,userIdByJwt); //수정 필요
             return getPostRes;
 
@@ -44,10 +42,8 @@ public class PostProvider {
         }
     }
 
-    public List<GetPostRes> getPostProfile(int searchUserId) throws BaseException {
+    public List<GetPostRes> getPostProfile(int userIdByJwt, int searchUserId) throws BaseException {
         try {
-            //int userIdByJwt = jwtService.getUserId();
-            int userIdByJwt = 8;
             List<GetPostRes> getPostRes = postDao.getPostProfile(userIdByJwt,searchUserId); //수정 필요
             return getPostRes;
 
@@ -57,10 +53,8 @@ public class PostProvider {
         }
     }
 
-    public List<GetPostRes> getPostFollowing() throws BaseException {
+    public List<GetPostRes> getPostFollowing(int userIdByJwt) throws BaseException {
         try {
-            //int userIdByJwt = jwtService.getUserId();
-            int userIdByJwt = 1;
             List<Integer> followingsList = followDao.getFollowings(userIdByJwt);
             List<GetPostRes> getPostRes = postDao.getPostFollowing(userIdByJwt,followingsList); //수정 필요
             return getPostRes;
@@ -91,10 +85,6 @@ public class PostProvider {
             throw new BaseException(DATABASE_ERROR);
         }
     }
-
-
-
-
 
     public int getPostCount(int userId) throws BaseException {
         try {
