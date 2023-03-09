@@ -129,7 +129,7 @@ public class PostDao {
 
     public List<GetPostRes> getPostProfile(int userId, int searchUserId){
         List<GetPostRes> getPostResList  = new ArrayList<>();
-        String Query ="select postId from Post where userId = ? and status = true";
+        String Query ="select postId from Post where userId = ? and status = true order by createdAt DESC";
         List<Integer> postList = this.jdbcTemplate.query(Query,
                 (rs, rowNum) -> rs.getInt("postId") ,searchUserId);
         for (int postId : postList ){
