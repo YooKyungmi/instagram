@@ -18,12 +18,11 @@ public class Comment {
     private int postId;
     @NotEmpty
     private int userId;
-    @NotEmpty
     private int groupId;
     @NotEmpty
     private String comment;
     private int status;
-    private String createdt;
+    private String createdAt;
     private String updatedAt;
 
 }

@@ -1,6 +1,8 @@
 package com.example.demo.src.post;
 
 
+import com.example.demo.src.post.model.comment.Comment;
+import com.example.demo.src.post.model.comment.GetCommentRes;
 import com.example.demo.src.post.model.postModel.GetPostPhoto;
 import com.example.demo.src.post.model.postModel.GetPostRes;
 import com.example.demo.src.post.model.postModel.Post;
@@ -26,7 +28,7 @@ public class PostDao {
 
     public GetPostRes getPost(int postId, int userId){
         Post post= getPostModel(postId);
-        int likeCount = getLikeCount(postId,"likeStatus");
+        int likeCount = getPostLikeCount(postId);
         List<GetPostPhoto> photoTagList = new ArrayList<>();
         List<String> photoList = new ArrayList<>(Arrays.asList(post.getPhoto1(),post.getPhoto2(),post.getPhoto3(),
                 post.getPhoto4(),post.getPhoto5(),post.getPhoto6(),
@@ -53,7 +55,7 @@ public class PostDao {
                         rs.getString("profileImageUrl"),
                         getScrapOn(postId,userId),
                         getTagOn(postId),
-                        getLikeOn(postId,userId)),
+                        getPostLikeOn(postId,userId)),
                 userParams );
     }
     public Post getPostModel(int postId){
@@ -81,16 +83,22 @@ public class PostDao {
                         rs.getInt("status")),
                 postId);
     }
-    public int getLikeCount(int postId,String status){
-        String Query = "SELECT COUNT(case when postId = ? and ? = true then 1 end) FROM PostUser";
-        Object[] likeParams = new Object[]{postId, status};
+    public int getPostLikeCount(int postId){
+        String Query = "SELECT COUNT(case when postId = ? and postLikeStatus = true then 1 end) FROM PostUser";
+        int likeParams = postId;
         return this.jdbcTemplate.queryForObject(Query, Integer.class,likeParams);
     }
 
-    public int getCommentCount(int postId){
-        String Query = "SELECT COUNT(case when postId = ? and status = true then 1 end) FROM Comment";
-        int likeParams = postId;
+    public int getCommentLikeCount(int commentId){
+        String Query = "SELECT COUNT(case when commentId = ? and status = true then 1 end) FROM Comment";
+        int likeParams = commentId;
         return this.jdbcTemplate.queryForObject(Query, Integer.class,likeParams);
+    }
+
+    public int getBigCommentCount(int commentId){
+        String Query = "SELECT COUNT(case when groupId = ? and status = true then 1 end) FROM Comment";
+        int params = commentId;
+        return this.jdbcTemplate.queryForObject(Query, Integer.class,params);
     }
 
     public List<String> getPostPhotos(String photoUrl){
@@ -119,13 +127,25 @@ public class PostDao {
                 (rs, rowNum) -> rs.getString("tagWord") ,postId);
     }
 
-    public int getLikeOn(int postId, int userId){
+    public int getPostLikeOn(int postId, int userId){
         String Query = "select postLikeStatus from PostUser where userId = ? and postId = ?";
         Object[] params = new Object[]{userId,postId};
         try{
         return this.jdbcTemplate.queryForObject(Query,
                 int.class,
                 params);
+        }catch (EmptyResultDataAccessException e){
+            return 0;
+        }
+    }
+
+    public int getCommentLikeOn(int commentId, int userId){
+        String Query = "select status from CommentLike where userId = ? and commentId = ?";
+        Object[] params = new Object[]{userId,commentId};
+        try{
+            return this.jdbcTemplate.queryForObject(Query,
+                    int.class,
+                    params);
         }catch (EmptyResultDataAccessException e){
             return 0;
         }
@@ -152,6 +172,67 @@ public class PostDao {
             getPostResList.add(getPost(postId, userId));
         }
         return getPostResList;
+    }
+
+    public Comment getCommentModel(int commentId){
+        String Query = "select * from Comment where commentId = ?";
+        return this.jdbcTemplate.queryForObject(Query,
+                (rs, rowNum) -> new Comment(
+                        rs.getInt("commentId"),
+                        rs.getInt("postId"),
+                        rs.getInt("userId"),
+                        rs.getInt("groupId"),
+                        rs.getString("comment"),
+                        rs.getInt("status") ,
+                        rs.getString("updatedAt"),
+                        rs.getString("createdAt")),
+                commentId);
+    }
+
+    public GetCommentRes getComment(int commentId, int userId){
+        Comment comment = getCommentModel(commentId);
+        String Query = "select nickname, profileImageUrl from User where userId = ? and status = true";
+        int userParam = comment.getUserId();
+        return this.jdbcTemplate.queryForObject(Query,
+                (rs, rowNum) -> new GetCommentRes(
+                        comment.getCommentId(),
+                        comment.getPostId(),
+                        comment.getUserId(),
+                        rs.getString("nickname"),
+                        rs.getString("profileImageUrl"),
+                        comment.getGroupId(),
+                        comment.getComment(),
+                        comment.getCreatedAt(),
+                        comment.getUpdatedAt(),
+                        getBigCommentCount(commentId),
+                        getCommentLikeCount(commentId),
+                        getCommentLikeOn(commentId,userId)),
+                userParam);
+    }
+
+    public List<GetCommentRes> getPostComments(int postId, int userId){
+        String Query = "Select commentId from Comment where postId = ? and groupId is null and status = true";
+        List<GetCommentRes> postCommentList = new ArrayList<>();
+        List<Integer> commentIdList = this.jdbcTemplate.query(Query,
+                (rs, rowNum) -> rs.getInt("commentId"),
+                postId);
+        for (int commentId : commentIdList ){
+            postCommentList.add(getComment(commentId,userId));
+        }
+
+        return postCommentList;
+    }
+
+    public List<GetCommentRes> getBigComments(int parentCommentId, int userId){
+        String Query = "Select commentId from Comment where groupId = ? and status = true";
+        List<GetCommentRes> postBigCommentList = new ArrayList<>();
+        List<Integer> commentIdList = this.jdbcTemplate.query(Query,
+                (rs, rowNum) -> rs.getInt("commentId"),
+                parentCommentId);
+        for (int commentId : commentIdList ){
+            postBigCommentList.add(getComment(commentId,userId));
+        }
+        return postBigCommentList;
     }
 
 
