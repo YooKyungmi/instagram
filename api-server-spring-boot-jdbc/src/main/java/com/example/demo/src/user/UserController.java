@@ -152,7 +152,7 @@ public class UserController {
      * @return BaseResponse<List<GetUserRes>>
      */
     @GetMapping("/{user-id}")
-    public BaseResponse<GetUserRes> getUsers(@PathVariable("user-id") Integer userId) {
+    public BaseResponse<GetUserRes> getUser(@PathVariable("user-id") Integer userId) {
         try{
             int userIdByJwt = jwtService.getUserId();
             GetUserRes getUsersRes = userProvider.getUser(userIdByJwt, userId);

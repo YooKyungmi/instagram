@@ -10,7 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class GetFollowerRes {
+public class GetFollowingRes {
 
     @JsonProperty("follower_count")
     private int followerCount;
@@ -18,7 +18,7 @@ public class GetFollowerRes {
     private int followingCount;
     @JsonProperty("connected_count")
     private int connectedCount;
-    @JsonProperty("followers")
+    @JsonProperty("followings")
     private List<GetFollowUserInfoRes> getFollowUserInfoResList;
 
 }

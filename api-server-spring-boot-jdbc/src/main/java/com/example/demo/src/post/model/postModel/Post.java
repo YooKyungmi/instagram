@@ -1,4 +1,4 @@
-package com.example.demo.src.post.model;
+package com.example.demo.src.post.model.postModel;
 
 import lombok.*;
 
@@ -15,6 +15,8 @@ public class Post {
     private int userId;
     private String content;
     private String place;
+    @NotEmpty
+    private int likeShowStatus;
    @NotEmpty
     private int commentShowStatus;
     private String photo1;
@@ -29,5 +31,6 @@ public class Post {
     private String photo10;
     private String createdAt;
     private String updatedAt;
+    private int status;
 
 }
