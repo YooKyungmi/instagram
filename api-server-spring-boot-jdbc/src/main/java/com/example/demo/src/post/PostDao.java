@@ -99,9 +99,14 @@ public class PostDao {
     public int getScrapOn(int postId,int userId){
         String Query = "select status from Scrap where userId = ? and postId = ? ";
         Object[] params = new Object[]{userId,postId};
+        try{
         return this.jdbcTemplate.queryForObject(Query,
                 int.class,
                 params);
+        }catch (EmptyResultDataAccessException e) {
+            return 0;
+
+        }
     }
 
     public List<String> getTagOn(int postId){
@@ -120,6 +125,17 @@ public class PostDao {
         }catch (EmptyResultDataAccessException e){
             return 0;
         }
+    }
+
+    public List<GetPostRes> getPostProfile(int userId, int searchUserId){
+        List<GetPostRes> getPostResList  = new ArrayList<>();
+        String Query ="select postId from Post where userId = ? and status = true";
+        List<Integer> postList = this.jdbcTemplate.query(Query,
+                (rs, rowNum) -> rs.getInt("postId") ,searchUserId);
+        for (int postId : postList ){
+            getPostResList.add(getPost(postId, userId));
+        }
+        return getPostResList;
     }
 
 

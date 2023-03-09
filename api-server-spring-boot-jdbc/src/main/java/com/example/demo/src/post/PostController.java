@@ -9,6 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/app/posts")
 public class PostController {
@@ -38,6 +40,16 @@ public class PostController {
     public BaseResponse<GetPostRes> getPost(@PathVariable("post-id") int postId){
         try{
             GetPostRes getPostRes = postProvider.getPost(postId);
+            return new BaseResponse<>(getPostRes);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    @GetMapping("/user")
+    public BaseResponse<List<GetPostRes>> getPostProfile(@RequestParam("user-id") Integer searchUserId) {
+        try{
+            List<GetPostRes> getPostRes = postProvider.getPostProfile(searchUserId);
             return new BaseResponse<>(getPostRes);
         } catch(BaseException exception){
             return new BaseResponse<>((exception.getStatus()));
