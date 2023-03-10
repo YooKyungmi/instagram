@@ -13,11 +13,11 @@ import java.util.List;
 public class GetFollowingRes {
 
     @JsonProperty("follower_count")
-    private int followerCount;
+    private Integer followerCount;
     @JsonProperty("following_count")
-    private int followingCount;
+    private Integer followingCount;
     @JsonProperty("connected_count")
-    private int connectedCount;
+    private Integer connectedCount;
     @JsonProperty("followings")
     private List<GetFollowUserInfoRes> getFollowUserInfoResList;
 

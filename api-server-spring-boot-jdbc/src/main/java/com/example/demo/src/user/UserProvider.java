@@ -109,8 +109,10 @@ public class UserProvider {
             getUserRes.setPostCount(postProvider.getPostCount(findingUserId));
             getUserRes.setFollowerCount(followProvider.getFollowerCount(findingUserId));
             getUserRes.setFollowingCount(followProvider.getFollowingCount(findingUserId));
-            getUserRes.setConnectedCount(followProvider.getConnectedFriendCount(onlineUserId,findingUserId));
-            getUserRes.setConnectedFriendProfiles(setConnectedFriendProfileList(followProvider.getConnectedFollowId(onlineUserId, findingUserId)));
+            if(onlineUserId!=findingUserId) {
+                getUserRes.setConnectedCount(followProvider.getConnectedFriendCount(onlineUserId, findingUserId));
+                getUserRes.setConnectedFriendProfiles(setConnectedFriendProfileList(followProvider.getConnectedFollowId(onlineUserId, findingUserId)));
+            }
             return getUserRes;
         } catch (Exception exception) {
             logger.error("App - getUser Provider Error", exception);
