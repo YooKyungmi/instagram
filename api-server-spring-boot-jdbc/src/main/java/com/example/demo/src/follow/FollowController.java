@@ -6,15 +6,15 @@ import com.example.demo.config.BaseResponse;
 import com.example.demo.src.follow.model.GetConnectedFollowRes;
 import com.example.demo.src.follow.model.GetFollowerRes;
 import com.example.demo.src.follow.model.GetFollowingRes;
+import com.example.demo.src.follow.model.PostPatchFollowRes;
 import com.example.demo.src.user.UserProvider;
 import com.example.demo.utils.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import static com.example.demo.config.BaseResponseStatus.INVALID_USER_JWT;
 
 @RestController
 @RequestMapping("/app/follows")
@@ -36,6 +36,46 @@ public class FollowController {
         this.followService = followService;
         this.jwtService = jwtService;
         this.userProvider = userProvider;
+    }
+
+    /**
+     * 팔로우 추가 API
+     * [POST] /app/follows/:user-id?follow-user-id=
+     *
+     * @return BaseResponse<PostFollowsRes>
+     */
+    @PostMapping("/{user-id}")
+    public BaseResponse<PostPatchFollowRes> createFollows(@PathVariable("user-id") Integer userId, @RequestParam("follow-user-id")Integer followUserId) {
+        try{
+            int userIdByJwt = jwtService.getUserId();
+            if(userIdByJwt!=userId){
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+            PostPatchFollowRes postPatchFollowRes = followService.addFollows(userId, followUserId);
+            return new BaseResponse<>(postPatchFollowRes);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    /**
+     * 팔로우 삭제 API
+     * [PATCH] /app/follows/:user-id?follow-user-id=
+     *
+     * @return BaseResponse<PostFollowsRes>
+     */
+    @PatchMapping("/{user-id}")
+    public BaseResponse<PostPatchFollowRes> patchFollows(@PathVariable("user-id") Integer userId, @RequestParam("follow-user-id")Integer followUserId) {
+        try{
+            int userIdByJwt = jwtService.getUserId();
+            if(userIdByJwt!=userId){
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+            PostPatchFollowRes postPatchFollowRes = followService.patchFollows(userId, followUserId);
+            return new BaseResponse<>(postPatchFollowRes);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
     }
 
     /**

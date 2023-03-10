@@ -1,10 +1,7 @@
 package com.example.demo.src.follow;
 
 import com.example.demo.config.BaseException;
-import com.example.demo.src.follow.model.GetConnectedFollowRes;
-import com.example.demo.src.follow.model.GetFollowUserInfoRes;
-import com.example.demo.src.follow.model.GetFollowerRes;
-import com.example.demo.src.follow.model.GetFollowingRes;
+import com.example.demo.src.follow.model.*;
 import com.example.demo.src.story.StoryDao;
 import com.example.demo.src.user.UserDao;
 import com.example.demo.src.user.model.User;
@@ -63,7 +60,7 @@ public class FollowProvider {
 
     public List<Integer> getConnectedFollowId(int onlineUserId, int findingUserId) throws BaseException {
         try {
-            return followDao.getConnectedFollowId(onlineUserId, findingUserId);
+            return followDao.getConnectedFollows(onlineUserId, findingUserId);
         } catch (Exception exception) {
             logger.error("App - getConnectedFriendId Provider Error", exception);
             throw new BaseException(DATABASE_ERROR);
@@ -180,5 +177,6 @@ public class FollowProvider {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
 
 }
