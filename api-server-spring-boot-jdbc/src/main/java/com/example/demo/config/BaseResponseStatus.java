@@ -50,6 +50,9 @@ public enum BaseResponseStatus {
     //get /app/users/:user-id
     GET_USERS_INVALID_USER_ID(false,2032, "존재하지 않는 유저입니다."),
 
+    //follows
+    GET_FOLLOWS_NO_CONNECTED_FOLLOWS(false,2034,"함께 아는 친구가 존재하지 않습니다."),
+
     /**
      * 3000 : Response 오류
      */
