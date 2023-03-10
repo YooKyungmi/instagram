@@ -41,17 +41,24 @@ public enum BaseResponseStatus {
     POST_USERS_EXISTS_PHONE_NUMBER(false,2026,"중복된 전화번호입니다."),
     POST_USERS_EXISTS_NICKNAME(false,2027,"중복된 닉네임입니다."),
 
-    //post /app/users/login
+    //[POST] /app/users/login
     POST_USERS_EMPTY_ID(false,2028,"전화번호, 이메일 주소 또는 사용자 이름을 입력해주세요."),
     POST_USERS_ID_NOT_EXIST(false,2029,"해당 전화번호, 이메일 주소 또는 사용자 이름을 가진 유저가 존재하지 않습니다."),
     POST_USERS_ACCOUNT_INACTIVE(false,2030,"해당 계정은 비활성화 상태입니다."),
     POST_USERS_ACCOUNT_DELETED(false,2031,"해당 계정은 더이상 존재하지 않습니다."),
 
-    //get /app/users/:user-id
+    //[GET] /app/users/:user-id
     GET_USERS_INVALID_USER_ID(false,2032, "존재하지 않는 유저입니다."),
 
     //follows
+
+    //[GET] /app/follows/connected-follows?user-id=
     GET_FOLLOWS_NO_CONNECTED_FOLLOWS(false,2034,"함께 아는 친구가 존재하지 않습니다."),
+
+    //[POST] /app/follows/connected-follows?user-id=
+    //[PATCH] /app/follows/connected-follows?user-id=
+    MODIFY_FAIL_USER_FOLLOW(false,2035,"팔로우 추가/삭제에 실패하였습니다."),
+    PATCH_FOLLOWS_NOT_EXIST(false,2036,"해당 유저를 팔로우하고 있지 않습니다."),
 
     /**
      * 3000 : Response 오류
