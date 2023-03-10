@@ -90,7 +90,7 @@ public class PostDao {
     }
 
     public int getCommentLikeCount(int commentId){
-        String Query = "SELECT COUNT(case when commentId = ? and status = true then 1 end) FROM Comment";
+        String Query = "SELECT COUNT(case when commentId = ? and status = true then 1 end) FROM CommentLike";
         int likeParams = commentId;
         return this.jdbcTemplate.queryForObject(Query, Integer.class,likeParams);
     }
@@ -243,5 +243,8 @@ public class PostDao {
                 int.class,
                 getPostCountParams);
     }
+
+
+//    public int createPost()
 
 }

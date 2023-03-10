@@ -37,7 +37,7 @@ public class PostProvider {
 
         } catch (Exception exception) {
 
-            logger.error("App - getPost Provider Error", exception);
+            logger.error("Post - getPost Provider Error", exception);
             throw new BaseException(DATABASE_ERROR);
         }
     }
@@ -48,7 +48,7 @@ public class PostProvider {
             return getPostRes;
 
         } catch (Exception exception) {
-            logger.error("App - getPost Provider Error", exception);
+            logger.error("Post - getPostProfile Provider Error", exception);
             throw new BaseException(DATABASE_ERROR);
         }
     }
@@ -59,7 +59,7 @@ public class PostProvider {
             List<GetPostRes> getPostRes = postDao.getPostFollowing(userIdByJwt,followingsList); //수정 필요
             return getPostRes;
         } catch (Exception exception) {
-            logger.error("App - getPost Provider Error", exception);
+            logger.error("Post - getPostFollowing Provider Error", exception);
             throw new BaseException(DATABASE_ERROR);
         }
     }
@@ -70,7 +70,7 @@ public class PostProvider {
             return getPostCommentsList;
 
         } catch (Exception exception) {
-            logger.error("App - getPost Provider Error", exception);
+            logger.error("Post - getPostComments Provider Error", exception);
             throw new BaseException(DATABASE_ERROR);
         }
     }
@@ -81,7 +81,7 @@ public class PostProvider {
             return getBigCommentsList;
 
         } catch (Exception exception) {
-            logger.error("App - getPost Provider Error", exception);
+            logger.error("Post - getBigComments Provider Error", exception);
             throw new BaseException(DATABASE_ERROR);
         }
     }
