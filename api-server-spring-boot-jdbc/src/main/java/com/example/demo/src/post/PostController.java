@@ -40,8 +40,7 @@ public class PostController {
     @GetMapping("/{post-id}")
     public BaseResponse<GetPostRes> getPost(@PathVariable("post-id") int postId){
         try{
-            int userIdByJwt = 1;
-//            int userIdByJwt = jwtService.getUserId();
+            int userIdByJwt = jwtService.getUserId();
             GetPostRes getPostRes = postProvider.getPost(userIdByJwt,postId);
             return new BaseResponse<>(getPostRes);
         } catch(BaseException exception){
@@ -57,8 +56,7 @@ public class PostController {
     @GetMapping("/profiles/user")
     public BaseResponse<List<GetPostRes>> getPostProfile(@RequestParam("user-id") Integer searchUserId) {
         try{
-            //int userIdByJwt = jwtService.getUserId();
-            int userIdByJwt = 1;
+            int userIdByJwt = jwtService.getUserId();
             List<GetPostRes> getPostRes = postProvider.getPostProfile(userIdByJwt,searchUserId);
             return new BaseResponse<>(getPostRes);
         } catch(BaseException exception){
@@ -74,8 +72,7 @@ public class PostController {
     @GetMapping("/followings")
     public BaseResponse<List<GetPostRes>> getPostFollowing() {
         try{
-            int userIdByJwt = 1;
-//            int userIdByJwt = jwtService.getUserId();
+            int userIdByJwt = jwtService.getUserId();
             List<GetPostRes> getPostRes = postProvider.getPostFollowing(userIdByJwt);
             return new BaseResponse<>(getPostRes);
         } catch(BaseException exception){
@@ -92,8 +89,7 @@ public class PostController {
     @GetMapping("/comment/{post-id}")
     public BaseResponse<List<GetCommentRes>> getPostComments(@PathVariable("post-id") int postId){
         try{
-            int userIdByJwt = 1;
-//            int userIdByJwt = jwtService.getUserId();
+            int userIdByJwt = jwtService.getUserId();
             List<GetCommentRes> getPostCommentRes = postProvider.getPostComments(postId,userIdByJwt);
             return new BaseResponse<>(getPostCommentRes);
         } catch(BaseException exception){
@@ -110,8 +106,7 @@ public class PostController {
     @GetMapping("/comment/bigComment")
     public BaseResponse<List<GetCommentRes>> getPostComments(@RequestParam("parent-id") Integer commentId){
         try{
-            int userIdByJwt = 1;
-//            int userIdByJwt = jwtService.getUserId();
+            int userIdByJwt = jwtService.getUserId();
             List<GetCommentRes> getBigCommentRes = postProvider.getBigComments(commentId,userIdByJwt);
             return new BaseResponse<>(getBigCommentRes);
         } catch(BaseException exception){

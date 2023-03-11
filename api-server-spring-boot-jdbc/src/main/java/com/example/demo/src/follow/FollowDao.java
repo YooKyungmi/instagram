@@ -42,7 +42,7 @@ public class FollowDao {
     }
 
     public List<Integer> getConnectedFollows(int onlineUserId, int findingUserId) {
-        String getConnectedFollowIdQuery = "Select followingId from UserFollow where followerId = ? AND status = 1 AND followingId IN (Select followerId from UserFollow where followingId = ? and status = 1 and follwerId IN (select userId from User where accountStatus = 'ACTIVE')) limit 2";
+        String getConnectedFollowIdQuery = "Select followingId from UserFollow where followerId = ? AND status = 1 AND followingId IN (Select followerId from UserFollow where followingId = ? and status = 1 and followerId IN (select userId from User where accountStatus = 'ACTIVE')) limit 2";
         Object[] getConnectedFollowIdParams = new Object[]{onlineUserId, findingUserId};
         return this.jdbcTemplate.query(getConnectedFollowIdQuery,
                 (rs, rowNum) -> rs.getInt("followingId"),
@@ -50,7 +50,7 @@ public class FollowDao {
     }
 
     public List<Integer> getFollowers(int userId) {
-        String getFollowerQuery = "Select followerId from UserFollow where followingId = ? and status = 1 and follwerId IN (select userId from User where accountStatus = 'ACTIVE')";
+        String getFollowerQuery = "Select followerId from UserFollow where followingId = ? and status = 1 and followerId IN (select userId from User where accountStatus = 'ACTIVE')";
         int getFollowerParams = userId;
         return this.jdbcTemplate.query(getFollowerQuery,
                 (rs, rowNum) -> rs.getInt("followerId"),
