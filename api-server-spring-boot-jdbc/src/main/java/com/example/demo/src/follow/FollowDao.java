@@ -18,7 +18,7 @@ public class FollowDao {
     }
 
     public int getFollowerCount(int userId) {
-        String getFollowerCountQuery = "Select count(followerId) from UserFollow where followingId = ? and status = 1 and follwerId IN (select userId from User where accountStatus = 'ACTIVE')";
+        String getFollowerCountQuery = "Select count(followerId) from UserFollow where followingId = ? and status = 1 and followerId IN (select userId from User where accountStatus = 'ACTIVE')";
         int getFollowerCountParams = userId;
         return this.jdbcTemplate.queryForObject(getFollowerCountQuery,
                 int.class,
