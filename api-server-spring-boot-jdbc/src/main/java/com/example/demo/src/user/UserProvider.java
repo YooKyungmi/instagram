@@ -68,7 +68,7 @@ public class UserProvider {
         if (checkNickname(postLoginReq.getId()) == 0 && checkPhoneNumber(postLoginReq.getId()) == 0 && checkEmailAddress(postLoginReq.getId()) == 0) {
             throw new BaseException(POST_USERS_ID_NOT_EXIST);
         }
-        User user = new User();
+        User user;
         try {
             user = userDao.findUserById(postLoginReq.getId());
         } catch (Exception exception) {
@@ -96,7 +96,7 @@ public class UserProvider {
         if (checkUserId(findingUserId) == 0) {
             throw new BaseException(GET_USERS_INVALID_USER_ID);
         }
-        User user = new User();
+        User user;
         try {
             user = userDao.getUser(findingUserId);
         } catch (Exception exception) {

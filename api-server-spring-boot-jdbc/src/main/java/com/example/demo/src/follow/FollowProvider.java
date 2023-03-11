@@ -179,4 +179,12 @@ public class FollowProvider {
     }
 
 
+    public List<Integer> getFollowingIdList(int onlineUserId) throws BaseException {
+        try{
+            return followDao.getFollowId(onlineUserId);
+        }catch(Exception exception){
+            logger.error("App - getFollowingIdList Provider Error", exception);
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }
