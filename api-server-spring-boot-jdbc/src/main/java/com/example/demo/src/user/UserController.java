@@ -235,4 +235,62 @@ public class UserController {
         }
     }
 
+    /**
+     * 유저 이메일 추가/수정 API
+     * [PATCH] /app/users/user-infos/email-addresses/:user-id
+     *
+     * @return BaseResponse<String>
+     */
+    @ResponseBody
+    @PatchMapping("/user-infos/email-addresses/{user-id}")
+    public BaseResponse<String> modifyUserEmail(@PathVariable("user-id") int userId, @RequestBody PatchUserEmailReq patchUserEmailReq){
+        if(patchUserEmailReq.getEmailAddress()==null){
+            return new BaseResponse<>(POST_USERS_EMPTY_EMAIL_ADDRESS);
+        }
+        if (patchUserEmailReq.getEmailAddress() != null && !isRegexEmailAddress(patchUserEmailReq.getEmailAddress())) {
+            return new BaseResponse<>(POST_USERS_INVALID_EMAIL_ADDRESS);
+        }
+        try {
+            int userIdByJwt = jwtService.getUserId();
+            if(userId != userIdByJwt){
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+            patchUserEmailReq.setUserId(userId);
+            userService.modifyUserEmail(patchUserEmailReq);
+            String result = "";
+            return new BaseResponse<>(result);
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    /**
+     * 유저 전화번호 추가/수정 API
+     * [PATCH] /app/users/user-infos/phone-numbers/:user-id
+     *
+     * @return BaseResponse<String>
+     */
+    @ResponseBody
+    @PatchMapping("/user-infos/phone-numbers/{user-id}")
+    public BaseResponse<String> modifyUserEmail(@PathVariable("user-id") int userId, @RequestBody PatchUserPhoneReq patchUserPhoneReq){
+        if(patchUserPhoneReq.getPhoneNumber()==null){
+            return new BaseResponse<>(POST_USERS_EMPTY_PHONE_NUMBER);
+        }
+        if(patchUserPhoneReq.getPhoneNumber()!=null && !isRegexPhoneNumber(patchUserPhoneReq.getPhoneNumber())){
+            return new BaseResponse<>(POST_USERS_INVALID_PHONE_NUMBER);
+        }
+        try {
+            int userIdByJwt = jwtService.getUserId();
+            if(userId != userIdByJwt){
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+            patchUserPhoneReq.setUserId(userId);
+            userService.modifyUserPhone(patchUserPhoneReq);
+            String result = "";
+            return new BaseResponse<>(result);
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
 }
