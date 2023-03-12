@@ -9,13 +9,11 @@ import com.example.demo.utils.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static com.example.demo.config.BaseResponseStatus.GET_STORIES_EMPTY_STORY_ID;
 import static com.example.demo.config.BaseResponseStatus.GET_STORIES_EMPTY_USER_ID;
 
 @RestController
@@ -70,9 +68,28 @@ public class StoryController {
         }
         try{
             int userIdByJwt = jwtService.getUserId();
-            List<GetStoryRes> getStoryResList;
-            getStoryResList = storyProvider.getStoryByUserId(userIdByJwt,userId);
+            List<GetStoryRes> getStoryResList = storyProvider.getStoryByUserId(userIdByJwt,userId);
             return new BaseResponse<>(getStoryResList);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    /**
+     * 특정 스토리 조회 API
+     * [GET] /app/stories/:story-id
+     *
+     * @return BaseResponse<GetStoryRes>
+     */
+    @GetMapping("/{story-id}")
+    public BaseResponse<GetStoryRes> getStoryByStoryId(@PathVariable("story-id")Integer storyId) {
+        if(storyId==null){
+            return new BaseResponse<>(GET_STORIES_EMPTY_STORY_ID);
+        }
+        try{
+            int userIdByJwt = jwtService.getUserId();
+            GetStoryRes getStoryRes = storyProvider.getStoryByStoryId(userIdByJwt,storyId);
+            return new BaseResponse<>(getStoryRes);
         } catch(BaseException exception){
             return new BaseResponse<>((exception.getStatus()));
         }

@@ -81,4 +81,42 @@ public class StoryDao {
                 (rs, rowNum) -> rs.getString("profileImageUrl"),
                 getStoryViewerProfileImageUrlsParams);
     }
+
+    public int checkStoryId(int storyId) {
+        String checkStoryIdQuery = "select exists(select userStoryId from UserStory where userStoryId=? and status = 1 and TIMEDIFF(current_timestamp,updatedAt)<'24:00:00')";
+        int checkStoryIdParams = storyId;
+        return this.jdbcTemplate.queryForObject(checkStoryIdQuery,
+                int.class,
+                checkStoryIdParams);
+    }
+
+    public GetStoryRes getStoryByStoryId(int storyId) {
+        String getStoryByStoryIdQuery = "select s.*, nickname, profileImageUrl from UserStory as s inner join User as u where s.userStoryId = ? and u.userId = s.userId order by s.updatedAt";
+        int getStoryByStoryIdParams = storyId;
+        return this.jdbcTemplate.queryForObject(getStoryByStoryIdQuery,
+                (rs, rowNum)->GetStoryRes.builder()
+                        .userStoryId(rs.getInt("s.userStoryId"))
+                        .userId(rs.getInt("s.userId"))
+                        .nickname(rs.getString("nickname"))
+                        .profileImageUrl(rs.getString("profileImageUrl"))
+                        .storyUrl(rs.getString("s.storyUrl"))
+                        .createdAt(rs.getTimestamp("s.createdAt").toString())
+                        .updatedAt(rs.getTimestamp("s.updatedAt").toString())
+                        .build(),
+                getStoryByStoryIdParams);
+    }
+
+    public void addStoryViewer(int userStoryId, int userId) {
+        String addStoryViewerQuery = "insert into StoryViewer (userStoryId, userId) VALUES (?,?)";
+        Object[] addStoryViewerParams = new Object[]{userStoryId,userId};
+        this.jdbcTemplate.update(addStoryViewerQuery, addStoryViewerParams);
+    }
+
+    public int checkStoryViewer(int userStoryId, int userId) {
+        String checkStoryViewerQuery = "select exists(select storyViewerId from StoryViewer where userStoryId = ? and userId = ?)";
+        Object[] checkStoryViewerParams = new Object[]{userStoryId,userId};
+        return this.jdbcTemplate.queryForObject(checkStoryViewerQuery,
+                int.class,
+                checkStoryViewerParams);
+    }
 }

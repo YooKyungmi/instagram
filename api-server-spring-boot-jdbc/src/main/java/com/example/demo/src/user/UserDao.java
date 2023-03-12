@@ -140,4 +140,16 @@ public class UserDao {
                 String.class,
                 checkUserAccountStatusParams);
     }
+
+    public int updateUserEmail(int userId, String emailAddress) {
+        String updateUserEmailQuery = "update User set emailAddress = ? where userId = ?";
+        Object[] updateUserEmailParams = new Object[]{emailAddress, userId};
+        return this.jdbcTemplate.update(updateUserEmailQuery, updateUserEmailParams);
+    }
+
+    public int updateUserPhone(int userId, String phoneNumber) {
+        String updateUserPhoneQuery = "update User set phoneNumber = ? where userId = ?";
+        Object[] updateUserPhoneParams = new Object[]{phoneNumber, userId};
+        return this.jdbcTemplate.update(updateUserPhoneQuery, updateUserPhoneParams);
+    }
 }

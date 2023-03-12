@@ -18,7 +18,6 @@ import java.util.Collections;
 import java.util.List;
 
 import static com.example.demo.config.BaseResponseStatus.*;
-import static com.example.demo.config.BaseResponseStatus.POST_USERS_ACCOUNT_DELETED;
 
 @Service
 public class StoryProvider {
@@ -96,6 +95,27 @@ public class StoryProvider {
                 });
             }
             return getStoryUserResList;
+        }catch (Exception exception) {
+            logger.error("App - getStoryByUserId Provider Error", exception);
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public GetStoryRes getStoryByStoryId(int userIdByJwt, int storyId) throws BaseException {
+        if(storyDao.checkStoryId(storyId)==0){
+            throw new BaseException(GET_STORIES_STORY_ID_NOT_EXISTS);
+        }
+        try{
+            GetStoryRes getStoryRes = storyDao.getStoryByStoryId(storyId);
+            if(getStoryRes.getUserId()==userIdByJwt){
+                getStoryRes.setStoryViewerCount(storyDao.getStoryViewerCount(getStoryRes.getUserStoryId()));
+                getStoryRes.setStoryViewerProfileImageUrls(storyDao.getStoryViewerProfileImageUrls(getStoryRes.getUserStoryId()));
+            }else{
+                if(storyDao.checkStoryViewer(getStoryRes.getUserStoryId(),userIdByJwt)==0) {
+                    storyDao.addStoryViewer(getStoryRes.getUserStoryId(), userIdByJwt);
+                }
+            }
+            return getStoryRes;
         }catch (Exception exception) {
             logger.error("App - getStoryByUserId Provider Error", exception);
             throw new BaseException(DATABASE_ERROR);

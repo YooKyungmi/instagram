@@ -3,10 +3,7 @@ package com.example.demo.src.user;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.secret.Secret;
-import com.example.demo.src.user.model.PatchUserReq;
-import com.example.demo.src.user.model.PostUserByEmailReq;
-import com.example.demo.src.user.model.PostUserByPhoneReq;
-import com.example.demo.src.user.model.PostUserRes;
+import com.example.demo.src.user.model.*;
 import com.example.demo.utils.AES128;
 import com.example.demo.utils.JwtService;
 import org.slf4j.Logger;
@@ -55,7 +52,7 @@ public class UserService {
             String jwt = jwtService.createJwt(userId);
             return new PostUserRes(jwt,userId);
         } catch (Exception exception) {
-            logger.error("App - createUser Service Error", exception);
+            logger.error("App - createUserByPhone Service Error", exception);
             throw new BaseException(DATABASE_ERROR);
         }
     }
@@ -81,7 +78,7 @@ public class UserService {
             String jwt = jwtService.createJwt(userId);
             return new PostUserRes(jwt,userId);
         } catch (Exception exception) {
-            logger.error("App - createUser Service Error", exception);
+            logger.error("App - createUserByEmail Service Error", exception);
             throw new BaseException(DATABASE_ERROR);
         }
     }
@@ -103,7 +100,7 @@ public class UserService {
                 throw new BaseException(MODIFY_FAIL_USER);
             }
         }catch (Exception exception) {
-            logger.error("App - createUser Service Error", exception);
+            logger.error("App - modifyUserInfo Service Error", exception);
             throw new BaseException(DATABASE_ERROR);
         }
     }
@@ -115,7 +112,37 @@ public class UserService {
                 throw new BaseException(MODIFY_FAIL_USER);
             }
         }catch (Exception exception) {
-            logger.error("App - createUser Service Error", exception);
+            logger.error("App - modifyUserAccountStatus Service Error", exception);
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void modifyUserEmail(PatchUserEmailReq patchUserEmailReq) throws BaseException {
+        if (userProvider.checkEmailAddress(patchUserEmailReq.getEmailAddress()) == 1) {
+            throw new BaseException(POST_USERS_EXISTS_EMAIL_ADDRESS);
+        }
+        try {
+            int result = userDao.updateUserEmail(patchUserEmailReq.getUserId(), patchUserEmailReq.getEmailAddress());
+            if (result == 0) {
+                throw new BaseException(MODIFY_FAIL_USER);
+            }
+        }catch (Exception exception) {
+            logger.error("App - modifyUserEmail Service Error", exception);
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void modifyUserPhone(PatchUserPhoneReq patchUserPhoneReq) throws BaseException {
+        if (userProvider.checkPhoneNumber(patchUserPhoneReq.getPhoneNumber()) == 1) {
+            throw new BaseException(POST_USERS_EXISTS_PHONE_NUMBER);
+        }
+        try {
+            int result = userDao.updateUserPhone(patchUserPhoneReq.getUserId(), patchUserPhoneReq.getPhoneNumber());
+            if (result == 0) {
+                throw new BaseException(MODIFY_FAIL_USER);
+            }
+        }catch (Exception exception) {
+            logger.error("App - modifyUserEmail Service Error", exception);
             throw new BaseException(DATABASE_ERROR);
         }
     }

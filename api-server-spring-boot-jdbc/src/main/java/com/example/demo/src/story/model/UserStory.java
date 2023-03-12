@@ -1,5 +1,12 @@
 package com.example.demo.src.story.model;
 
+import lombok.*;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class UserStory {
 
     private int userStoryId;
