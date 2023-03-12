@@ -50,6 +50,9 @@ public enum BaseResponseStatus {
     //[GET] /app/users/:user-id
     GET_USERS_INVALID_USER_ID(false,2032, "존재하지 않는 유저입니다."),
 
+    //[PATCH] /app/users/accounts/:user-id?account-status=
+    PATCH_USERS_EMPTY_ACCOUNT_STATUS(false,2037,"변경할 계정 상태 값을 입력해주세요."),
+
     //follows
 
     //[GET] /app/follows/connected-follows?user-id=
