@@ -162,5 +162,31 @@ public class UserController {
         }
     }
 
+    /**
+     * 프로필 기본 정보 수정 API
+     * [PATCH] /app/users/profiles/:user-id
+     * @return BaseResponse<String>
+     */
+    @ResponseBody
+    @PatchMapping("/profiles/{user-id}")
+    public BaseResponse<String> modifyUserName(@PathVariable("user-id") int userId, @RequestBody PatchUserReq patchUserReq){
+        try {
+            int userIdByJwt = jwtService.getUserId();
+            if(userId != userIdByJwt){
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+            patchUserReq.setUserId(userId);
+            if(patchUserReq.getGender()==null){
+                patchUserReq.setGender("UNDISCLOSED");
+            }
+            userService.modifyUserInfo(patchUserReq);
+            String result = "";
+            return new BaseResponse<>(result);
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+
 
 }

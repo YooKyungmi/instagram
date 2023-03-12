@@ -1,10 +1,7 @@
 package com.example.demo.src.user;
 
 
-import com.example.demo.src.user.model.GetUserProfileRes;
-import com.example.demo.src.user.model.PostUserByEmailReq;
-import com.example.demo.src.user.model.PostUserByPhoneReq;
-import com.example.demo.src.user.model.User;
+import com.example.demo.src.user.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -122,5 +119,11 @@ public class UserDao {
                         rs.getString("nickname"),
                         rs.getString("profileImageUrl")),
                 getUserParams);
+    }
+
+    public int updateUserInfo(PatchUserReq patchUserReq) {
+        String updateUserInfoQuery = "update User set name = ?, introduce = ?, gender = ? where userId = ?";
+        Object[] updateUserInfoParams = new Object[]{patchUserReq.getName(),patchUserReq.getIntroduce(),patchUserReq.getGender(), patchUserReq.getUserId()};
+        return this.jdbcTemplate.update(updateUserInfoQuery,updateUserInfoParams);
     }
 }
