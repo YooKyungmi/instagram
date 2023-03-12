@@ -60,7 +60,8 @@ public class PostController {
     @GetMapping("/profiles/user")
     public BaseResponse<List<GetPostRes>> getPostProfile(@RequestParam("user-id") Integer searchUserId) {
         try{
-            int userIdByJwt = 1;
+
+            int userIdByJwt = jwtService.getUserId();
             List<GetPostRes> getPostRes = postProvider.getPostProfile(userIdByJwt,searchUserId);
             return new BaseResponse<>(getPostRes);
         } catch(BaseException exception){
@@ -76,7 +77,8 @@ public class PostController {
     @GetMapping("/followings")
     public BaseResponse<List<GetPostRes>> getPostFollowing() {
         try{
-            int userIdByJwt = 12;
+
+            int userIdByJwt = jwtService.getUserId();
             List<GetPostRes> getPostRes = postProvider.getPostFollowing(userIdByJwt);
             return new BaseResponse<>(getPostRes);
         } catch(BaseException exception){

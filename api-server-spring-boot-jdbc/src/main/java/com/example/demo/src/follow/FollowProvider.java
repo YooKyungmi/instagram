@@ -1,10 +1,7 @@
 package com.example.demo.src.follow;
 
 import com.example.demo.config.BaseException;
-import com.example.demo.src.follow.model.GetConnectedFollowRes;
-import com.example.demo.src.follow.model.GetFollowerRes;
-import com.example.demo.src.follow.model.GetFollowUserInfoRes;
-import com.example.demo.src.follow.model.GetFollowingRes;
+import com.example.demo.src.follow.model.*;
 import com.example.demo.src.story.StoryDao;
 import com.example.demo.src.user.UserDao;
 import com.example.demo.src.user.model.User;
@@ -12,14 +9,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-
-
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import static com.example.demo.config.BaseResponseStatus.DATABASE_ERROR;
-import static com.example.demo.config.BaseResponseStatus.GET_USERS_INVALID_USER_ID;
+import static com.example.demo.config.BaseResponseStatus.*;
 
 @Service
 public class FollowProvider {
@@ -67,7 +60,7 @@ public class FollowProvider {
 
     public List<Integer> getConnectedFollowId(int onlineUserId, int findingUserId) throws BaseException {
         try {
-            return followDao.getConnectedFollowId(onlineUserId, findingUserId);
+            return followDao.getConnectedFollows(onlineUserId, findingUserId);
         } catch (Exception exception) {
             logger.error("App - getConnectedFriendId Provider Error", exception);
             throw new BaseException(DATABASE_ERROR);
@@ -81,8 +74,11 @@ public class FollowProvider {
             GetFollowerRes getFollowerRes = GetFollowerRes.builder()
                     .followerCount(followDao.getFollowerCount(userId))
                     .followingCount(followDao.getFollowingCount(userId))
-                    .connectedCount(followDao.getConnectedFriendCount(onlineUserId,userId))
                     .build();
+            int connectedFriendCount = followDao.getConnectedFriendCount(onlineUserId, userId);
+            if (connectedFriendCount != 0) {
+                getFollowerRes.setConnectedCount(connectedFriendCount);
+            }
             List<Integer> followerIdList = followDao.getFollowers(userId);
             List<GetFollowUserInfoRes> getFollowerInfoResList = new ArrayList<>();
             followerIdList.stream().forEach(id -> {
@@ -106,8 +102,11 @@ public class FollowProvider {
             GetFollowingRes getFollowingRes = GetFollowingRes.builder()
                     .followerCount(followDao.getFollowerCount(userId))
                     .followingCount(followDao.getFollowingCount(userId))
-                    .connectedCount(followDao.getConnectedFriendCount(onlineUserId,userId))
                     .build();
+            int connectedFriendCount = followDao.getConnectedFriendCount(onlineUserId, userId);
+            if (connectedFriendCount != 0) {
+                getFollowingRes.setConnectedCount(connectedFriendCount);
+            }
             List<Integer> followingIdList = followDao.getFollowings(userId);
             List<GetFollowUserInfoRes> getFollowUserInfoResList = new ArrayList<>();
             followingIdList.stream().forEach(id -> {
@@ -124,13 +123,15 @@ public class FollowProvider {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
     public GetConnectedFollowRes getConnectedFollows(int onlineUserId, int userId) throws BaseException {
         throwIfInvalidUserIdDetected(userId);
+        throwIfConnectedFollowNotExist(onlineUserId, userId);
         try {
             GetConnectedFollowRes getConnectedFollowRes = GetConnectedFollowRes.builder()
                     .followerCount(followDao.getFollowerCount(userId))
                     .followingCount(followDao.getFollowingCount(userId))
-                    .connectedCount(followDao.getConnectedFriendCount(onlineUserId,userId))
+                    .connectedCount(followDao.getConnectedFriendCount(onlineUserId, userId))
                     .build();
             List<Integer> followingIdList = followDao.getConnectedFollows(onlineUserId, userId);
             List<GetFollowUserInfoRes> getFollowUserInfoResList = new ArrayList<>();
@@ -150,8 +151,14 @@ public class FollowProvider {
     }
 
     private void throwIfInvalidUserIdDetected(int userId) throws BaseException {
-        if(userDao.checkUserId(userId)==0){
+        if (userDao.checkUserId(userId) == 0) {
             throw new BaseException(GET_USERS_INVALID_USER_ID);
+        }
+    }
+
+    private void throwIfConnectedFollowNotExist(int onlineUserId, int userId) throws BaseException {
+        if (followDao.getConnectedFriendCount(onlineUserId, userId) == 0) {
+            throw new BaseException(GET_FOLLOWS_NO_CONNECTED_FOLLOWS);
         }
     }
 
@@ -165,10 +172,19 @@ public class FollowProvider {
                     .followStatus(followDao.checkFollowing(onlineUserId, id))
                     .storyStatus(storyDao.checkStory(id))
                     .build();
-        }catch (Exception exception) {
+        } catch (Exception exception) {
             logger.error("App - getFollowings Provider Error", exception);
             throw new BaseException(DATABASE_ERROR);
         }
     }
 
+
+    public List<Integer> getFollowingIdList(int onlineUserId) throws BaseException {
+        try{
+            return followDao.getFollowId(onlineUserId);
+        }catch(Exception exception){
+            logger.error("App - getFollowingIdList Provider Error", exception);
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }

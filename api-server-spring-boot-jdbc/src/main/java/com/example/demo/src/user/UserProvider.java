@@ -68,7 +68,7 @@ public class UserProvider {
         if (checkNickname(postLoginReq.getId()) == 0 && checkPhoneNumber(postLoginReq.getId()) == 0 && checkEmailAddress(postLoginReq.getId()) == 0) {
             throw new BaseException(POST_USERS_ID_NOT_EXIST);
         }
-        User user = new User();
+        User user;
         try {
             user = userDao.findUserById(postLoginReq.getId());
         } catch (Exception exception) {
@@ -96,7 +96,7 @@ public class UserProvider {
         if (checkUserId(findingUserId) == 0) {
             throw new BaseException(GET_USERS_INVALID_USER_ID);
         }
-        User user = new User();
+        User user;
         try {
             user = userDao.getUser(findingUserId);
         } catch (Exception exception) {
@@ -109,8 +109,10 @@ public class UserProvider {
             getUserRes.setPostCount(postProvider.getPostCount(findingUserId));
             getUserRes.setFollowerCount(followProvider.getFollowerCount(findingUserId));
             getUserRes.setFollowingCount(followProvider.getFollowingCount(findingUserId));
-            getUserRes.setConnectedCount(followProvider.getConnectedFriendCount(onlineUserId,findingUserId));
-            getUserRes.setConnectedFriendProfiles(setConnectedFriendProfileList(followProvider.getConnectedFollowId(onlineUserId, findingUserId)));
+            if(onlineUserId!=findingUserId) {
+                getUserRes.setConnectedCount(followProvider.getConnectedFriendCount(onlineUserId, findingUserId));
+                getUserRes.setConnectedFriendProfiles(setConnectedFriendProfileList(followProvider.getConnectedFollowId(onlineUserId, findingUserId)));
+            }
             return getUserRes;
         } catch (Exception exception) {
             logger.error("App - getUser Provider Error", exception);
