@@ -5,34 +5,31 @@ import com.example.demo.src.follow.FollowDao;
 import com.example.demo.src.post.model.comment.GetCommentRes;
 import com.example.demo.src.post.model.postModel.GetPostRes;
 import com.example.demo.src.user.UserDao;
-import com.example.demo.src.user.UserProvider;
+import com.example.demo.src.user.model.User;
 import com.example.demo.utils.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.example.demo.config.BaseResponseStatus.DATABASE_ERROR;
+import static com.example.demo.config.BaseResponseStatus.*;
 
 @Service
 public class PostProvider {
     private final PostDao postDao;
     private final JwtService jwtService;
     private final FollowDao followDao;
-    private final UserProvider userProvider;
     private final UserDao userDao;
 
     final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public PostProvider(PostDao postDao, JwtService jwtService, FollowDao followDao, UserProvider userProvider, UserDao userDao) {
+    public PostProvider(PostDao postDao, JwtService jwtService, FollowDao followDao, UserDao userDao) {
         this.postDao = postDao;
         this.jwtService = jwtService;
         this.followDao = followDao;
-        this.userProvider = userProvider;
         this.userDao = userDao;
     }
 
@@ -49,7 +46,7 @@ public class PostProvider {
     }
 
     public List<GetPostRes> getPostProfile(int userIdByJwt, int searchUserId) throws BaseException {
-        userProvider.throwIfInvalidUserStatus(userDao.findUserById( Integer.toString(searchUserId)));
+        throwIfInvalidUserStatus(userDao.getUser(searchUserId));
         try {
             List<GetPostRes> getPostRes = postDao.getPostProfile(userIdByJwt,searchUserId); //수정 필요
             return getPostRes;
@@ -57,6 +54,15 @@ public class PostProvider {
         } catch (Exception exception) {
             logger.error("Post - getPostProfile Provider Error", exception);
             throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    private void throwIfInvalidUserStatus(User user) throws BaseException {
+        if (user.getAccountStatus().equals("INACTIVE")) {
+            throw new BaseException(POST_USERS_ACCOUNT_INACTIVE);
+        }
+        if (user.getAccountStatus().equals("DELETED")) {
+            throw new BaseException(POST_USERS_ACCOUNT_DELETED);
         }
     }
 
