@@ -4,6 +4,8 @@ import com.example.demo.config.BaseException;
 import com.example.demo.src.follow.FollowDao;
 import com.example.demo.src.post.model.comment.GetCommentRes;
 import com.example.demo.src.post.model.postModel.GetPostRes;
+import com.example.demo.src.user.UserDao;
+import com.example.demo.src.user.UserProvider;
 import com.example.demo.utils.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,14 +22,18 @@ public class PostProvider {
     private final PostDao postDao;
     private final JwtService jwtService;
     private final FollowDao followDao;
+    private final UserProvider userProvider;
+    private final UserDao userDao;
 
     final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public PostProvider(PostDao postDao, JwtService jwtService,FollowDao followDao) {
+    public PostProvider(PostDao postDao, JwtService jwtService, FollowDao followDao, UserProvider userProvider, UserDao userDao) {
         this.postDao = postDao;
         this.jwtService = jwtService;
         this.followDao = followDao;
+        this.userProvider = userProvider;
+        this.userDao = userDao;
     }
 
     public GetPostRes getPost(int userIdByJwt,int postId) throws BaseException {
@@ -43,6 +49,7 @@ public class PostProvider {
     }
 
     public List<GetPostRes> getPostProfile(int userIdByJwt, int searchUserId) throws BaseException {
+        userProvider.throwIfInvalidUserStatus(userDao.findUserById(searchUserId));
         try {
             List<GetPostRes> getPostRes = postDao.getPostProfile(userIdByJwt,searchUserId); //수정 필요
             return getPostRes;

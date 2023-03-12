@@ -65,7 +65,7 @@ public class UserProvider {
     }
 
     public PostLoginRes login(PostLoginReq postLoginReq) throws BaseException {
-        if (checkNickname(postLoginReq.getId()) == 0 && checkPhoneNumber(postLoginReq.getId()) == 0 && checkEmailAddress(postLoginReq.getId()) == 0) {
+            if (checkNickname(postLoginReq.getId()) == 0 && checkPhoneNumber(postLoginReq.getId()) == 0 && checkEmailAddress(postLoginReq.getId()) == 0) {
             throw new BaseException(POST_USERS_ID_NOT_EXIST);
         }
         User user;
@@ -153,7 +153,7 @@ public class UserProvider {
         return builder.build();
     }
 
-    private void throwIfInvalidUserStatus(User user) throws BaseException {
+    public void throwIfInvalidUserStatus(User user) throws BaseException {
         if (user.getAccountStatus().equals("INACTIVE")) {
             throw new BaseException(POST_USERS_ACCOUNT_INACTIVE);
         }
