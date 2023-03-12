@@ -65,7 +65,7 @@ public class UserProvider {
     }
 
     public PostLoginRes login(PostLoginReq postLoginReq) throws BaseException {
-            if (checkNickname(postLoginReq.getId()) == 0 && checkPhoneNumber(postLoginReq.getId()) == 0 && checkEmailAddress(postLoginReq.getId()) == 0) {
+        if (checkNickname(postLoginReq.getId()) == 0 && checkPhoneNumber(postLoginReq.getId()) == 0 && checkEmailAddress(postLoginReq.getId()) == 0) {
             throw new BaseException(POST_USERS_ID_NOT_EXIST);
         }
         User user;
@@ -87,7 +87,7 @@ public class UserProvider {
                 throw new BaseException(POST_USERS_ACCOUNT_DELETED);
             }
             if (user.getAccountStatus().equals("INACTIVE")) {
-                userDao.updateUserAccountStatus(user.getUserId(),"ACTIVE");
+                userDao.updateUserAccountStatus(user.getUserId(), "ACTIVE");
             }
             int userId = user.getUserId();
             String jwt = jwtService.createJwt(userId);
@@ -114,7 +114,7 @@ public class UserProvider {
             getUserRes.setPostCount(postProvider.getPostCount(findingUserId));
             getUserRes.setFollowerCount(followProvider.getFollowerCount(findingUserId));
             getUserRes.setFollowingCount(followProvider.getFollowingCount(findingUserId));
-            if(onlineUserId!=findingUserId) {
+            if (onlineUserId != findingUserId) {
                 getUserRes.setConnectedCount(followProvider.getConnectedFriendCount(onlineUserId, findingUserId));
                 getUserRes.setConnectedFriendProfiles(setConnectedFriendProfileList(followProvider.getConnectedFollowId(onlineUserId, findingUserId)));
             }
@@ -140,19 +140,19 @@ public class UserProvider {
                 .accountStatus(user.getAccountStatus())
                 .createdAt(user.getCreatedAt())
                 .updatedAt(user.getUpdatedAt());
-        if(user.getPhoneNumber()!=null){
+        if (user.getPhoneNumber() != null) {
             builder.phoneNumber(user.getPhoneNumber());
         }
-        if(user.getEmailAddress()!=null){
+        if (user.getEmailAddress() != null) {
             builder.emailAddress(user.getEmailAddress());
         }
-        if(user.getName()!=null){
+        if (user.getName() != null) {
             builder.name(user.getName());
         }
-        if(user.getIntroduce()!=null){
+        if (user.getIntroduce() != null) {
             builder.introduce(user.getIntroduce());
         }
-        if(user.getGender()!=null){
+        if (user.getGender() != null) {
             builder.gender(user.getGender());
         }
         return builder.build();
@@ -175,5 +175,30 @@ public class UserProvider {
             logger.error("App - checkUserId Provider Error", exception);
             throw new BaseException(DATABASE_ERROR);
         }
+    }
+
+    public PostLoginRes identifyUser(GetIdentifyUserReq getIdentifyUserReq) throws BaseException {
+        User user;
+        try {
+            user = userDao.getUser(getIdentifyUserReq.getUserId());
+        } catch (Exception exception) {
+            logger.error("App - login Provider Error", exception);
+            throw new BaseException(DATABASE_ERROR);
+        }
+        String password;
+        try {
+            password = new AES128(Secret.USER_INFO_PASSWORD_KEY).decrypt(user.getPassword());
+        } catch (Exception exception) {
+            logger.error("App - identifyUser Provider Decrypt Error", exception);
+            throw new BaseException(PASSWORD_DECRYPTION_ERROR);
+        }
+        if (getIdentifyUserReq.getPassword().equals(password)) {
+            int userId = getIdentifyUserReq.getUserId();
+            String jwt = jwtService.createJwt(userId);
+            return new PostLoginRes(userId, jwt);
+        } else {
+            throw new BaseException(FAILED_TO_IDENTIFY);
+        }
+
     }
 }
