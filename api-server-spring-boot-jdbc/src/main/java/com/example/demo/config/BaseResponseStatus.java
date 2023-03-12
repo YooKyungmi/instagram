@@ -66,6 +66,10 @@ public enum BaseResponseStatus {
     //[PATCH] /app/follows/connected-follows?user-id=
     PATCH_FOLLOWS_NOT_EXIST(false,2036,"해당 유저를 팔로우하고 있지 않습니다."),
 
+    //UserStory
+
+    GET_STORIES_EMPTY_USER_ID(false,2040,"유저 식별자를 입력해주세요."),
+
     /**
      * 3000 : Response 오류
      */

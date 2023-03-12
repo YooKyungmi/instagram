@@ -2,6 +2,7 @@ package com.example.demo.src.story;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.src.follow.FollowProvider;
+import com.example.demo.src.story.model.GetStoryRes;
 import com.example.demo.src.story.model.GetStoryUserRes;
 import com.example.demo.src.user.UserProvider;
 import com.example.demo.utils.JwtService;
@@ -16,8 +17,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static com.example.demo.config.BaseResponseStatus.DATABASE_ERROR;
-import static com.example.demo.config.BaseResponseStatus.GET_USERS_INVALID_USER_ID;
+import static com.example.demo.config.BaseResponseStatus.*;
+import static com.example.demo.config.BaseResponseStatus.POST_USERS_ACCOUNT_DELETED;
 
 @Service
 public class StoryProvider {
@@ -83,10 +84,38 @@ public class StoryProvider {
                 .build();
     }
 
+    public List<GetStoryRes> getStoryByUserId(int userIdByJwt, int userId) throws BaseException {
+        throwIfInvalidUserIdDetected(userId);
+        throwIfInvalidUserStatus(userProvider.checkUserAccountStatus(userId));
+        try{
+            List<GetStoryRes> getStoryUserResList = storyDao.getStoryByUserId(userId);
+            if(userId==userIdByJwt){
+                getStoryUserResList.forEach(res -> {
+                    res.setStoryViewerCount(storyDao.getStoryViewerCount(res.getUserStoryId()));
+                    res.setStoryViewerProfileImageUrls(storyDao.getStoryViewerProfileImageUrls(res.getUserStoryId()));
+                });
+            }
+            return getStoryUserResList;
+        }catch (Exception exception) {
+            logger.error("App - getStoryByUserId Provider Error", exception);
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
     private void throwIfInvalidUserIdDetected(int userId) throws BaseException {
         if (userProvider.checkUserId(userId) == 0) {
             throw new BaseException(GET_USERS_INVALID_USER_ID);
         }
+    }
+
+    private void throwIfInvalidUserStatus(String status) throws BaseException {
+        if (status.equals("INACTIVE")) {
+            throw new BaseException(POST_USERS_ACCOUNT_INACTIVE);
+        }
+        if (status.equals("DELETED")) {
+            throw new BaseException(POST_USERS_ACCOUNT_DELETED);
+        }
+
     }
 
     @Getter
