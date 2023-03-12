@@ -153,7 +153,7 @@ public class UserProvider {
         return builder.build();
     }
 
-    public void throwIfInvalidUserStatus(User user) throws BaseException {
+    private void throwIfInvalidUserStatus(User user) throws BaseException {
         if (user.getAccountStatus().equals("INACTIVE")) {
             throw new BaseException(POST_USERS_ACCOUNT_INACTIVE);
         }
