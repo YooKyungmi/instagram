@@ -169,7 +169,7 @@ public class UserController {
      */
     @ResponseBody
     @PatchMapping("/profiles/{user-id}")
-    public BaseResponse<String> modifyUserName(@PathVariable("user-id") int userId, @RequestBody PatchUserReq patchUserReq){
+    public BaseResponse<String> modifyUserInfo(@PathVariable("user-id") int userId, @RequestBody PatchUserReq patchUserReq){
         try {
             int userIdByJwt = jwtService.getUserId();
             if(userId != userIdByJwt){
@@ -187,6 +187,52 @@ public class UserController {
         }
     }
 
+    /**
+     * 유저 상태 변경 API
+     * [PATCH] /app/users/accounts/:user-id?account-status=
+     * @return BaseResponse<String>
+     */
+    @ResponseBody
+    @PatchMapping("/accounts/{user-id}")
+    public BaseResponse<String> modifyUserStatus(@PathVariable("user-id") int userId, @RequestParam("account-status")String accountStatus){
+        if(accountStatus==null){
+            return new BaseResponse<>(PATCH_USERS_EMPTY_ACCOUNT_STATUS);
+        }
+        try {
+            int userIdByJwt = jwtService.getUserId();
+            if(userId != userIdByJwt){
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+            userService.modifyUserAccountStatus(userIdByJwt, accountStatus);
+            String result = "";
+            return new BaseResponse<>(result);
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
 
+    /**
+     * 비밀번호로 유저 본인확인 API
+     * [GET] /app/users/identifications/:userId
+     * @return BaseResponse<PostLoginRes>
+     */
+    @ResponseBody
+    @GetMapping("/identifications/{user-id}")
+    public BaseResponse<PostLoginRes> identifyUser(@PathVariable("user-id") int userId, @RequestBody GetIdentifyUserReq getIdentifyUserReq) {
+        if(getIdentifyUserReq.getPassword()==null){
+            return new BaseResponse<>(GET_USERS_EMPTY_PASSWORD);
+        }
+        try{
+            int userIdByJwt = jwtService.getUserId();
+            if(userId != userIdByJwt){
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+            getIdentifyUserReq.setUserId(userId);
+            PostLoginRes postLoginRes = userProvider.identifyUser(getIdentifyUserReq);
+            return new BaseResponse<>(postLoginRes);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
 
 }

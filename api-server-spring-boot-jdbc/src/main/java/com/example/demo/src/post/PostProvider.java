@@ -5,10 +5,6 @@ import com.example.demo.src.follow.FollowDao;
 import com.example.demo.src.post.model.comment.GetCommentRes;
 import com.example.demo.src.post.model.postModel.GetPostRes;
 import com.example.demo.src.user.UserDao;
-<<<<<<< HEAD
-=======
-
->>>>>>> cd8b4462f99e4fa4c6be7f69487ea0adb3849edf
 import com.example.demo.src.user.model.User;
 import com.example.demo.utils.JwtService;
 import org.slf4j.Logger;
@@ -37,9 +33,9 @@ public class PostProvider {
         this.userDao = userDao;
     }
 
-    public GetPostRes getPost(int userIdByJwt,int postId) throws BaseException {
+    public GetPostRes getPost(int userIdByJwt, int postId) throws BaseException {
         try {
-            GetPostRes getPostRes = postDao.getPost(postId,userIdByJwt); //수정 필요
+            GetPostRes getPostRes = postDao.getPost(postId, userIdByJwt); //수정 필요
             return getPostRes;
 
         } catch (Exception exception) {
@@ -50,14 +46,10 @@ public class PostProvider {
     }
 
     public List<GetPostRes> getPostProfile(int userIdByJwt, int searchUserId) throws BaseException {
-<<<<<<< HEAD
-
+    
         throwIfInvalidUserStatus(userDao.getUser(searchUserId));
-=======
-throwIfInvalidUserStatus(userDao.getUser(searchUserId));
->>>>>>> cd8b4462f99e4fa4c6be7f69487ea0adb3849edf
         try {
-            List<GetPostRes> getPostRes = postDao.getPostProfile(userIdByJwt,searchUserId); //수정 필요
+            List<GetPostRes> getPostRes = postDao.getPostProfile(userIdByJwt, searchUserId); //수정 필요
             return getPostRes;
 
         } catch (Exception exception) {
@@ -68,7 +60,7 @@ throwIfInvalidUserStatus(userDao.getUser(searchUserId));
     public List<GetPostRes> getPostFollowing(int userIdByJwt) throws BaseException {
         try {
             List<Integer> followingsList = followDao.getFollowings(userIdByJwt);
-            List<GetPostRes> getPostRes = postDao.getPostFollowing(userIdByJwt,followingsList); //수정 필요
+            List<GetPostRes> getPostRes = postDao.getPostFollowing(userIdByJwt, followingsList); //수정 필요
             return getPostRes;
         } catch (Exception exception) {
             logger.error("Post - getPostFollowing Provider Error", exception);
@@ -105,16 +97,6 @@ throwIfInvalidUserStatus(userDao.getUser(searchUserId));
             logger.error("App - getPostCount Provider Error", exception);
             throw new BaseException(DATABASE_ERROR);
         }
-    }
-
-    public void throwIfInvalidUserStatus(User user) throws BaseException {
-        if (user.getAccountStatus().equals("INACTIVE")) {
-            throw new BaseException(POST_USERS_ACCOUNT_INACTIVE);
-        }
-        if (user.getAccountStatus().equals("DELETED")) {
-            throw new BaseException(POST_USERS_ACCOUNT_DELETED);
-        }
-
     }
 
 }
