@@ -3,6 +3,7 @@ package com.example.demo.src.user;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.secret.Secret;
+import com.example.demo.src.user.model.PatchUserReq;
 import com.example.demo.src.user.model.PostUserByEmailReq;
 import com.example.demo.src.user.model.PostUserByPhoneReq;
 import com.example.demo.src.user.model.PostUserRes;
@@ -18,7 +19,6 @@ import java.time.format.DateTimeParseException;
 
 import static com.example.demo.config.BaseResponseStatus.*;
 
-// Service Create, Update, Delete 의 로직 처리
 @Service
 public class UserService {
     final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -96,4 +96,15 @@ public class UserService {
         }
     }
 
+    public void modifyUserInfo(PatchUserReq patchUserReq) throws BaseException {
+        try {
+            int result = userDao.updateUserInfo(patchUserReq);
+            if (result == 0) {
+                throw new BaseException(MODIFY_FAIL_USER);
+            }
+        }catch (Exception exception) {
+            logger.error("App - createUser Service Error", exception);
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }

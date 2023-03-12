@@ -57,7 +57,6 @@ public enum BaseResponseStatus {
 
     //[POST] /app/follows/connected-follows?user-id=
     //[PATCH] /app/follows/connected-follows?user-id=
-    MODIFY_FAIL_USER_FOLLOW(false,2035,"팔로우 추가/삭제에 실패하였습니다."),
     PATCH_FOLLOWS_NOT_EXIST(false,2036,"해당 유저를 팔로우하고 있지 않습니다."),
 
     /**
@@ -79,7 +78,12 @@ public enum BaseResponseStatus {
     SERVER_ERROR(false, 4001, "서버와의 연결에 실패하였습니다."),
 
     //[PATCH] /users/{userIdx}
-    MODIFY_FAIL_USERNAME(false,4014,"유저네임 수정 실패"),
+    MODIFY_FAIL_USER(false,4014,"유저 정보 수정에 실패하였습니다."),
+
+    //[POST] /app/follows/connected-follows?user-id=
+    //[PATCH] /app/follows/connected-follows?user-id=
+    MODIFY_FAIL_USER_FOLLOW(false,4015,"팔로우 추가/삭제에 실패하였습니다."),
+
 
     PASSWORD_ENCRYPTION_ERROR(false, 4011, "비밀번호 암호화에 실패하였습니다."),
     PASSWORD_DECRYPTION_ERROR(false, 4012, "비밀번호 복호화에 실패하였습니다."),
