@@ -3,10 +3,7 @@ package com.example.demo.src.post;
 import com.example.demo.config.BaseException;
 import com.example.demo.src.post.model.comment.PostCommentReq;
 import com.example.demo.src.post.model.comment.PostCommentRes;
-import com.example.demo.src.post.model.postModel.PostContentTagReq;
-import com.example.demo.src.post.model.postModel.PostPostsReq;
-import com.example.demo.src.post.model.postModel.PostPostsRes;
-import com.example.demo.src.post.model.postModel.PostUserTagReq;
+import com.example.demo.src.post.model.postModel.*;
 import com.example.demo.src.user.UserProvider;
 import com.example.demo.utils.JwtService;
 import org.slf4j.Logger;
@@ -96,6 +93,14 @@ public class PostService {
         }
     }
 
+    public void updatePlace (PatchPlaceReq patchPlaceReq) throws BaseException{
+        try{
+            postDao.updatePlace(patchPlaceReq.getPostId(), patchPlaceReq.getPlace());
+        }catch (Exception exception) {
+            logger.error("Post - updatePlace Service Error", exception);
+            throw new BaseException(POST_FAILED);
+        }
+    }
 
     public PostCommentRes createComment(PostCommentReq postCommentReq, int userId) throws BaseException {
         throwIfInvalidUserIdDetected(userId);

@@ -329,6 +329,12 @@ public class PostDao {
         }
     }
 
+    public void updatePlace (int postId, String place){
+        String ContentTagQuery = "update Post set place = ? where postId = ?";
+            Object[] Params = new Object[]{place,postId};
+            this.jdbcTemplate.update(ContentTagQuery, Params);
+    }
+
     public int createComment (int userId, PostCommentReq postCommentReq) {
         String Query = "insert into Comment (userId,postId,groupId,comment) values (?,?,?,?)";
         Object[] params = new Object[]{userId, postCommentReq.getPostId(), postCommentReq.getGroupId(), postCommentReq.getComment()};

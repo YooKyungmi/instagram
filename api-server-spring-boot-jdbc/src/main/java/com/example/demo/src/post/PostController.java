@@ -208,7 +208,7 @@ public class PostController {
     }
 
     /**
-     * 게시물 위치 추가 API
+     * 게시물 사용자 태그 추가 API
      * [POST] /app/posts/user-tag
      * @return BaseResponse<String>
      */
@@ -217,6 +217,23 @@ public class PostController {
     public BaseResponse<String> addUserTag (@Valid @RequestBody PostUserTagReq postUserTagReq){
         try{
             postService.addUserTag(postUserTagReq);
+            String result = "";
+            return new BaseResponse<>(result);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    /**
+     * 게시물 태그 추가 API
+     * [POST] /app/posts/place
+     * @return BaseResponse<String>
+     */
+
+    @PostMapping("/place")
+    public BaseResponse<String> updatePlace (@Valid @RequestBody PatchPlaceReq patchPlaceReq){
+        try{
+            postService.updatePlace(patchPlaceReq);
             String result = "";
             return new BaseResponse<>(result);
         } catch(BaseException exception){
