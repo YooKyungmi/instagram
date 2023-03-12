@@ -1,6 +1,7 @@
 package com.example.demo.src.post;
 
 
+import com.example.demo.src.follow.FollowDao;
 import com.example.demo.src.post.model.comment.Comment;
 import com.example.demo.src.post.model.comment.GetCommentRes;
 import com.example.demo.src.post.model.comment.PostCommentReq;
@@ -8,6 +9,7 @@ import com.example.demo.src.post.model.postModel.Photo;
 import com.example.demo.src.post.model.postModel.GetPostRes;
 import com.example.demo.src.post.model.postModel.Post;
 import com.example.demo.src.post.model.postModel.PostPostsReq;
+import com.example.demo.src.story.StoryDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -22,6 +24,14 @@ import java.util.List;
 
 public class PostDao {
     private JdbcTemplate jdbcTemplate;
+    private final StoryDao storyDao;
+    private final FollowDao followDao;
+
+    public PostDao(StoryDao storyDao, FollowDao followDao) {
+        this.storyDao = storyDao;
+        this.followDao = followDao;
+    }
+
     @Autowired
     public void setDataSource(DataSource dataSource){
         this.jdbcTemplate = new JdbcTemplate(dataSource);
@@ -37,7 +47,7 @@ public class PostDao {
 
         photoList.removeAll(Arrays.asList("", null));
         for (String photo : photoList ){
-            photoTagList.add(new Photo(photo, getPostPhotos(photo)));
+            photoTagList.add(new Photo(photo, getPostPhotos(photo,postId)));
         }
         String Query = "select nickname, profileImageUrl from User where userId = ? and status = true";
         int userParams = post.getUserId();
@@ -57,7 +67,9 @@ public class PostDao {
                         rs.getString("profileImageUrl"),
                         getScrapOn(postId,userId),
                         getTagOn(postId),
-                        getPostLikeOn(postId,userId)),
+                        getPostLikeOn(postId,userId),
+                        storyDao.checkStory(post.getUserId()),
+                        followDao.checkFollowing(userId,post.getUserId())),
                 userParams );
     }
     public Post getPostModel(int postId){
@@ -103,10 +115,11 @@ public class PostDao {
         return this.jdbcTemplate.queryForObject(Query, Integer.class,params);
     }
 
-    public List<String> getPostPhotos(String photoUrl){
-        String Query ="select userId from UserTag where photoUrl = ? and status = true";
+    public List<String> getPostPhotos(String photoUrl,int postId){
+        String Query ="select userId from UserTag where photoUrl = ? and postId = ? and status = true";
+        Object[] params = new Object[]{photoUrl,postId};
         return this.jdbcTemplate.query(Query,
-                (rs, rowNum) -> rs.getString("userId") ,photoUrl);
+                (rs, rowNum) -> rs.getString("userId") ,params);
     }
 
 
