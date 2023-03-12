@@ -34,29 +34,38 @@ public class PostService {
         this.jwtService = jwtService;
     }
 
-    public PostPostsRes createPost(PostPostsReq postPostsReq, int userId) throws BaseException{
+    public PostPostsRes createPost(PostPostsReq postPostsReq, int userId) throws BaseException {
         throwIfInvalidUserIdDetected(userId);
-        try{
-        PostPostsRes postPostsRes = PostPostsRes.builder()
-                .postId(postDao.createPost(postPostsReq,userId))
-                .build();
+        try {
+            PostPostsRes postPostsRes = PostPostsRes.builder()
+                    .postId(postDao.createPost(postPostsReq, userId))
+                    .build();
 
-        return postPostsRes;
+            return postPostsRes;
         } catch (Exception exception) {
             logger.error("Post - createPost Service Error", exception);
             throw new BaseException(POST_FAILED);
         }
     }
 
-    public void addPostLike(int postId, int userId) throws BaseException{
+    public void addPostLike(int postId, int userId) throws BaseException {
         throwIfInvalidUserIdDetected(userId);
-        try{
-            postDao.addPostLike(postId,userId);
+        try {
+            postDao.addPostLike(postId, userId);
         } catch (Exception exception) {
             logger.error("Post - addPostLike Service Error", exception);
             throw new BaseException(POST_FAILED);
         }
+    }
 
+    public void addPostScrap(int postId, int userId) throws BaseException {
+        throwIfInvalidUserIdDetected(userId);
+        try {
+            postDao.addPostScrap(postId, userId);
+        } catch (Exception exception) {
+            logger.error("Post - addPostScrap Service Error", exception);
+            throw new BaseException(POST_FAILED);
+        }
     }
 
 
@@ -66,3 +75,4 @@ public class PostService {
         }
     }
 }
+

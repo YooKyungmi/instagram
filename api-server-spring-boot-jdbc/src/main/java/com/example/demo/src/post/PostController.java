@@ -157,4 +157,17 @@ public class PostController {
         }
     }
 
+    @ResponseBody
+    @PostMapping("/scraped/{post-id}")
+    public BaseResponse<String> addPostScrap(@PathVariable("post-id") int postId){
+        try{
+            int userIdByJwt = jwtService.getUserId();
+            postService.addPostScrap(postId,userIdByJwt);
+            String result = "";
+            return new BaseResponse<>(result);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
 }

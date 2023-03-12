@@ -287,4 +287,10 @@ public class PostDao {
         Object[] params = new Object[]{userId, postId};
         this.jdbcTemplate.update(Query,params);
     }
+
+    public void addPostScrap (int postId,int userId){
+        String Query = "insert into Scrap (userId,postId) values (?,?)";
+        Object[] params = new Object[]{userId, postId};
+        this.jdbcTemplate.update(Query,params);
+    }
 }

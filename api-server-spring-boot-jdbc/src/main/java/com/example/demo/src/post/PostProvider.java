@@ -5,10 +5,6 @@ import com.example.demo.src.follow.FollowDao;
 import com.example.demo.src.post.model.comment.GetCommentRes;
 import com.example.demo.src.post.model.postModel.GetPostRes;
 import com.example.demo.src.user.UserDao;
-<<<<<<< HEAD
-=======
-
->>>>>>> cd8b4462f99e4fa4c6be7f69487ea0adb3849edf
 import com.example.demo.src.user.model.User;
 import com.example.demo.utils.JwtService;
 import org.slf4j.Logger;
@@ -50,12 +46,7 @@ public class PostProvider {
     }
 
     public List<GetPostRes> getPostProfile(int userIdByJwt, int searchUserId) throws BaseException {
-<<<<<<< HEAD
-
         throwIfInvalidUserStatus(userDao.getUser(searchUserId));
-=======
-throwIfInvalidUserStatus(userDao.getUser(searchUserId));
->>>>>>> cd8b4462f99e4fa4c6be7f69487ea0adb3849edf
         try {
             List<GetPostRes> getPostRes = postDao.getPostProfile(userIdByJwt,searchUserId); //수정 필요
             return getPostRes;
