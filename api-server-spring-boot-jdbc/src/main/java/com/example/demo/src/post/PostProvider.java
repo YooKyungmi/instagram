@@ -5,13 +5,12 @@ import com.example.demo.src.follow.FollowDao;
 import com.example.demo.src.post.model.comment.GetCommentRes;
 import com.example.demo.src.post.model.postModel.GetPostRes;
 import com.example.demo.src.user.UserDao;
-import com.example.demo.src.user.UserProvider;
+
 import com.example.demo.src.user.model.User;
 import com.example.demo.utils.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,7 +27,7 @@ public class PostProvider {
     final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public PostProvider(PostDao postDao, JwtService jwtService, FollowDao followDao, UserProvider userProvider, UserDao userDao) {
+    public PostProvider(PostDao postDao, JwtService jwtService, FollowDao followDao, UserDao userDao) {
         this.postDao = postDao;
         this.jwtService = jwtService;
         this.followDao = followDao;
@@ -48,7 +47,7 @@ public class PostProvider {
     }
 
     public List<GetPostRes> getPostProfile(int userIdByJwt, int searchUserId) throws BaseException {
-        throwIfInvalidUserStatus(userDao.findUserById( Integer.toString(searchUserId)));
+throwIfInvalidUserStatus(userDao.getUser(searchUserId));
         try {
             List<GetPostRes> getPostRes = postDao.getPostProfile(userIdByJwt,searchUserId); //수정 필요
             return getPostRes;
@@ -56,6 +55,15 @@ public class PostProvider {
         } catch (Exception exception) {
             logger.error("Post - getPostProfile Provider Error", exception);
             throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    private void throwIfInvalidUserStatus(User user) throws BaseException {
+        if (user.getAccountStatus().equals("INACTIVE")) {
+            throw new BaseException(POST_USERS_ACCOUNT_INACTIVE);
+        }
+        if (user.getAccountStatus().equals("DELETED")) {
+            throw new BaseException(POST_USERS_ACCOUNT_DELETED);
         }
     }
 
