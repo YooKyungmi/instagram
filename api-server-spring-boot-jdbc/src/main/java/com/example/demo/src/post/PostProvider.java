@@ -49,7 +49,7 @@ public class PostProvider {
     }
 
     public List<GetPostRes> getPostProfile(int userIdByJwt, int searchUserId) throws BaseException {
-        userProvider.throwIfInvalidUserStatus(userDao.findUserById(searchUserId));
+        userProvider.throwIfInvalidUserStatus(userDao.findUserById( Integer.toString(searchUserId)));
         try {
             List<GetPostRes> getPostRes = postDao.getPostProfile(userIdByJwt,searchUserId); //수정 필요
             return getPostRes;
