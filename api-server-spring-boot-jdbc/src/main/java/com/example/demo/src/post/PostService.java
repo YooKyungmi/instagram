@@ -68,6 +68,16 @@ public class PostService {
         }
     }
 
+    public void addCommentLike (int commentId, int userId) throws BaseException {
+        throwIfInvalidUserIdDetected(userId);
+        try {
+            postDao.addCommentLike(commentId, userId);
+        } catch (Exception exception) {
+            logger.error("Post - addPostScrap Service Error", exception);
+            throw new BaseException(POST_FAILED);
+        }
+    }
+
 
     private void throwIfInvalidUserIdDetected(int userId) throws BaseException {
         if (userProvider.checkUserId(userId) == 0) {
