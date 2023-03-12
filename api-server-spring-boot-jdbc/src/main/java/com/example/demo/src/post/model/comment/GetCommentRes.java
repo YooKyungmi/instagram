@@ -15,7 +15,7 @@ public class GetCommentRes {
     private int userId;
     private String profileName;
     private String profilePicture;
-    private int groupId;
+    private Integer groupId;
     private String comment;
     private String createdAt;
     private String updatedAt;

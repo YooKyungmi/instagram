@@ -5,6 +5,7 @@ import com.example.demo.config.BaseResponse;
 import com.example.demo.src.post.model.comment.GetCommentRes;
 import com.example.demo.src.post.model.postModel.GetPostRes;
 import com.example.demo.src.post.model.postModel.PostPostsReq;
+import com.example.demo.src.post.model.postModel.PostPostsRes;
 import com.example.demo.utils.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,11 +89,11 @@ public class PostController {
 
     /**
      * 게시물 댓글 조회 API
-     * [GET] /app/posts/comment/:post-id
+     * [GET] /app/posts/comments/:post-id
      * @return  BaseResponse<List<GetCommentRes>>
      */
     @ResponseBody
-    @GetMapping("/comment/{post-id}")
+    @GetMapping("/comments/{post-id}")
     public BaseResponse<List<GetCommentRes>> getPostComments(@PathVariable("post-id") int postId){
         try{
             int userIdByJwt = jwtService.getUserId();
@@ -106,10 +107,10 @@ public class PostController {
 
     /**
      * 댓글에 대한 대댓글 조회 API
-     * [GET] /app/posts/comment/bigComment?parent-id=
+     * [GET] /app/posts/comments/bigComment?parent-id=
      * @return BaseResponse<List<GetCommentRes>>
      */
-    @GetMapping("/comment/bigComment")
+    @GetMapping("/comments/bigComment")
     public BaseResponse<List<GetCommentRes>> getPostComments(@RequestParam("parent-id") Integer commentId){
         try{
             int userIdByJwt = jwtService.getUserId();
@@ -127,12 +128,11 @@ public class PostController {
      */
     @ResponseBody
     @PostMapping("")
-    public BaseResponse<String> createPost(@Valid @RequestBody PostPostsReq postPostsReq){
+    public BaseResponse<PostPostsRes> createPost(@Valid @RequestBody PostPostsReq postPostsReq){
         try{
             int userIdByJwt = jwtService.getUserId();
-             postService.createPost(postPostsReq,userIdByJwt);
-             String result="";
-             return new BaseResponse<>(result);
+            PostPostsRes postPostsRes = postService.createPost(postPostsReq,userIdByJwt);
+             return new BaseResponse<>(postPostsRes);
         } catch(BaseException exception){
             return new BaseResponse<>((exception.getStatus()));
         }
