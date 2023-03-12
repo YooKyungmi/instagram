@@ -208,4 +208,13 @@ public class FollowProvider {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    public String getConnectedFriedNickname(int userIdByJwt, int userId) throws BaseException {
+        try{
+            return followDao.getConnectedFriedNickname(userIdByJwt,userId);
+        }catch(Exception exception){
+            logger.error("App - getConnectedFriedNickname Provider Error", exception);
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }

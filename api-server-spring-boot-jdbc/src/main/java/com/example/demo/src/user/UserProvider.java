@@ -125,6 +125,69 @@ public class UserProvider {
         }
     }
 
+    public int checkUserId(int userId) throws BaseException {
+        try {
+            return userDao.checkUserId(userId);
+        } catch (Exception exception) {
+            logger.error("App - checkUserId Provider Error", exception);
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public String checkUserAccountStatus(int userId) throws BaseException {
+        try {
+            return userDao.checkUserAccountStatus(userId);
+        } catch (Exception exception) {
+            logger.error("App - checkUserAccountStatus Provider Error", exception);
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public PostLoginRes identifyUser(GetIdentifyUserReq getIdentifyUserReq) throws BaseException {
+        User user;
+        try {
+            user = userDao.getUser(getIdentifyUserReq.getUserId());
+        } catch (Exception exception) {
+            logger.error("App - login Provider Error", exception);
+            throw new BaseException(DATABASE_ERROR);
+        }
+        String password;
+        try {
+            password = new AES128(Secret.USER_INFO_PASSWORD_KEY).decrypt(user.getPassword());
+        } catch (Exception exception) {
+            logger.error("App - identifyUser Provider Decrypt Error", exception);
+            throw new BaseException(PASSWORD_DECRYPTION_ERROR);
+        }
+        if (getIdentifyUserReq.getPassword().equals(password)) {
+            int userId = getIdentifyUserReq.getUserId();
+            String jwt = jwtService.createJwt(userId);
+            return new PostLoginRes(userId, jwt);
+        } else {
+            throw new BaseException(FAILED_TO_IDENTIFY);
+        }
+
+    }
+
+    public List<GetUserSearchRes> searchByUser(int userIdByJwt, String keyword) throws BaseException {
+        try {
+            List<GetUserSearchRes> getUserSearchResList = userDao.searchByUser(userIdByJwt,keyword);
+            getUserSearchResList.forEach(res -> {
+                try {
+                    res.setConnectedCount(followProvider.getConnectedFriendCount(userIdByJwt, res.getUserId()));
+                    if(res.getConnectedCount()!=0){
+                        res.setConnectedFriendNickname(followProvider.getConnectedFriedNickname(userIdByJwt, res.getUserId()));
+                    }
+                } catch (BaseException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            return getUserSearchResList;
+        } catch (Exception exception) {
+            logger.error("App - searchByUserNickname Provider Error", exception);
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
     private List<GetUserProfileRes> setConnectedFriendProfileList(List<Integer> followerIdList) {
         List<GetUserProfileRes> userProfileList = new ArrayList<>();
         followerIdList.stream().forEach(id -> userProfileList.add(userDao.getUserProfile(id)));
@@ -164,49 +227,6 @@ public class UserProvider {
         }
         if (user.getAccountStatus().equals("DELETED")) {
             throw new BaseException(POST_USERS_ACCOUNT_DELETED);
-        }
-
-    }
-
-    public int checkUserId(int userId) throws BaseException {
-        try {
-            return userDao.checkUserId(userId);
-        } catch (Exception exception) {
-            logger.error("App - checkUserId Provider Error", exception);
-            throw new BaseException(DATABASE_ERROR);
-        }
-    }
-
-    public String checkUserAccountStatus(int userId) throws BaseException{
-        try{
-            return userDao.checkUserAccountStatus(userId);
-        }catch (Exception exception) {
-            logger.error("App - checkUserAccountStatus Provider Error", exception);
-            throw new BaseException(DATABASE_ERROR);
-        }
-    }
-
-    public PostLoginRes identifyUser(GetIdentifyUserReq getIdentifyUserReq) throws BaseException {
-        User user;
-        try {
-            user = userDao.getUser(getIdentifyUserReq.getUserId());
-        } catch (Exception exception) {
-            logger.error("App - login Provider Error", exception);
-            throw new BaseException(DATABASE_ERROR);
-        }
-        String password;
-        try {
-            password = new AES128(Secret.USER_INFO_PASSWORD_KEY).decrypt(user.getPassword());
-        } catch (Exception exception) {
-            logger.error("App - identifyUser Provider Decrypt Error", exception);
-            throw new BaseException(PASSWORD_DECRYPTION_ERROR);
-        }
-        if (getIdentifyUserReq.getPassword().equals(password)) {
-            int userId = getIdentifyUserReq.getUserId();
-            String jwt = jwtService.createJwt(userId);
-            return new PostLoginRes(userId, jwt);
-        } else {
-            throw new BaseException(FAILED_TO_IDENTIFY);
         }
 
     }
