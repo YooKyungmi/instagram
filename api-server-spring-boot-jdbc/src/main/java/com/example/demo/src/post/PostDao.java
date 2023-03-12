@@ -5,10 +5,7 @@ import com.example.demo.src.follow.FollowDao;
 import com.example.demo.src.post.model.comment.Comment;
 import com.example.demo.src.post.model.comment.GetCommentRes;
 import com.example.demo.src.post.model.comment.PostCommentReq;
-import com.example.demo.src.post.model.postModel.Photo;
-import com.example.demo.src.post.model.postModel.GetPostRes;
-import com.example.demo.src.post.model.postModel.Post;
-import com.example.demo.src.post.model.postModel.PostPostsReq;
+import com.example.demo.src.post.model.postModel.*;
 import com.example.demo.src.story.StoryDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -257,6 +254,15 @@ public class PostDao {
         return this.jdbcTemplate.queryForObject(getPostCountQuery,
                 int.class,
                 getPostCountParams);
+    }
+
+    public List<GetPostRecommendRes> getPostRecommend (){
+        String Query = "Select postId, photoUrl1 from Post where status = true order by createdAt DESC";
+        return this.jdbcTemplate.query(Query,
+                (rs, rowNum) -> GetPostRecommendRes.builder()
+                        .postId(rs.getInt("postId"))
+                        .firstPhotoUrl(rs.getString("photoUrl1"))
+                        .build());
     }
 
 

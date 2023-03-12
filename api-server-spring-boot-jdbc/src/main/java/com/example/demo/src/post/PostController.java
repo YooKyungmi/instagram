@@ -5,6 +5,7 @@ import com.example.demo.config.BaseResponse;
 import com.example.demo.src.post.model.comment.GetCommentRes;
 import com.example.demo.src.post.model.comment.PostCommentReq;
 import com.example.demo.src.post.model.comment.PostCommentRes;
+import com.example.demo.src.post.model.postModel.GetPostRecommendRes;
 import com.example.demo.src.post.model.postModel.GetPostRes;
 import com.example.demo.src.post.model.postModel.PostPostsReq;
 import com.example.demo.src.post.model.postModel.PostPostsRes;
@@ -84,6 +85,22 @@ public class PostController {
             int userIdByJwt = jwtService.getUserId();
             List<GetPostRes> getPostRes = postProvider.getPostFollowing(userIdByJwt);
             return new BaseResponse<>(getPostRes);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    /**
+     * 특정 게시물 조회 API
+     * [GET] /app/posts/:post-id
+     * @return BaseResponse<GetPostRes>
+     */
+
+    @GetMapping("/recommended")
+    public BaseResponse<List<GetPostRecommendRes>> getPostRecommend(){
+        try{
+            List<GetPostRecommendRes> getPostRecommendRes = postProvider.getPostRecommend();
+            return new BaseResponse<>(getPostRecommendRes);
         } catch(BaseException exception){
             return new BaseResponse<>((exception.getStatus()));
         }
