@@ -293,4 +293,10 @@ public class PostDao {
         Object[] params = new Object[]{userId, postId};
         this.jdbcTemplate.update(Query,params);
     }
+
+    public void addCommentLike (int commentId,int userId){
+        String Query = "insert into CommentLike (userId,commentId) values (?,?)";
+        Object[] params = new Object[]{userId, commentId};
+        this.jdbcTemplate.update(Query,params);
+    }
 }

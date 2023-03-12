@@ -170,4 +170,17 @@ public class PostController {
         }
     }
 
+    @ResponseBody
+    @PostMapping("/comments/like-status/{comment-id}")
+    public BaseResponse<String> addCommentLike(@PathVariable("comment-id") int commentId){
+        try{
+            int userIdByJwt = jwtService.getUserId();
+            postService.addCommentLike(commentId,userIdByJwt);
+            String result = "";
+            return new BaseResponse<>(result);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
 }
