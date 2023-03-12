@@ -1,6 +1,8 @@
 package com.example.demo.src.post;
 
 import com.example.demo.config.BaseException;
+import com.example.demo.src.post.model.comment.PostCommentReq;
+import com.example.demo.src.post.model.comment.PostCommentRes;
 import com.example.demo.src.post.model.postModel.PostPostsReq;
 import com.example.demo.src.post.model.postModel.PostPostsRes;
 import com.example.demo.src.user.UserProvider;
@@ -78,6 +80,18 @@ public class PostService {
         }
     }
 
+    public PostCommentRes createComment(PostCommentReq postCommentReq, int userId) throws BaseException {
+        throwIfInvalidUserIdDetected(userId);
+        try {
+            PostCommentRes postCommentRes = PostCommentRes.builder()
+                    .commentId(postDao.createComment(userId,postCommentReq))
+                    .build();
+            return postCommentRes;
+        } catch (Exception exception) {
+            logger.error("Post - createComment Service Error", exception);
+            throw new BaseException(POST_FAILED);
+        }
+    }
 
     private void throwIfInvalidUserIdDetected(int userId) throws BaseException {
         if (userProvider.checkUserId(userId) == 0) {

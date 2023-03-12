@@ -3,6 +3,7 @@ package com.example.demo.src.post;
 
 import com.example.demo.src.post.model.comment.Comment;
 import com.example.demo.src.post.model.comment.GetCommentRes;
+import com.example.demo.src.post.model.comment.PostCommentReq;
 import com.example.demo.src.post.model.postModel.Photo;
 import com.example.demo.src.post.model.postModel.GetPostRes;
 import com.example.demo.src.post.model.postModel.Post;
@@ -272,7 +273,7 @@ public class PostDao {
                 this.jdbcTemplate.update(UserTagQuery, userTagParams);
             }
         }
-        String ContentTagQuery = "insert into ContentTag (postId, tagWord) values (?,?)";
+        String ContentTagQuery = "insert into UserTag (userId, postId, photoUrl) values (?,?,?)";
         if (postPostsReq.getTagWord().size()>0) {
             for (String tagWord : postPostsReq.getTagWord()) {
                 Object[] ContentTagParams = new Object[]{postId, tagWord};
@@ -298,5 +299,21 @@ public class PostDao {
         String Query = "insert into CommentLike (userId,commentId) values (?,?)";
         Object[] params = new Object[]{userId, commentId};
         this.jdbcTemplate.update(Query,params);
+    }
+
+    public int createComment (int userId, PostCommentReq postCommentReq) {
+        String Query = "insert into Comment (userId,postId,groupId,comment) values (?,?,?,?)";
+        Object[] params = new Object[]{userId, postCommentReq.getPostId(), postCommentReq.getGroupId(), postCommentReq.getComment()};
+        this.jdbcTemplate.update(Query, params);
+        String lastInsertIdQuery = "select last_insert_id()";
+        int commentId = this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
+        String mentionQuery = "insert into mention (userId, commentId) values (?,?)";
+        if (postCommentReq.getMention().size()>0){
+            for (Integer mentionId : postCommentReq.getMention()) {
+                Object[] mentionParams = new Object[]{mentionId, commentId};
+                this.jdbcTemplate.update(mentionQuery, mentionParams);
+            }
+        }
+        return commentId;
     }
 }

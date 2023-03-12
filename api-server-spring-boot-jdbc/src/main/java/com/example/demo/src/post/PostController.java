@@ -3,6 +3,8 @@ package com.example.demo.src.post;
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
 import com.example.demo.src.post.model.comment.GetCommentRes;
+import com.example.demo.src.post.model.comment.PostCommentReq;
+import com.example.demo.src.post.model.comment.PostCommentRes;
 import com.example.demo.src.post.model.postModel.GetPostRes;
 import com.example.demo.src.post.model.postModel.PostPostsReq;
 import com.example.demo.src.post.model.postModel.PostPostsRes;
@@ -139,9 +141,9 @@ public class PostController {
     }
 
     /**
-     * 특정 게시물 조회 API
-     * [GET] /app/posts/:post-id
-     * @return BaseResponse<GetPostRes>
+     * 게시물 좋아요 추가 API
+     * [POST] /app/posts/likes/:post-id
+     * @return BaseResponse<String>
      */
 
     @ResponseBody
@@ -157,6 +159,12 @@ public class PostController {
         }
     }
 
+
+    /**
+     * 게시물 스크랩 추가 API
+     * [POST] /app/posts/srcaped/:post-id
+     * @return BaseResponse<String>
+     */
     @ResponseBody
     @PostMapping("/scraped/{post-id}")
     public BaseResponse<String> addPostScrap(@PathVariable("post-id") int postId){
@@ -170,6 +178,12 @@ public class PostController {
         }
     }
 
+
+    /**
+     * 댓글 좋아요 추가 API
+     * [POST] /app/posts/comments/like-status/:comment-id
+     * @return BaseResponse<String>
+     */
     @ResponseBody
     @PostMapping("/comments/like-status/{comment-id}")
     public BaseResponse<String> addCommentLike(@PathVariable("comment-id") int commentId){
@@ -178,6 +192,23 @@ public class PostController {
             postService.addCommentLike(commentId,userIdByJwt);
             String result = "";
             return new BaseResponse<>(result);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    /**
+     * 댓글 작성 API
+     * [POST] /app/posts/comments
+     * @return BaseResponse<String>
+     */
+    @ResponseBody
+    @PostMapping("/comments")
+    public BaseResponse<PostCommentRes> createComment(@Valid @RequestBody PostCommentReq postCommentReq){
+        try{
+            int userIdByJwt = jwtService.getUserId();
+            PostCommentRes postCommentRes = postService.createComment(postCommentReq,userIdByJwt);
+            return new BaseResponse<>(postCommentRes);
         } catch(BaseException exception){
             return new BaseResponse<>((exception.getStatus()));
         }
