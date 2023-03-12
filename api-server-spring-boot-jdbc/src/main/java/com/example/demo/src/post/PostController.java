@@ -4,12 +4,16 @@ import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
 import com.example.demo.src.post.model.comment.GetCommentRes;
 import com.example.demo.src.post.model.postModel.GetPostRes;
+import com.example.demo.src.post.model.postModel.PostPostsReq;
 import com.example.demo.utils.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -56,6 +60,7 @@ public class PostController {
     @GetMapping("/profiles/user")
     public BaseResponse<List<GetPostRes>> getPostProfile(@RequestParam("user-id") Integer searchUserId) {
         try{
+
             int userIdByJwt = jwtService.getUserId();
             List<GetPostRes> getPostRes = postProvider.getPostProfile(userIdByJwt,searchUserId);
             return new BaseResponse<>(getPostRes);
@@ -72,6 +77,7 @@ public class PostController {
     @GetMapping("/followings")
     public BaseResponse<List<GetPostRes>> getPostFollowing() {
         try{
+
             int userIdByJwt = jwtService.getUserId();
             List<GetPostRes> getPostRes = postProvider.getPostFollowing(userIdByJwt);
             return new BaseResponse<>(getPostRes);
@@ -113,5 +119,16 @@ public class PostController {
             return new BaseResponse<>((exception.getStatus()));
         }
     }
-
+    @ResponseBody
+    @PostMapping("")
+    public BaseResponse<String> createPost(@Valid @RequestBody PostPostsReq postPostsReq){
+        try{
+            int userIdByJwt = jwtService.getUserId();
+             postService.createPost(postPostsReq,userIdByJwt);
+             String result="";
+             return new BaseResponse<>(result);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
 }

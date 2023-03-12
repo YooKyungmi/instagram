@@ -3,9 +3,10 @@ package com.example.demo.src.post;
 
 import com.example.demo.src.post.model.comment.Comment;
 import com.example.demo.src.post.model.comment.GetCommentRes;
-import com.example.demo.src.post.model.postModel.GetPostPhoto;
+import com.example.demo.src.post.model.postModel.Photo;
 import com.example.demo.src.post.model.postModel.GetPostRes;
 import com.example.demo.src.post.model.postModel.Post;
+import com.example.demo.src.post.model.postModel.PostPostsReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -15,7 +16,6 @@ import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import com.example.demo.src.follow.FollowDao;
 
 @Repository
 
@@ -29,20 +29,21 @@ public class PostDao {
     public GetPostRes getPost(int postId, int userId){
         Post post= getPostModel(postId);
         int likeCount = getPostLikeCount(postId);
-        List<GetPostPhoto> photoTagList = new ArrayList<>();
+        List<Photo> photoTagList = new ArrayList<>();
         List<String> photoList = new ArrayList<>(Arrays.asList(post.getPhoto1(),post.getPhoto2(),post.getPhoto3(),
                 post.getPhoto4(),post.getPhoto5(),post.getPhoto6(),
                 post.getPhoto7(),post.getPhoto8(),post.getPhoto9(),post.getPhoto10()));
 
         photoList.removeAll(Arrays.asList("", null));
         for (String photo : photoList ){
-            photoTagList.add(new GetPostPhoto(photo, getPostPhotos(photo)));
+            photoTagList.add(new Photo(photo, getPostPhotos(photo)));
         }
         String Query = "select nickname, profileImageUrl from User where userId = ? and status = true";
         int userParams = post.getUserId();
         return this.jdbcTemplate.queryForObject(Query,
                 (rs,rowNum) -> new GetPostRes(
                         post.getPostId(),
+                        post.getUserId(),
                         post.getContent(),
                         post.getPlace(),
                         post.getLikeShowStatus(),
@@ -245,6 +246,38 @@ public class PostDao {
     }
 
 
-//    public int createPost()
+    public void createPost(PostPostsReq postPostsReq, int userId){
+        List<String> photoList = new ArrayList<>();
+        for (Photo photo : postPostsReq.getPhotos() ){
+            photoList.add(photo.getPhotoUrl());
+        }
+        String photoUrlList=String.join("\",\"",photoList);
+        photoUrlList="\""+photoUrlList+"\"";
+        photoUrlList = photoUrlList + ",null".repeat(10 - photoList.size());
+        String insertPostQuery = "insert into Post values(null,?,?,?,?,?,"+photoUrlList+",1,current_timestamp,current_timestamp)";
+        Object[] postParams = new Object[]{userId,
+                postPostsReq.getContent(),
+                postPostsReq.getPlace(),
+                postPostsReq.getLikeShowStatus(),
+                postPostsReq.getCommentShowStatus()
+        };
+        this.jdbcTemplate.update(insertPostQuery, postParams);
+        String lastInsertIdQuery = "select last_insert_id()";
+        int postId =  this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
 
+        String UserTagQuery = "insert into UserTag (userId, postId, photoUrl) values (?,?,?)";
+        for (Photo photo : postPostsReq.getPhotos() ) {
+            for (String userTagId : photo.getUserTagId()) {
+                Object[] userTagParams = new Object[]{userTagId, postId, photo.getPhotoUrl()};
+                this.jdbcTemplate.update(UserTagQuery, userTagParams);
+            }
+        }
+        String ContentTagQuery = "insert into ContentTag (postId, tagWord) values (?,?)";
+        if (postPostsReq.getTagWord().size()>0) {
+            for (String tagWord : postPostsReq.getTagWord()) {
+                Object[] ContentTagParams = new Object[]{postId, tagWord};
+                this.jdbcTemplate.update(ContentTagQuery, ContentTagParams);
+            }
+        }
+    }
 }
