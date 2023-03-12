@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.util.List;
 
 @Repository
 public class UserDao {
@@ -151,5 +152,18 @@ public class UserDao {
         String updateUserPhoneQuery = "update User set phoneNumber = ? where userId = ?";
         Object[] updateUserPhoneParams = new Object[]{phoneNumber, userId};
         return this.jdbcTemplate.update(updateUserPhoneQuery, updateUserPhoneParams);
+    }
+
+    public List<GetUserSearchRes> searchByUser(int userIdByJwt, String keyword) {
+        String searchByUserNicknameQuery = "select * from User where (nickname LIKE CONCAT('%', ?, '%') OR name LIKE CONCAT('%', ?, '%')) and accountStatus = 'ACTIVE' and userId != ?";
+        Object[] searchByUserNicknameParams = new Object[]{keyword, keyword, userIdByJwt};
+        return this.jdbcTemplate.query(searchByUserNicknameQuery,
+                (rs, rowNum) -> GetUserSearchRes.builder()
+                        .userId(rs.getInt("userId"))
+                        .nickname(rs.getString("nickname"))
+                        .profileImageUrl(rs.getString("profileImageUrl"))
+                        .name(rs.getString("name"))
+                        .build(),
+                searchByUserNicknameParams);
     }
 }

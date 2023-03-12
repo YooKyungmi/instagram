@@ -34,16 +34,16 @@ public class FollowDao {
     }
 
     public int getConnectedFriendCount(int onlineUserId, int findingUserId) {
-        String getConnectedFriendCountQuery = "Select count(followId) from UserFollow where followerId = ? AND status = 1 AND followingId IN (Select followerId from UserFollow where followingId = ? and status = 1 and followerId IN (select userId from User where accountStatus = 'ACTIVE'))";
-        Object[] getConnectedFriendParams = new Object[]{onlineUserId, findingUserId};
+        String getConnectedFriendCountQuery = "Select count(followId) from UserFollow where followerId = ? AND status = 1 AND followingId IN (Select followerId from UserFollow where followingId = ? and status = 1 and followerId IN (select userId from User where accountStatus = 'ACTIVE' and userId != ?))";
+        Object[] getConnectedFriendParams = new Object[]{onlineUserId, findingUserId, onlineUserId};
         return this.jdbcTemplate.queryForObject(getConnectedFriendCountQuery,
                 int.class,
                 getConnectedFriendParams);
     }
 
     public List<Integer> getConnectedFollows(int onlineUserId, int findingUserId) {
-        String getConnectedFollowIdQuery = "Select followingId from UserFollow where followerId = ? AND status = 1 AND followingId IN (Select followerId from UserFollow where followingId = ? and status = 1 and followerId IN (select userId from User where accountStatus = 'ACTIVE')) limit 2";
-        Object[] getConnectedFollowIdParams = new Object[]{onlineUserId, findingUserId};
+        String getConnectedFollowIdQuery = "Select followingId from UserFollow where followerId = ? AND status = 1 AND followingId IN (Select followerId from UserFollow where followingId = ? and status = 1 and followerId IN (select userId from User where accountStatus = 'ACTIVE' and userId != ?)) limit 2";
+        Object[] getConnectedFollowIdParams = new Object[]{onlineUserId, findingUserId, onlineUserId};
         return this.jdbcTemplate.query(getConnectedFollowIdQuery,
                 (rs, rowNum) -> rs.getInt("followingId"),
                 getConnectedFollowIdParams);
@@ -111,5 +111,13 @@ public class FollowDao {
         return this.jdbcTemplate.query(getFollowingQuery,
                 (rs, rowNum) -> rs.getInt("followingId"),
                 checkFollowingParams);
+    }
+
+    public String getConnectedFriedNickname(int userIdByJwt, int userId) {
+        String getConnectedFriendNicknameQuery = "Select u.nickname from UserFollow as f inner join User as u where f.followerId = ? AND f.status = 1 AND f.followingId IN (Select followerId from UserFollow where followingId = ? and status = 1 and followerId IN (select userId from User where accountStatus = 'ACTIVE' and userId != ?)) and u.userId = f.followingId limit 1";
+        Object[] getConnectedFriedNicknameParams = new Object[]{userIdByJwt, userId, userIdByJwt};
+        return this.jdbcTemplate.queryForObject(getConnectedFriendNicknameQuery,
+                (rs,rowNum)->rs.getString("u.nickname"),
+        getConnectedFriedNicknameParams);
     }
 }

@@ -53,6 +53,9 @@ public enum BaseResponseStatus {
     //[GET] /app/users/identifications/:userId
     GET_USERS_EMPTY_PASSWORD(false,2038,"비밀번호를 입력해주세요."),
 
+    //[GET] /app/users?user-nickname=
+    GET_USERS_EMPTY_NICKNAME(false,2043,"검색할 닉네임을 입력해주세요."),
+
     //[PATCH] /app/users/accounts/:user-id?account-status=
     PATCH_USERS_EMPTY_ACCOUNT_STATUS(false,2037,"변경할 계정 상태 값을 입력해주세요."),
 

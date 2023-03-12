@@ -1,13 +1,15 @@
 package com.example.demo.src.user;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
 import com.example.demo.src.user.model.*;
 import com.example.demo.utils.JwtService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static com.example.demo.config.BaseResponseStatus.*;
 import static com.example.demo.utils.ValidationRegex.*;
@@ -290,6 +292,27 @@ public class UserController {
             return new BaseResponse<>(result);
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    /**
+     * 유저 닉네임으로 검색 API
+     * [GET] /app/users?user-nickname=
+     *
+     * @return BaseResponse<List<GetUserSearchRes>>
+     */
+    @ResponseBody
+    @GetMapping("")
+    public BaseResponse<List<GetUserSearchRes>> searchByUser(@RequestParam("user-keyword") String keyword) {
+        if(keyword ==null){
+            return new BaseResponse<>(GET_USERS_EMPTY_NICKNAME);
+        }
+        try{
+            int userIdByJwt = jwtService.getUserId();
+            List<GetUserSearchRes> getUserSearchResList = userProvider.searchByUser(userIdByJwt, keyword);
+            return new BaseResponse<>(getUserSearchResList);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
         }
     }
 
