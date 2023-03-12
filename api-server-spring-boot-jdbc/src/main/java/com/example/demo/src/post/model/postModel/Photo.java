@@ -11,7 +11,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class GetPostPhoto {
+public class Photo {
     String photoUrl;
     List<String> userTagId;
 }

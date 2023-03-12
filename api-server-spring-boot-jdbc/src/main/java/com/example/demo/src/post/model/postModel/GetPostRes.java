@@ -11,11 +11,12 @@ import java.util.List;
 @AllArgsConstructor
 public class GetPostRes {
     private int postId;
+    private int userId;
     private String content;
     private String place;
     private int likeShowStatus;
     private int commentShowStatus;
-    private List<GetPostPhoto> photos;
+    private List<Photo> photos;
     private String createdAt;
     private String updatedAt;
     private int likeCount;
