@@ -132,4 +132,12 @@ public class UserDao {
         Object[] updateUserAccountStatusParams = new Object[]{accountStatus, userId};
         return this.jdbcTemplate.update(updateUserAccountStatusQuery, updateUserAccountStatusParams);
     }
+
+    public String checkUserAccountStatus(int userId) {
+        String checkUserAccountStatusQuery = "select accountStatus from User where userId = ?";
+        int checkUserAccountStatusParams = userId;
+        return this.jdbcTemplate.queryForObject(checkUserAccountStatusQuery,
+                String.class,
+                checkUserAccountStatusParams);
+    }
 }

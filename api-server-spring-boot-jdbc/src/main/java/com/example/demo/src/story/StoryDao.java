@@ -1,10 +1,12 @@
 package com.example.demo.src.story;
 
+import com.example.demo.src.story.model.GetStoryRes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.util.List;
 
 @Repository
 public class StoryDao {
@@ -43,9 +45,40 @@ public class StoryDao {
                         .updatedAt(rs.getTimestamp("s.updatedAt").toString())
                         .selfStatus(selfStatus)
                         .viewStatus(viewStatus)
-                        .build()
-        ,getStoryUsersInfoParams);
+                        .build(),
+        getStoryUsersInfoParams);
 
     }
 
+    public List<GetStoryRes> getStoryByUserId(int userId) {
+        String getStoryByUserIdQuery = "select s.*, nickname, profileImageUrl from UserStory as s inner join User as u where s.userId = ? and s.status = 1 and TIMEDIFF(current_timestamp,s.updatedAt)<'24:00:00' and u.userId = s.userId order by s.updatedAt";
+        int getStoryByUserIdParams = userId;
+        return this.jdbcTemplate.query(getStoryByUserIdQuery,
+                (rs, rowNum) -> GetStoryRes.builder()
+                        .userStoryId(rs.getInt("s.userStoryId"))
+                        .userId(rs.getInt("s.userId"))
+                        .nickname(rs.getString("nickname"))
+                        .profileImageUrl(rs.getString("profileImageUrl"))
+                        .storyUrl(rs.getString("s.storyUrl"))
+                        .createdAt(rs.getTimestamp("s.createdAt").toString())
+                        .updatedAt(rs.getTimestamp("s.updatedAt").toString())
+                        .build(),
+        getStoryByUserIdParams);
+    }
+
+    public int getStoryViewerCount(int userStoryId) {
+        String getStoryViewerCountQuery = "select Count(userId) as userIdCount from StoryViewer where userStoryId = ?";
+        int getStoryViewerCountParams = userStoryId;
+        return this.jdbcTemplate.queryForObject(getStoryViewerCountQuery,
+                (rs,rowNum)->rs.getInt("userIdCount"),
+                getStoryViewerCountParams);
+    }
+
+    public List<String> getStoryViewerProfileImageUrls(int userStoryId) {
+        String getStoryViewerProfileImageUrlsQuery = "select profileImageUrl from StoryViewer as s inner join User as u where s.userStoryId = ? and s.userId = u.userId limit 2";
+        int getStoryViewerProfileImageUrlsParams = userStoryId;
+        return this.jdbcTemplate.query(getStoryViewerProfileImageUrlsQuery,
+                (rs, rowNum) -> rs.getString("profileImageUrl"),
+                getStoryViewerProfileImageUrlsParams);
+    }
 }

@@ -70,6 +70,7 @@ public class FollowProvider {
 
     public GetFollowerRes getFollowers(int onlineUserId, int userId) throws BaseException {
         throwIfInvalidUserIdDetected(userId);
+        throwIfInvalidUserStatus(userDao.getUser(userId));
         try {
             GetFollowerRes getFollowerRes = GetFollowerRes.builder()
                     .followerCount(followDao.getFollowerCount(userId))
@@ -100,6 +101,7 @@ public class FollowProvider {
 
     public GetFollowingRes getFollowings(int onlineUserId, int userId) throws BaseException {
         throwIfInvalidUserIdDetected(userId);
+        throwIfInvalidUserStatus(userDao.getUser(userId));
         try {
             GetFollowingRes getFollowingRes = GetFollowingRes.builder()
                     .followerCount(followDao.getFollowerCount(userId))
@@ -130,6 +132,7 @@ public class FollowProvider {
 
     public GetConnectedFollowRes getConnectedFollows(int onlineUserId, int userId) throws BaseException {
         throwIfInvalidUserIdDetected(userId);
+        throwIfInvalidUserStatus(userDao.getUser(userId));
         throwIfConnectedFollowNotExist(onlineUserId, userId);
         try {
             GetConnectedFollowRes getConnectedFollowRes = GetConnectedFollowRes.builder()
@@ -158,6 +161,16 @@ public class FollowProvider {
         if (userDao.checkUserId(userId) == 0) {
             throw new BaseException(GET_USERS_INVALID_USER_ID);
         }
+    }
+
+    private void throwIfInvalidUserStatus(User user) throws BaseException {
+        if (user.getAccountStatus().equals("INACTIVE")) {
+            throw new BaseException(POST_USERS_ACCOUNT_INACTIVE);
+        }
+        if (user.getAccountStatus().equals("DELETED")) {
+            throw new BaseException(POST_USERS_ACCOUNT_DELETED);
+        }
+
     }
 
     private void throwIfConnectedFollowNotExist(int onlineUserId, int userId) throws BaseException {

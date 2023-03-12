@@ -177,6 +177,15 @@ public class UserProvider {
         }
     }
 
+    public String checkUserAccountStatus(int userId) throws BaseException{
+        try{
+            return userDao.checkUserAccountStatus(userId);
+        }catch (Exception exception) {
+            logger.error("App - checkUserAccountStatus Provider Error", exception);
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
     public PostLoginRes identifyUser(GetIdentifyUserReq getIdentifyUserReq) throws BaseException {
         User user;
         try {

@@ -32,6 +32,7 @@ public class FollowService {
     public PostPatchFollowRes addFollows(int userId, int followUserId) throws BaseException {
         throwIfInvalidUserIdDetected(userId);
         throwIfInvalidUserIdDetected(followUserId);
+        throwIfInvalidUserStatus(userProvider.checkUserAccountStatus(followUserId));
         try {
             PostPatchFollowRes postPatchFollowRes;
             if (followDao.checkUserFollow(userId,followUserId)==0) {
@@ -60,6 +61,7 @@ public class FollowService {
     public PostPatchFollowRes patchFollows(Integer userId, Integer followUserId) throws BaseException {
         throwIfInvalidUserIdDetected(userId);
         throwIfInvalidUserIdDetected(followUserId);
+        throwIfInvalidUserStatus(userProvider.checkUserAccountStatus(followUserId));
         try {
             if (followDao.checkUserFollow(userId,followUserId)==0) {
                 throw new BaseException(PATCH_FOLLOWS_NOT_EXIST);
@@ -84,6 +86,16 @@ public class FollowService {
         if (userProvider.checkUserId(userId) == 0) {
             throw new BaseException(GET_USERS_INVALID_USER_ID);
         }
+    }
+
+    private void throwIfInvalidUserStatus(String status) throws BaseException {
+        if (status.equals("INACTIVE")) {
+            throw new BaseException(POST_USERS_ACCOUNT_INACTIVE);
+        }
+        if (status.equals("DELETED")) {
+            throw new BaseException(POST_USERS_ACCOUNT_DELETED);
+        }
+
     }
 
 }
