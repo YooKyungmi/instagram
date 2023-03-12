@@ -4,6 +4,7 @@ import com.example.demo.config.BaseException;
 import com.example.demo.src.follow.FollowDao;
 import com.example.demo.src.post.model.comment.GetCommentRes;
 import com.example.demo.src.post.model.postModel.GetPostRes;
+import com.example.demo.src.story.StoryDao;
 import com.example.demo.src.user.UserDao;
 import com.example.demo.src.user.model.User;
 import com.example.demo.utils.JwtService;
@@ -23,10 +24,11 @@ public class PostProvider {
     private final FollowDao followDao;
     private final UserDao userDao;
 
+
     final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public PostProvider(PostDao postDao, JwtService jwtService, FollowDao followDao, UserDao userDao) {
+    public PostProvider(PostDao postDao, JwtService jwtService, FollowDao followDao, UserDao userDao, StoryDao storyDao) {
         this.postDao = postDao;
         this.jwtService = jwtService;
         this.followDao = followDao;

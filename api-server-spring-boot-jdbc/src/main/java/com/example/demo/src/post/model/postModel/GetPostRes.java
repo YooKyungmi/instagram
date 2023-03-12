@@ -1,6 +1,7 @@
 package com.example.demo.src.post.model.postModel;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,6 +10,7 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
+@Builder
 public class GetPostRes {
     private int postId;
     private int userId;
@@ -25,5 +27,7 @@ public class GetPostRes {
     private int scrapOn;
     private List<String> tagWord;
     private int likeOn;
+    private int userStoryOn;
+    private int userFollowOn;
 
 }
