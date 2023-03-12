@@ -16,6 +16,8 @@ public class GetStoryUserRes{
     private String nickname;
     @JsonProperty("profile_image_url")
     private String profileImageUrl;
+    @JsonProperty("self_status")
+    private int selfStatus;
     @JsonProperty("view_status")
     private int viewStatus;
     @JsonProperty("updated_at")
