@@ -211,4 +211,28 @@ public class UserController {
         }
     }
 
+    /**
+     * 비밀번호로 유저 본인확인 API
+     * [GET] /app/users/identifications/:userId
+     * @return BaseResponse<PostLoginRes>
+     */
+    @ResponseBody
+    @GetMapping("/identifications/{user-id}")
+    public BaseResponse<PostLoginRes> identifyUser(@PathVariable("user-id") int userId, @RequestBody GetIdentifyUserReq getIdentifyUserReq) {
+        if(getIdentifyUserReq.getPassword()==null){
+            return new BaseResponse<>(GET_USERS_EMPTY_PASSWORD);
+        }
+        try{
+            int userIdByJwt = jwtService.getUserId();
+            if(userId != userIdByJwt){
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+            getIdentifyUserReq.setUserId(userId);
+            PostLoginRes postLoginRes = userProvider.identifyUser(getIdentifyUserReq);
+            return new BaseResponse<>(postLoginRes);
+        } catch (BaseException exception){
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
+
 }
