@@ -281,4 +281,10 @@ public class PostDao {
         }
         return postId;
     }
+
+    public void addPostLike (int postId,int userId){
+        String Query = "insert into PostUser (userId,postId) values (?,?)";
+        Object[] params = new Object[]{userId, postId};
+        this.jdbcTemplate.update(Query,params);
+    }
 }
