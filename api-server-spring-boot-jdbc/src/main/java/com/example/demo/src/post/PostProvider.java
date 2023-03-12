@@ -3,6 +3,7 @@ package com.example.demo.src.post;
 import com.example.demo.config.BaseException;
 import com.example.demo.src.follow.FollowDao;
 import com.example.demo.src.post.model.comment.GetCommentRes;
+import com.example.demo.src.post.model.postModel.GetPostRecommendRes;
 import com.example.demo.src.post.model.postModel.GetPostRes;
 import com.example.demo.src.story.StoryDao;
 import com.example.demo.src.user.UserDao;
@@ -97,6 +98,15 @@ public class PostProvider {
             return postDao.getPostCount(userId);
         } catch (Exception exception) {
             logger.error("App - getPostCount Provider Error", exception);
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public List<GetPostRecommendRes> getPostRecommend () throws BaseException{
+        try{
+            return postDao.getPostRecommend();
+        }catch (Exception exception) {
+            logger.error("App - getPostRecommend Provider Error", exception);
             throw new BaseException(DATABASE_ERROR);
         }
     }
