@@ -67,8 +67,12 @@ public enum BaseResponseStatus {
     PATCH_FOLLOWS_NOT_EXIST(false,2036,"해당 유저를 팔로우하고 있지 않습니다."),
 
     //UserStory
-
+    //[GET] /app/stories?user-id=
     GET_STORIES_EMPTY_USER_ID(false,2040,"유저 식별자를 입력해주세요."),
+
+    //[GET] /app/stories/:story-id
+    GET_STORIES_EMPTY_STORY_ID(false,2041,"스토리 식별자를 입력해주세요."),
+    GET_STORIES_STORY_ID_NOT_EXISTS(false,2042,"존재하지 않는 스토리입니다."),
 
     /**
      * 3000 : Response 오류
