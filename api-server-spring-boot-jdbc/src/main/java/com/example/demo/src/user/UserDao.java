@@ -14,7 +14,7 @@ public class UserDao {
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public void setDataSource(DataSource dataSource){
+    public void setDataSource(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
@@ -123,7 +123,13 @@ public class UserDao {
 
     public int updateUserInfo(PatchUserReq patchUserReq) {
         String updateUserInfoQuery = "update User set name = ?, introduce = ?, gender = ? where userId = ?";
-        Object[] updateUserInfoParams = new Object[]{patchUserReq.getName(),patchUserReq.getIntroduce(),patchUserReq.getGender(), patchUserReq.getUserId()};
-        return this.jdbcTemplate.update(updateUserInfoQuery,updateUserInfoParams);
+        Object[] updateUserInfoParams = new Object[]{patchUserReq.getName(), patchUserReq.getIntroduce(), patchUserReq.getGender(), patchUserReq.getUserId()};
+        return this.jdbcTemplate.update(updateUserInfoQuery, updateUserInfoParams);
+    }
+
+    public int updateUserAccountStatus(int userId, String accountStatus) {
+        String updateUserAccountStatusQuery = "update User set accountStatus = ? where userId = ?";
+        Object[] updateUserAccountStatusParams = new Object[]{accountStatus, userId};
+        return this.jdbcTemplate.update(updateUserAccountStatusQuery, updateUserAccountStatusParams);
     }
 }

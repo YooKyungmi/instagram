@@ -50,6 +50,12 @@ public enum BaseResponseStatus {
     //[GET] /app/users/:user-id
     GET_USERS_INVALID_USER_ID(false,2032, "존재하지 않는 유저입니다."),
 
+    //[GET] /app/users/identifications/:userId
+    GET_USERS_EMPTY_PASSWORD(false,2038,"비밀번호를 입력해주세요."),
+
+    //[PATCH] /app/users/accounts/:user-id?account-status=
+    PATCH_USERS_EMPTY_ACCOUNT_STATUS(false,2037,"변경할 계정 상태 값을 입력해주세요."),
+
     //follows
 
     //[GET] /app/follows/connected-follows?user-id=
@@ -68,6 +74,7 @@ public enum BaseResponseStatus {
     // [POST] /users
     DUPLICATED_EMAIL(false, 3013, "중복된 이메일입니다."),
     FAILED_TO_LOGIN(false,3014,"없는 아이디거나 비밀번호가 틀렸습니다."),
+    FAILED_TO_IDENTIFY(false,3015,"비밀번호가 틀렸습니다."),
 
 
 

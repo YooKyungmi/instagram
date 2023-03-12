@@ -107,4 +107,16 @@ public class UserService {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    public void modifyUserAccountStatus(int userId, String accountStatus) throws BaseException {
+        try {
+            int result = userDao.updateUserAccountStatus(userId, accountStatus);
+            if (result == 0) {
+                throw new BaseException(MODIFY_FAIL_USER);
+            }
+        }catch (Exception exception) {
+            logger.error("App - createUser Service Error", exception);
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }

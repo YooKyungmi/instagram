@@ -33,9 +33,9 @@ public class PostProvider {
         this.userDao = userDao;
     }
 
-    public GetPostRes getPost(int userIdByJwt,int postId) throws BaseException {
+    public GetPostRes getPost(int userIdByJwt, int postId) throws BaseException {
         try {
-            GetPostRes getPostRes = postDao.getPost(postId,userIdByJwt); //수정 필요
+            GetPostRes getPostRes = postDao.getPost(postId, userIdByJwt); //수정 필요
             return getPostRes;
 
         } catch (Exception exception) {
@@ -46,9 +46,10 @@ public class PostProvider {
     }
 
     public List<GetPostRes> getPostProfile(int userIdByJwt, int searchUserId) throws BaseException {
+
         throwIfInvalidUserStatus(userDao.getUser(searchUserId));
         try {
-            List<GetPostRes> getPostRes = postDao.getPostProfile(userIdByJwt,searchUserId); //수정 필요
+            List<GetPostRes> getPostRes = postDao.getPostProfile(userIdByJwt, searchUserId); //수정 필요
             return getPostRes;
 
         } catch (Exception exception) {
@@ -59,7 +60,7 @@ public class PostProvider {
     public List<GetPostRes> getPostFollowing(int userIdByJwt) throws BaseException {
         try {
             List<Integer> followingsList = followDao.getFollowings(userIdByJwt);
-            List<GetPostRes> getPostRes = postDao.getPostFollowing(userIdByJwt,followingsList); //수정 필요
+            List<GetPostRes> getPostRes = postDao.getPostFollowing(userIdByJwt, followingsList); //수정 필요
             return getPostRes;
         } catch (Exception exception) {
             logger.error("Post - getPostFollowing Provider Error", exception);
@@ -97,8 +98,7 @@ public class PostProvider {
             throw new BaseException(DATABASE_ERROR);
         }
     }
-
-    public void throwIfInvalidUserStatus(User user) throws BaseException {
+    private void throwIfInvalidUserStatus(User user) throws BaseException {
         if (user.getAccountStatus().equals("INACTIVE")) {
             throw new BaseException(POST_USERS_ACCOUNT_INACTIVE);
         }
@@ -107,5 +107,4 @@ public class PostProvider {
         }
 
     }
-
 }
