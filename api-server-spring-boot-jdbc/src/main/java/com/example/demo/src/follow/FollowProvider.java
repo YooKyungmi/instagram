@@ -75,9 +75,11 @@ public class FollowProvider {
                     .followerCount(followDao.getFollowerCount(userId))
                     .followingCount(followDao.getFollowingCount(userId))
                     .build();
-            int connectedFriendCount = followDao.getConnectedFriendCount(onlineUserId, userId);
-            if (connectedFriendCount != 0) {
-                getFollowerRes.setConnectedCount(connectedFriendCount);
+            if(onlineUserId!=userId) {
+                int connectedFriendCount = followDao.getConnectedFriendCount(onlineUserId, userId);
+                if (connectedFriendCount != 0) {
+                    getFollowerRes.setConnectedCount(connectedFriendCount);
+                }
             }
             List<Integer> followerIdList = followDao.getFollowers(userId);
             List<GetFollowUserInfoRes> getFollowerInfoResList = new ArrayList<>();
@@ -103,9 +105,11 @@ public class FollowProvider {
                     .followerCount(followDao.getFollowerCount(userId))
                     .followingCount(followDao.getFollowingCount(userId))
                     .build();
-            int connectedFriendCount = followDao.getConnectedFriendCount(onlineUserId, userId);
-            if (connectedFriendCount != 0) {
-                getFollowingRes.setConnectedCount(connectedFriendCount);
+            if(onlineUserId!=userId) {
+                int connectedFriendCount = followDao.getConnectedFriendCount(onlineUserId, userId);
+                if (connectedFriendCount != 0) {
+                    getFollowingRes.setConnectedCount(connectedFriendCount);
+                }
             }
             List<Integer> followingIdList = followDao.getFollowings(userId);
             List<GetFollowUserInfoRes> getFollowUserInfoResList = new ArrayList<>();
@@ -157,6 +161,9 @@ public class FollowProvider {
     }
 
     private void throwIfConnectedFollowNotExist(int onlineUserId, int userId) throws BaseException {
+        if(onlineUserId == userId){
+            throw new BaseException(GET_FOLLOWS_NO_CONNECTED_FOLLOWS_FOR_ONE_SELF);
+        }
         if (followDao.getConnectedFriendCount(onlineUserId, userId) == 0) {
             throw new BaseException(GET_FOLLOWS_NO_CONNECTED_FOLLOWS);
         }
@@ -166,6 +173,7 @@ public class FollowProvider {
         try {
             User user = userDao.getUser(id);
             return GetFollowUserInfoRes.builder()
+                    .userId(user.getUserId())
                     .name(user.getName())
                     .nickname(user.getNickname())
                     .profileImageUrl(user.getProfileImageUrl())

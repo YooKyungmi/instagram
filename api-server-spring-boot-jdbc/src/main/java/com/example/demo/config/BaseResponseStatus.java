@@ -60,6 +60,7 @@ public enum BaseResponseStatus {
 
     //[GET] /app/follows/connected-follows?user-id=
     GET_FOLLOWS_NO_CONNECTED_FOLLOWS(false,2034,"함께 아는 친구가 존재하지 않습니다."),
+    GET_FOLLOWS_NO_CONNECTED_FOLLOWS_FOR_ONE_SELF(false,2039,"본인에 대해서는 함께 아는 친구 정보를 제공하지 않습니다."),
 
     //[POST] /app/follows/connected-follows?user-id=
     //[PATCH] /app/follows/connected-follows?user-id=

@@ -10,6 +10,8 @@ import lombok.*;
 @Builder
 public class GetFollowUserInfoRes {
 
+    @JsonProperty("user_id")
+    private int userId;
     private String nickname;
     private String name;
     @JsonProperty("profile_image_url")
