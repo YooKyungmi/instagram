@@ -83,7 +83,12 @@ public class UserProvider {
             throw new BaseException(PASSWORD_DECRYPTION_ERROR);
         }
         if (postLoginReq.getPassword().equals(password)) {
-            throwIfInvalidUserStatus(user);
+            if (user.getAccountStatus().equals("DELETED")) {
+                throw new BaseException(POST_USERS_ACCOUNT_DELETED);
+            }
+            if (user.getAccountStatus().equals("INACTIVE")) {
+                userDao.updateUserAccountStatus(user.getUserId(),"ACTIVE");
+            }
             int userId = user.getUserId();
             String jwt = jwtService.createJwt(userId);
             return new PostLoginRes(userId, jwt);
