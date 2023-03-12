@@ -137,4 +137,24 @@ public class PostController {
             return new BaseResponse<>((exception.getStatus()));
         }
     }
+
+    /**
+     * 특정 게시물 조회 API
+     * [GET] /app/posts/:post-id
+     * @return BaseResponse<GetPostRes>
+     */
+
+    @ResponseBody
+    @PostMapping("/likes/{post-id}")
+    public BaseResponse<String> addPostLike(@PathVariable("post-id") int postId){
+        try{
+            int userIdByJwt = jwtService.getUserId();
+            postService.addPostLike(postId,userIdByJwt);
+            String result = "";
+            return new BaseResponse<>(result);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
 }

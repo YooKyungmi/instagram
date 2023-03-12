@@ -48,6 +48,17 @@ public class PostService {
         }
     }
 
+    public void addPostLike(int postId, int userId) throws BaseException{
+        throwIfInvalidUserIdDetected(userId);
+        try{
+            postDao.addPostLike(postId,userId);
+        } catch (Exception exception) {
+            logger.error("Post - addPostLike Service Error", exception);
+            throw new BaseException(POST_FAILED);
+        }
+
+    }
+
 
     private void throwIfInvalidUserIdDetected(int userId) throws BaseException {
         if (userProvider.checkUserId(userId) == 0) {

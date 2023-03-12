@@ -5,7 +5,6 @@ import com.example.demo.src.follow.FollowDao;
 import com.example.demo.src.post.model.comment.GetCommentRes;
 import com.example.demo.src.post.model.postModel.GetPostRes;
 import com.example.demo.src.user.UserDao;
-
 import com.example.demo.src.user.model.User;
 import com.example.demo.utils.JwtService;
 import org.slf4j.Logger;
@@ -47,6 +46,7 @@ public class PostProvider {
     }
 
     public List<GetPostRes> getPostProfile(int userIdByJwt, int searchUserId) throws BaseException {
+    
         throwIfInvalidUserStatus(userDao.getUser(searchUserId));
         try {
             List<GetPostRes> getPostRes = postDao.getPostProfile(userIdByJwt, searchUserId); //수정 필요
@@ -57,16 +57,6 @@ public class PostProvider {
             throw new BaseException(DATABASE_ERROR);
         }
     }
-
-    private void throwIfInvalidUserStatus(User user) throws BaseException {
-        if (user.getAccountStatus().equals("INACTIVE")) {
-            throw new BaseException(POST_USERS_ACCOUNT_INACTIVE);
-        }
-        if (user.getAccountStatus().equals("DELETED")) {
-            throw new BaseException(POST_USERS_ACCOUNT_DELETED);
-        }
-    }
-
     public List<GetPostRes> getPostFollowing(int userIdByJwt) throws BaseException {
         try {
             List<Integer> followingsList = followDao.getFollowings(userIdByJwt);
