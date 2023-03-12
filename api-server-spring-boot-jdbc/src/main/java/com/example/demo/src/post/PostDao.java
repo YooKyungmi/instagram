@@ -246,7 +246,7 @@ public class PostDao {
     }
 
 
-    public void createPost(PostPostsReq postPostsReq, int userId){
+    public int createPost(PostPostsReq postPostsReq, int userId){
         List<String> photoList = new ArrayList<>();
         for (Photo photo : postPostsReq.getPhotos() ){
             photoList.add(photo.getPhotoUrl());
@@ -279,5 +279,6 @@ public class PostDao {
                 this.jdbcTemplate.update(ContentTagQuery, ContentTagParams);
             }
         }
+        return postId;
     }
 }

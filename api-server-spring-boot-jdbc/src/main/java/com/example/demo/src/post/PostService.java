@@ -2,8 +2,13 @@ package com.example.demo.src.post;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.src.post.model.postModel.PostPostsReq;
+import com.example.demo.src.post.model.postModel.PostPostsRes;
 import com.example.demo.src.user.UserProvider;
 import com.example.demo.utils.JwtService;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,15 +34,20 @@ public class PostService {
         this.jwtService = jwtService;
     }
 
-    public void createPost(PostPostsReq postPostsReq, int userId) throws BaseException{
+    public PostPostsRes createPost(PostPostsReq postPostsReq, int userId) throws BaseException{
         throwIfInvalidUserIdDetected(userId);
         try{
-        postDao.createPost(postPostsReq,userId);
+        PostPostsRes postPostsRes = PostPostsRes.builder()
+                .postId(postDao.createPost(postPostsReq,userId))
+                .build();
+
+        return postPostsRes;
         } catch (Exception exception) {
             logger.error("Post - createPost Service Error", exception);
             throw new BaseException(POST_FAILED);
         }
     }
+
 
     private void throwIfInvalidUserIdDetected(int userId) throws BaseException {
         if (userProvider.checkUserId(userId) == 0) {
