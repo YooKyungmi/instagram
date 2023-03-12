@@ -37,7 +37,7 @@ public class PostController {
     /**
      * 특정 게시물 조회 API
      * [GET] /app/posts/:post-id
-     * @return
+     * @return BaseResponse<GetPostRes>
      */
 
     @ResponseBody
@@ -55,7 +55,7 @@ public class PostController {
     /**
      * 사용자 게시물 조회 API
      * [GET] /app/posts/profiles/user?user-id=
-     * @return
+     * @return BaseResponse<List<GetPostRes>>
      */
     @GetMapping("/profiles/user")
     public BaseResponse<List<GetPostRes>> getPostProfile(@RequestParam("user-id") Integer searchUserId) {
@@ -72,7 +72,7 @@ public class PostController {
     /**
      * 사용자 팔로우 게시물 조회 API
      * [GET] /app/posts/followings
-     * @return
+     * @return BaseResponse<List<GetPostRes>>
      */
     @GetMapping("/followings")
     public BaseResponse<List<GetPostRes>> getPostFollowing() {
@@ -88,8 +88,8 @@ public class PostController {
 
     /**
      * 게시물 댓글 조회 API
-     * [GET] /app/post/comment/:post-id
-     * @return
+     * [GET] /app/posts/comment/:post-id
+     * @return  BaseResponse<List<GetCommentRes>>
      */
     @ResponseBody
     @GetMapping("/comment/{post-id}")
@@ -106,8 +106,8 @@ public class PostController {
 
     /**
      * 댓글에 대한 대댓글 조회 API
-     * [GET] /app/post/comment/bigComment?parent-id=
-     * @return
+     * [GET] /app/posts/comment/bigComment?parent-id=
+     * @return BaseResponse<List<GetCommentRes>>
      */
     @GetMapping("/comment/bigComment")
     public BaseResponse<List<GetCommentRes>> getPostComments(@RequestParam("parent-id") Integer commentId){
@@ -119,6 +119,12 @@ public class PostController {
             return new BaseResponse<>((exception.getStatus()));
         }
     }
+
+    /**
+     * 게시물 작성 API
+     * [POST] /app/posts
+     * @return BaseResponse<String>
+     */
     @ResponseBody
     @PostMapping("")
     public BaseResponse<String> createPost(@Valid @RequestBody PostPostsReq postPostsReq){

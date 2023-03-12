@@ -85,7 +85,7 @@ public enum BaseResponseStatus {
     PASSWORD_DECRYPTION_ERROR(false, 4012, "비밀번호 복호화에 실패하였습니다."),
 
     // [POST] /app/posts
-    POST_FAILED(false, 4015, "요칭하신 데이터를 추가할 수 없습니다.");
+    POST_FAILED(false, 4016, "요칭하신 데이터를 추가할 수 없습니다.");
 
 
     // 5000 : 필요시 만들어서 쓰세요
