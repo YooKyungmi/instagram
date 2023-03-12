@@ -14,9 +14,9 @@ import java.util.List;
 public class PostPostsReq {
     private String content;
     private String place;
-    @NotNull(message ="likeShowStatus 필수 입력요소 입니다")
+    @NotNull(message ="likeShowStatus는 필수 입력요소 입니다")
     private int likeShowStatus;
-    @NotNull(message ="commentShowStatus 필수 입력요소 입니다")
+    @NotNull(message ="commentShowStatus는 필수 입력요소 입니다")
     private int commentShowStatus;
     private List<Photo> photos;
     private List<String> tagWord;

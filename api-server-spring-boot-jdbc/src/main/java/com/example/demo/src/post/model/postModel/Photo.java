@@ -12,6 +12,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Photo {
-    String photoUrl;
-    List<String> userTagId;
+    private String photoUrl;
+    private List<String> userTagId;
 }

@@ -285,19 +285,9 @@ public class PostDao {
         String lastInsertIdQuery = "select last_insert_id()";
         int postId =  this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
 
-        String UserTagQuery = "insert into UserTag (userId, postId, photoUrl) values (?,?,?)";
-        for (Photo photo : postPostsReq.getPhotos() ) {
-            for (String userTagId : photo.getUserTagId()) {
-                Object[] userTagParams = new Object[]{userTagId, postId, photo.getPhotoUrl()};
-                this.jdbcTemplate.update(UserTagQuery, userTagParams);
-            }
-        }
-        String ContentTagQuery = "insert into UserTag (userId, postId, photoUrl) values (?,?,?)";
+        addUserTag(postId,postPostsReq.getPhotos());
         if (postPostsReq.getTagWord().size()>0) {
-            for (String tagWord : postPostsReq.getTagWord()) {
-                Object[] ContentTagParams = new Object[]{postId, tagWord};
-                this.jdbcTemplate.update(ContentTagQuery, ContentTagParams);
-            }
+            addContentTag(postId,postPostsReq.getTagWord());
         }
         return postId;
     }
@@ -318,6 +308,25 @@ public class PostDao {
         String Query = "insert into CommentLike (userId,commentId) values (?,?)";
         Object[] params = new Object[]{userId, commentId};
         this.jdbcTemplate.update(Query,params);
+    }
+
+    public void addContentTag (int postId, List<String> tagWordList){
+        String ContentTagQuery = "insert into ContentTag (postId, tagWord) values (?,?)";
+            for (String tagWord : tagWordList) {
+                Object[] ContentTagParams = new Object[]{postId, tagWord};
+                this.jdbcTemplate.update(ContentTagQuery, ContentTagParams);
+        }
+    }
+
+    public void addUserTag (int postId, List<Photo> tagPhoto){
+        String checkPhotoQuery = "";
+        String UserTagQuery = "insert into UserTag (userId, postId, photoUrl) values (?,?,?)";
+        for (Photo photo : tagPhoto ) {
+            for (String userTagId : photo.getUserTagId()) {
+                Object[] userTagParams = new Object[]{userTagId, postId, photo.getPhotoUrl()};
+                this.jdbcTemplate.update(UserTagQuery, userTagParams);
+            }
+        }
     }
 
     public int createComment (int userId, PostCommentReq postCommentReq) {

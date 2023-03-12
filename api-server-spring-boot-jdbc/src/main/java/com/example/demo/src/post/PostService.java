@@ -3,14 +3,12 @@ package com.example.demo.src.post;
 import com.example.demo.config.BaseException;
 import com.example.demo.src.post.model.comment.PostCommentReq;
 import com.example.demo.src.post.model.comment.PostCommentRes;
+import com.example.demo.src.post.model.postModel.PostContentTagReq;
 import com.example.demo.src.post.model.postModel.PostPostsReq;
 import com.example.demo.src.post.model.postModel.PostPostsRes;
+import com.example.demo.src.post.model.postModel.PostUserTagReq;
 import com.example.demo.src.user.UserProvider;
 import com.example.demo.utils.JwtService;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,6 +77,25 @@ public class PostService {
             throw new BaseException(POST_FAILED);
         }
     }
+
+    public void addContentTag (PostContentTagReq postContentTagReq) throws BaseException{
+        try{
+            postDao.addContentTag(postContentTagReq.getPostId(), postContentTagReq.getTagWord());
+        }catch (Exception exception) {
+            logger.error("Post - addContentTag Service Error", exception);
+            throw new BaseException(POST_FAILED);
+        }
+    }
+
+    public void addUserTag(PostUserTagReq postUserTagReq) throws BaseException{
+        try{
+            postDao.addUserTag(postUserTagReq.getPostId(), postUserTagReq.getPhotos());
+        }catch (Exception exception) {
+            logger.error("Post - addUserTag Service Error", exception);
+            throw new BaseException(POST_FAILED);
+        }
+    }
+
 
     public PostCommentRes createComment(PostCommentReq postCommentReq, int userId) throws BaseException {
         throwIfInvalidUserIdDetected(userId);

@@ -5,16 +5,11 @@ import com.example.demo.config.BaseResponse;
 import com.example.demo.src.post.model.comment.GetCommentRes;
 import com.example.demo.src.post.model.comment.PostCommentReq;
 import com.example.demo.src.post.model.comment.PostCommentRes;
-import com.example.demo.src.post.model.postModel.GetPostRecommendRes;
-import com.example.demo.src.post.model.postModel.GetPostRes;
-import com.example.demo.src.post.model.postModel.PostPostsReq;
-import com.example.demo.src.post.model.postModel.PostPostsRes;
+import com.example.demo.src.post.model.postModel.*;
 import com.example.demo.utils.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -163,7 +158,7 @@ public class PostController {
      * @return BaseResponse<String>
      */
 
-    @ResponseBody
+
     @PostMapping("/likes/{post-id}")
     public BaseResponse<String> addPostLike(@PathVariable("post-id") int postId){
         try{
@@ -182,12 +177,46 @@ public class PostController {
      * [POST] /app/posts/srcaped/:post-id
      * @return BaseResponse<String>
      */
-    @ResponseBody
+
     @PostMapping("/scraped/{post-id}")
     public BaseResponse<String> addPostScrap(@PathVariable("post-id") int postId){
         try{
             int userIdByJwt = jwtService.getUserId();
             postService.addPostScrap(postId,userIdByJwt);
+            String result = "";
+            return new BaseResponse<>(result);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    /**
+     * 게시물 태그 추가 API
+     * [POST] /app/posts/content-tag
+     * @return BaseResponse<String>
+     */
+
+    @PostMapping("/content-tag")
+    public BaseResponse<String> addContentTag (@Valid @RequestBody PostContentTagReq postContentTagReq){
+        try{
+            postService.addContentTag(postContentTagReq);
+            String result = "";
+            return new BaseResponse<>(result);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    /**
+     * 게시물 위치 추가 API
+     * [POST] /app/posts/user-tag
+     * @return BaseResponse<String>
+     */
+
+    @PostMapping("/user-tag")
+    public BaseResponse<String> addUserTag (@Valid @RequestBody PostUserTagReq postUserTagReq){
+        try{
+            postService.addUserTag(postUserTagReq);
             String result = "";
             return new BaseResponse<>(result);
         } catch(BaseException exception){
@@ -201,7 +230,7 @@ public class PostController {
      * [POST] /app/posts/comments/like-status/:comment-id
      * @return BaseResponse<String>
      */
-    @ResponseBody
+
     @PostMapping("/comments/like-status/{comment-id}")
     public BaseResponse<String> addCommentLike(@PathVariable("comment-id") int commentId){
         try{
