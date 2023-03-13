@@ -142,4 +142,34 @@ public class StoryController {
         }
     }
 
+    /**
+     * 스토리 좋아요 수정 API
+     * [PATCH] /app/stories/likes/:story-id?user-id= & like-status =
+     *
+     * @return BaseResponse<String>
+     */
+    @PatchMapping("/likes/{story-id}")
+    public BaseResponse<String> patchFollows(@PathVariable("story-id") Integer storyId, @RequestParam("user-id")Integer userId, @RequestParam("like-status")Integer likeStatus) {
+        if(storyId==null){
+            return new BaseResponse<>(PATCH_STORIES_EMPTY_STORY_ID);
+        }
+        if(userId==null){
+            return new BaseResponse<>(PATCH_STORIES_EMPTY_USER_ID);
+        }
+        if(likeStatus==null){
+            return new BaseResponse<>(PATCH_STORIES_EMPTY_LIKE_STATUS);
+        }
+        try{
+            int userIdByJwt = jwtService.getUserId();
+            if(userIdByJwt!=userId){
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+            storyService.patchStoryLikeStatus(userId, storyId,likeStatus);
+            String result = "";
+            return new BaseResponse<>(result);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
 }

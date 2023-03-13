@@ -15,7 +15,7 @@ public class StoryDao {
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public void setDataSource(DataSource dataSource){
+    public void setDataSource(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
@@ -39,7 +39,7 @@ public class StoryDao {
         String getStoryUsersInfoQuery = "select s.updatedAt, s.userId, u.nickname, u.profileImageUrl from UserStory as s inner join User as u where userStoryId = (select userStoryId from UserStory where userId = ? and status = 1 and TIMEDIFF(current_timestamp,updatedAt)<'24:00:00' order by updatedAt desc limit 1) and u.userId=s.userId";
         int getStoryUsersInfoParams = userId;
         return this.jdbcTemplate.queryForObject(getStoryUsersInfoQuery,
-                (rs,rowNum)-> StoryProvider.StoryUser.builder()
+                (rs, rowNum) -> StoryProvider.StoryUser.builder()
                         .userId(rs.getInt("s.userId"))
                         .nickname(rs.getString("u.nickname"))
                         .profileImageUrl(rs.getString("u.profileImageUrl"))
@@ -47,7 +47,7 @@ public class StoryDao {
                         .selfStatus(selfStatus)
                         .viewStatus(viewStatus)
                         .build(),
-        getStoryUsersInfoParams);
+                getStoryUsersInfoParams);
 
     }
 
@@ -64,14 +64,14 @@ public class StoryDao {
                         .createdAt(rs.getTimestamp("s.createdAt").toString())
                         .updatedAt(rs.getTimestamp("s.updatedAt").toString())
                         .build(),
-        getStoryByUserIdParams);
+                getStoryByUserIdParams);
     }
 
     public int getStoryViewerCount(int userStoryId) {
         String getStoryViewerCountQuery = "select Count(userId) as userIdCount from StoryViewer where userStoryId = ? and userId IN (select userId from User where accountStatus = 'ACTIVE')";
         int getStoryViewerCountParams = userStoryId;
         return this.jdbcTemplate.queryForObject(getStoryViewerCountQuery,
-                (rs,rowNum)->rs.getInt("userIdCount"),
+                (rs, rowNum) -> rs.getInt("userIdCount"),
                 getStoryViewerCountParams);
     }
 
@@ -95,7 +95,7 @@ public class StoryDao {
         String getStoryByStoryIdQuery = "select s.*, nickname, profileImageUrl from UserStory as s inner join User as u where s.userStoryId = ? and u.userId = s.userId order by s.updatedAt";
         int getStoryByStoryIdParams = storyId;
         return this.jdbcTemplate.queryForObject(getStoryByStoryIdQuery,
-                (rs, rowNum)->GetStoryRes.builder()
+                (rs, rowNum) -> GetStoryRes.builder()
                         .userStoryId(rs.getInt("s.userStoryId"))
                         .userId(rs.getInt("s.userId"))
                         .nickname(rs.getString("nickname"))
@@ -109,13 +109,13 @@ public class StoryDao {
 
     public void addStoryViewer(int userStoryId, int userId) {
         String addStoryViewerQuery = "insert into StoryViewer (userStoryId, userId) VALUES (?,?)";
-        Object[] addStoryViewerParams = new Object[]{userStoryId,userId};
+        Object[] addStoryViewerParams = new Object[]{userStoryId, userId};
         this.jdbcTemplate.update(addStoryViewerQuery, addStoryViewerParams);
     }
 
     public int checkStoryViewer(int userStoryId, int userId) {
         String checkStoryViewerQuery = "select exists(select storyViewerId from StoryViewer where userStoryId = ? and userId = ?)";
-        Object[] checkStoryViewerParams = new Object[]{userStoryId,userId};
+        Object[] checkStoryViewerParams = new Object[]{userStoryId, userId};
         return this.jdbcTemplate.queryForObject(checkStoryViewerQuery,
                 int.class,
                 checkStoryViewerParams);
@@ -124,7 +124,7 @@ public class StoryDao {
     public int getStoryUserByStoryId(int storyId) {
         String getStoryUserByStoryIdQuery = "select userId from UserStory where userStoryId = ?";
         int getStoryUserByStoryIdParams = storyId;
-        return this.jdbcTemplate.queryForObject(getStoryUserByStoryIdQuery,int.class,getStoryUserByStoryIdParams);
+        return this.jdbcTemplate.queryForObject(getStoryUserByStoryIdQuery, int.class, getStoryUserByStoryIdParams);
     }
 
     public int patchStory(int status, int storyId) {
@@ -137,7 +137,7 @@ public class StoryDao {
         String getStoryViewerInfoQuery = "select s.userId, CASE WHEN u.name IS NOT NULL then u.name ELSE u.nickname END as showName, u.profileImageUrl from User as u inner join StoryViewer as s where s.userId = u.userId and s.userStoryId = ?";
         int getStoryViewerInfoParams = storyId;
         return this.jdbcTemplate.query(getStoryViewerInfoQuery,
-                (rs,rowNum)->GetStoryViewerRes.builder()
+                (rs, rowNum) -> GetStoryViewerRes.builder()
                         .userId(rs.getInt("s.userId"))
                         .name(rs.getString("showName"))
                         .profileImageUrl(rs.getString("u.profileImageUrl"))
@@ -147,9 +147,15 @@ public class StoryDao {
 
     public int checkStoryViewerLikeStatus(int userId, int storyId) {
         String checkStoryViewerLikeStatusQuery = "select likeStatus from StoryViewer where userId = ? and userStoryId = ?";
-        Object[] checkStoryViewerLikeStatusParams = new Object[]{userId,storyId};
+        Object[] checkStoryViewerLikeStatusParams = new Object[]{userId, storyId};
         return this.jdbcTemplate.queryForObject(checkStoryViewerLikeStatusQuery,
-                (rs,rowNum) -> rs.getInt("likeStatus"),
+                (rs, rowNum) -> rs.getInt("likeStatus"),
                 checkStoryViewerLikeStatusParams);
+    }
+
+    public int patchStoryLikeStatus(int userId, int storyId, int likeStatus) {
+        String patchStoryLikeStatusQuery = "update StoryViewer set likeStatus = ? where userId = ? and userStoryId = ?";
+        Object[] patchStoryLikeStatusParams = new Object[]{likeStatus, userId, storyId};
+        return this.jdbcTemplate.update(patchStoryLikeStatusQuery, patchStoryLikeStatusParams);
     }
 }
