@@ -4,6 +4,8 @@ import com.example.demo.config.BaseException;
 import com.example.demo.src.follow.FollowProvider;
 import com.example.demo.src.story.model.GetStoryRes;
 import com.example.demo.src.story.model.GetStoryUserRes;
+import com.example.demo.src.story.model.GetStoryViewerListRes;
+import com.example.demo.src.story.model.GetStoryViewerRes;
 import com.example.demo.src.user.UserProvider;
 import com.example.demo.utils.JwtService;
 import lombok.*;
@@ -86,37 +88,37 @@ public class StoryProvider {
     public List<GetStoryRes> getStoryByUserId(int userIdByJwt, int userId) throws BaseException {
         throwIfInvalidUserIdDetected(userId);
         throwIfInvalidUserStatus(userProvider.checkUserAccountStatus(userId));
-        try{
+        try {
             List<GetStoryRes> getStoryUserResList = storyDao.getStoryByUserId(userId);
-            if(userId==userIdByJwt){
+            if (userId == userIdByJwt) {
                 getStoryUserResList.forEach(res -> {
                     res.setStoryViewerCount(storyDao.getStoryViewerCount(res.getUserStoryId()));
                     res.setStoryViewerProfileImageUrls(storyDao.getStoryViewerProfileImageUrls(res.getUserStoryId()));
                 });
             }
             return getStoryUserResList;
-        }catch (Exception exception) {
+        } catch (Exception exception) {
             logger.error("App - getStoryByUserId Provider Error", exception);
             throw new BaseException(DATABASE_ERROR);
         }
     }
 
     public GetStoryRes getStoryByStoryId(int userIdByJwt, int storyId) throws BaseException {
-        if(storyDao.checkStoryId(storyId)==0){
+        if (storyDao.checkStoryId(storyId) == 0) {
             throw new BaseException(GET_STORIES_STORY_ID_NOT_EXISTS);
         }
-        try{
+        try {
             GetStoryRes getStoryRes = storyDao.getStoryByStoryId(storyId);
-            if(getStoryRes.getUserId()==userIdByJwt){
+            if (getStoryRes.getUserId() == userIdByJwt) {
                 getStoryRes.setStoryViewerCount(storyDao.getStoryViewerCount(getStoryRes.getUserStoryId()));
                 getStoryRes.setStoryViewerProfileImageUrls(storyDao.getStoryViewerProfileImageUrls(getStoryRes.getUserStoryId()));
-            }else{
-                if(storyDao.checkStoryViewer(getStoryRes.getUserStoryId(),userIdByJwt)==0) {
+            } else {
+                if (storyDao.checkStoryViewer(getStoryRes.getUserStoryId(), userIdByJwt) == 0) {
                     storyDao.addStoryViewer(getStoryRes.getUserStoryId(), userIdByJwt);
                 }
             }
             return getStoryRes;
-        }catch (Exception exception) {
+        } catch (Exception exception) {
             logger.error("App - getStoryByUserId Provider Error", exception);
             throw new BaseException(DATABASE_ERROR);
         }
@@ -139,9 +141,35 @@ public class StoryProvider {
     }
 
     public int getStoryUserByStoryId(int storyId) throws BaseException {
-        try{
+        try {
             return storyDao.getStoryUserByStoryId(storyId);
-        }catch (Exception exception) {
+        } catch (Exception exception) {
+            logger.error("App - getStoryUserByStoryId Provider Error", exception);
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public GetStoryViewerListRes getStoryViewers(int storyId) throws BaseException {
+        if (storyDao.checkStoryId(storyId) == 0) {
+            throw new BaseException(GET_STORIES_STORY_ID_NOT_EXISTS);
+        }
+        try {
+            GetStoryViewerListRes getStoryViewerListRes = GetStoryViewerListRes.builder()
+                    .storyId(storyId)
+                    .viewCount(storyDao.getStoryViewerCount(storyId))
+                    .build();
+            List<GetStoryViewerRes> getStoryViewerResList = new ArrayList<>();
+            if (getStoryViewerListRes.getViewCount() != 0) {
+                getStoryViewerResList = storyDao.getStoryViewerInfo(storyId);
+                getStoryViewerResList.forEach(res -> {
+                            res.setStoryStatus(storyDao.checkStory(res.getUserId()));
+                            res.setLikeStatus(storyDao.checkStoryViewerLikeStatus(res.getUserId(), storyId));
+                        }
+                );
+            }
+            getStoryViewerListRes.setGetStoryViewerResList(getStoryViewerResList);
+            return getStoryViewerListRes;
+        } catch (Exception exception) {
             logger.error("App - getStoryUserByStoryId Provider Error", exception);
             throw new BaseException(DATABASE_ERROR);
         }
@@ -168,7 +196,7 @@ public class StoryProvider {
                 return 1;
             } else if (this.updatedAt.compareTo(otherStoryUser.updatedAt) > 0) {
                 return -1;
-            }else{
+            } else {
                 return 0;
             }
         }
