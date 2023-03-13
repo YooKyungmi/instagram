@@ -335,6 +335,12 @@ public class PostDao {
             this.jdbcTemplate.update(ContentTagQuery, Params);
     }
 
+    public void updatePostsContent (int postId, String content){
+        String ContentTagQuery = "update Post set content = ? where postId = ?";
+        Object[] Params = new Object[]{content,postId};
+        this.jdbcTemplate.update(ContentTagQuery, Params);
+    }
+
     public void updateLikeShowStatus (int postId, Boolean status){
         String Query = "update Post set likeShowStatus = ? where postId = ?";
         Object[] Params = new Object[]{status,postId};
