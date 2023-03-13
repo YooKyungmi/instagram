@@ -24,7 +24,7 @@ public class StoryService {
         this.jwtService = jwtService;
     }
 
-    public void patchStory(int userIdByJwt, int storyId) throws BaseException {
+    public void patchStory(int storyId) throws BaseException {
         try{
             if(storyDao.checkStoryId(storyId)==0){
                 throw new BaseException(GET_STORIES_STORY_ID_NOT_EXISTS);

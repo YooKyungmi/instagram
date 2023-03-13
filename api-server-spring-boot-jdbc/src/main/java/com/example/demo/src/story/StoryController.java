@@ -4,6 +4,7 @@ import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
 import com.example.demo.src.story.model.GetStoryRes;
 import com.example.demo.src.story.model.GetStoryUserRes;
+import com.example.demo.src.story.model.GetStoryViewerListRes;
 import com.example.demo.src.user.UserProvider;
 import com.example.demo.utils.JwtService;
 import org.slf4j.Logger;
@@ -110,10 +111,33 @@ public class StoryController {
             if(userIdByJwt != storyProvider.getStoryUserByStoryId(storyId)){
                 return new BaseResponse<>(INVALID_USER_JWT);
             }
-            storyService.patchStory(userIdByJwt, storyId);
+            storyService.patchStory(storyId);
             String result = "";
             return new BaseResponse<>(result);
         } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    /**
+     * 스토리 조회한 사람 목록 조회 API
+     * [GET] /app/stories/story-viewers?story-id=
+     *
+     * @return BaseResponse<GetStoryViewerListRes>
+     */
+    @GetMapping("/story-viewers")
+    public BaseResponse<GetStoryViewerListRes> getStoryViewers(@RequestParam("story-id")Integer storyId) {
+        if(storyId==null){
+            return new BaseResponse<>(GET_STORIES_EMPTY_STORY_ID);
+        }
+        try{
+            int userIdByJwt = jwtService.getUserId();
+            if(userIdByJwt != storyProvider.getStoryUserByStoryId(storyId)){
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+            GetStoryViewerListRes getStoryViewerListRes = storyProvider.getStoryViewers(storyId);
+            return new BaseResponse<>(getStoryViewerListRes);
+        } catch(BaseException exception){
             return new BaseResponse<>((exception.getStatus()));
         }
     }

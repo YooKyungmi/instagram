@@ -1,6 +1,7 @@
 package com.example.demo.src.story;
 
 import com.example.demo.src.story.model.GetStoryRes;
+import com.example.demo.src.story.model.GetStoryViewerRes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -67,7 +68,7 @@ public class StoryDao {
     }
 
     public int getStoryViewerCount(int userStoryId) {
-        String getStoryViewerCountQuery = "select Count(userId) as userIdCount from StoryViewer where userStoryId = ?";
+        String getStoryViewerCountQuery = "select Count(userId) as userIdCount from StoryViewer where userStoryId = ? and userId IN (select userId from User where accountStatus = 'ACTIVE')";
         int getStoryViewerCountParams = userStoryId;
         return this.jdbcTemplate.queryForObject(getStoryViewerCountQuery,
                 (rs,rowNum)->rs.getInt("userIdCount"),
@@ -130,5 +131,25 @@ public class StoryDao {
         String patchStoryQuery = "update UserStory set status = ? where userStoryId = ?";
         Object[] patchStoryParams = new Object[]{status, storyId};
         return this.jdbcTemplate.update(patchStoryQuery, patchStoryParams);
+    }
+
+    public List<GetStoryViewerRes> getStoryViewerInfo(int storyId) {
+        String getStoryViewerInfoQuery = "select s.userId, CASE WHEN u.name IS NOT NULL then u.name ELSE u.nickname END as showName, u.profileImageUrl from User as u inner join StoryViewer as s where s.userId = u.userId and s.userStoryId = ?";
+        int getStoryViewerInfoParams = storyId;
+        return this.jdbcTemplate.query(getStoryViewerInfoQuery,
+                (rs,rowNum)->GetStoryViewerRes.builder()
+                        .userId(rs.getInt("s.userId"))
+                        .name(rs.getString("showName"))
+                        .profileImageUrl(rs.getString("u.profileImageUrl"))
+                        .build(),
+                getStoryViewerInfoParams);
+    }
+
+    public int checkStoryViewerLikeStatus(int userId, int storyId) {
+        String checkStoryViewerLikeStatusQuery = "select likeStatus from StoryViewer where userId = ? and userStoryId = ?";
+        Object[] checkStoryViewerLikeStatusParams = new Object[]{userId,storyId};
+        return this.jdbcTemplate.queryForObject(checkStoryViewerLikeStatusQuery,
+                (rs,rowNum) -> rs.getInt("likeStatus"),
+                checkStoryViewerLikeStatusParams);
     }
 }
