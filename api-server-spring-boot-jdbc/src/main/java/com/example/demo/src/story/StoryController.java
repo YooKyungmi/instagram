@@ -101,11 +101,14 @@ public class StoryController {
      */
     @ResponseBody
     @PatchMapping("/{story-id}")
-    public BaseResponse<String> patchStory(@PathVariable("story-id") int storyId){
+    public BaseResponse<String> patchStory(@PathVariable("story-id") Integer storyId){
+        if(storyId==null){
+            return new BaseResponse<>(PATCH_STORIES_EMPTY_STORY_ID);
+        }
         try {
             int userIdByJwt = jwtService.getUserId();
             if(userIdByJwt != storyProvider.getStoryUserByStoryId(storyId)){
-                throw new BaseException(INVALID_USER_JWT);
+                return new BaseResponse<>(INVALID_USER_JWT);
             }
             storyService.patchStory(userIdByJwt, storyId);
             String result = "";

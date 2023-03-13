@@ -77,6 +77,9 @@ public enum BaseResponseStatus {
     GET_STORIES_EMPTY_STORY_ID(false,2041,"스토리 식별자를 입력해주세요."),
     GET_STORIES_STORY_ID_NOT_EXISTS(false,2042,"존재하지 않는 스토리입니다."),
 
+    //[PATCH] /app/stories/:story-id
+    PATCH_STORIES_EMPTY_STORY_ID(false,2044,"스토리 식별자를 입력해주세요."),
+
     /**
      * 3000 : Response 오류
      */
