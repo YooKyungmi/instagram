@@ -225,7 +225,7 @@ public class PostController {
     }
 
     /**
-     * 게시물 태그 추가 API
+     * 게시물 장소 수정 API
      * [POST] /app/posts/place
      * @return BaseResponse<String>
      */
@@ -241,6 +241,39 @@ public class PostController {
         }
     }
 
+    /**
+     * 게시물 좋아요 여부 수정 API
+     * [POST] /app/posts/showed-like/{post-id}/{status}
+     * @return BaseResponse<String>
+     */
+    @PostMapping("/showed-like/{post-id}/{status}")
+    public BaseResponse<String> updateLikeShowStatus(@PathVariable("post-id") int postId,
+                                                     @PathVariable("status") boolean status){
+        try{
+            postService.updateLikeShowStatus(postId,status);
+            String result = "";
+            return new BaseResponse<>(result);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    /**
+     * 게시물 댓글 기능 여부 수정 API
+     * [POST] /app/posts/showed-comment/:post-id/:status
+     * @return BaseResponse<String>
+     */
+    @PostMapping("/showed-comment/{post-id}/{status}")
+    public BaseResponse<String> updateCommentShowStatus(@PathVariable("post-id") int postId,
+                                                     @PathVariable("status") boolean status){
+        try{
+            postService.updateCommentShowStatus(postId,status);
+            String result = "";
+            return new BaseResponse<>(result);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
 
     /**
      * 댓글 좋아요 추가 API

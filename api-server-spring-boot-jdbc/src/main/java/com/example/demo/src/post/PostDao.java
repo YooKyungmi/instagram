@@ -140,7 +140,7 @@ public class PostDao {
     }
 
     public int getPostLikeOn(int postId, int userId){
-        String Query = "select postLikeStatus from PostUser where userId = ? and postId = ?";
+        String Query = "select postLikeId from PostUser where userId = ? and postId = ?";
         Object[] params = new Object[]{userId,postId};
         try{
         return this.jdbcTemplate.queryForObject(Query,
@@ -333,6 +333,18 @@ public class PostDao {
         String ContentTagQuery = "update Post set place = ? where postId = ?";
             Object[] Params = new Object[]{place,postId};
             this.jdbcTemplate.update(ContentTagQuery, Params);
+    }
+
+    public void updateLikeShowStatus (int postId, Boolean status){
+        String Query = "update Post set likeShowStatus = ? where postId = ?";
+        Object[] Params = new Object[]{status,postId};
+        this.jdbcTemplate.update(Query, Params);
+    }
+
+    public void updateCommentShowStatus (int postId, Boolean status){
+        String Query = "update Post set commentShowStatus = ? where postId = ?";
+        Object[] Params = new Object[]{status,postId};
+        this.jdbcTemplate.update(Query, Params);
     }
 
     public int createComment (int userId, PostCommentReq postCommentReq) {
