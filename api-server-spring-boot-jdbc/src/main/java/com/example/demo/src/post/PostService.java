@@ -104,7 +104,7 @@ public class PostService {
 
     public void updatePostsContent (PatchObjectReq patchObjectReq) throws BaseException {
         try {
-            postDao.updatePlace(patchObjectReq.getPostId(), patchObjectReq.getDetail());
+            postDao.updatePostsContent(patchObjectReq.getPostId(), patchObjectReq.getDetail());
         } catch (Exception exception) {
             logger.error("Post - updatePostsContent Service Error", exception);
             throw new BaseException(POST_FAILED);
