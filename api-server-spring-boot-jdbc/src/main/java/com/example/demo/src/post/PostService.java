@@ -102,6 +102,24 @@ public class PostService {
         }
     }
 
+    public void updateLikeShowStatus(int postId, boolean status) throws BaseException{
+        try{
+            postDao.updateLikeShowStatus(postId,status);
+        }catch (Exception exception) {
+        logger.error("Post - updateLikeShowStatus Service Error", exception);
+        throw new BaseException(POST_FAILED);
+        }
+    }
+
+    public void updateCommentShowStatus(int postId, boolean status) throws BaseException{
+        try{
+            postDao.updateCommentShowStatus(postId,status);
+        }catch (Exception exception) {
+            logger.error("Post - updateCommentShowStatus Service Error", exception);
+            throw new BaseException(POST_FAILED);
+        }
+    }
+
     public PostCommentRes createComment(PostCommentReq postCommentReq, int userId) throws BaseException {
         throwIfInvalidUserIdDetected(userId);
         try {
