@@ -1,5 +1,6 @@
 package com.example.demo.src.story;
 
+import com.example.demo.src.story.model.GetStoryHistoryRes;
 import com.example.demo.src.story.model.GetStoryRes;
 import com.example.demo.src.story.model.GetStoryViewerRes;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -157,5 +158,17 @@ public class StoryDao {
         String patchStoryLikeStatusQuery = "update StoryViewer set likeStatus = ? where userId = ? and userStoryId = ?";
         Object[] patchStoryLikeStatusParams = new Object[]{likeStatus, userId, storyId};
         return this.jdbcTemplate.update(patchStoryLikeStatusQuery, patchStoryLikeStatusParams);
+    }
+
+    public List<GetStoryHistoryRes> getAllStories(int userId) {
+        String getAllStoriesQuery = "select userStoryId, storyUrl, createdAt from UserStory where userId = ? and status = 1";
+        int getAllStoriesParams = userId;
+        return this.jdbcTemplate.query(getAllStoriesQuery,
+                (rs, rowNum) -> GetStoryHistoryRes.builder()
+                        .userStoryId(rs.getInt("userStoryId"))
+                        .storyUrl(rs.getString("storyUrl"))
+                        .createdAt(rs.getTimestamp("createdAt").toString())
+                        .build(),
+                getAllStoriesParams);
     }
 }
