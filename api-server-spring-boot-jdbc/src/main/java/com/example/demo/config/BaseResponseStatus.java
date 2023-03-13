@@ -80,6 +80,11 @@ public enum BaseResponseStatus {
     //[PATCH] /app/stories/:story-id
     PATCH_STORIES_EMPTY_STORY_ID(false,2044,"스토리 식별자를 입력해주세요."),
 
+    //[PATCH] /app/stories/likes/:story-id?user-id= & like-status =
+    PATCH_STORIES_EMPTY_USER_ID(false,2045,"유저 식별자를 입력해주세요."),
+    PATCH_STORIES_EMPTY_LIKE_STATUS(false,2046,"좋아요 상태값을 입력해주세요."),
+    GET_STORIES_STORY_VIEWER_NOT_EXISTS(false, 2047,"조회한 적 없는 스토리입니다."),
+
     /**
      * 3000 : Response 오류
      */
@@ -115,6 +120,9 @@ public enum BaseResponseStatus {
 
     //[PATCH] /app/stories/:story-id
     MODIFY_FAIL_USER_STORY(false,4017,"스토리 삭제에 실패하였습니다."),
+
+    //[PATCH] /app/stories/likes/:story-id?user-id= & like-status =
+    MODIFY_FAIL_STORY_VIEWER_LIKE(false,4018,"조회한 스토리의 좋아요 수정에 실패하였습니다."),
 
 
     PASSWORD_ENCRYPTION_ERROR(false, 4011, "비밀번호 암호화에 실패하였습니다."),

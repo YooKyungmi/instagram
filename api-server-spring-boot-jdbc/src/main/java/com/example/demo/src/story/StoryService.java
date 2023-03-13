@@ -38,4 +38,22 @@ public class StoryService {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    public void patchStoryLikeStatus(int userId, int storyId, int likeStatus) throws BaseException {
+        if (storyDao.checkStoryId(storyId) == 0) {
+            throw new BaseException(GET_STORIES_STORY_ID_NOT_EXISTS);
+        }
+        if (storyDao.checkStoryViewer(storyId, userId) == 0) {
+            throw new BaseException(GET_STORIES_STORY_VIEWER_NOT_EXISTS);
+        }
+        try{
+            int result = storyDao.patchStoryLikeStatus(userId,storyId,likeStatus);
+            if (result == 0) {
+                throw new BaseException(MODIFY_FAIL_STORY_VIEWER_LIKE);
+            }
+        }catch (Exception exception) {
+            logger.error("App - patchStory Provider Error", exception);
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }
