@@ -152,7 +152,7 @@ public class PostDao {
     }
 
     public int getCommentLikeOn(int commentId, int userId){
-        String Query = "select status from CommentLike where userId = ? and commentId = ?";
+        String Query = "select commentLikeId from CommentLike where userId = ? and commentId = ?";
         Object[] params = new Object[]{userId,commentId};
         try{
             return this.jdbcTemplate.queryForObject(Query,
