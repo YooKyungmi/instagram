@@ -96,19 +96,29 @@ public enum BaseResponseStatus {
     DATABASE_ERROR(false, 4000, "데이터베이스 연결에 실패하였습니다."),
     SERVER_ERROR(false, 4001, "서버와의 연결에 실패하였습니다."),
 
-    //[PATCH] /users/{userIdx}
+    //[PATCH] /app/users/profiles/:user-id
+    //[PATCH] /app/users/accounts/:user-id?account-status=
+    //[PATCH] /app/users/user-infos/email-addresses/:user-id
+    //[PATCH] /app/users/user-infos/phone-numbers/:user-id
     MODIFY_FAIL_USER(false,4014,"유저 정보 수정에 실패하였습니다."),
+
+    //follow
 
     //[POST] /app/follows/connected-follows?user-id=
     //[PATCH] /app/follows/connected-follows?user-id=
     MODIFY_FAIL_USER_FOLLOW(false,4015,"팔로우 추가/삭제에 실패하였습니다."),
+
+    //story
+
+    //[PATCH] /app/stories/:story-id
+    MODIFY_FAIL_USER_STORY(false,4017,"스토리 삭제에 실패하였습니다."),
 
 
     PASSWORD_ENCRYPTION_ERROR(false, 4011, "비밀번호 암호화에 실패하였습니다."),
     PASSWORD_DECRYPTION_ERROR(false, 4012, "비밀번호 복호화에 실패하였습니다."),
 
     // [POST] /app/posts
-    POST_FAILED(false, 4016, "요칭하신 데이터를 추가할 수 없습니다.");
+    POST_FAILED(false, 4016, "요청하신 데이터를 추가할 수 없습니다.");
 
 
     // 5000 : 필요시 만들어서 쓰세요

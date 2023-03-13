@@ -13,8 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import static com.example.demo.config.BaseResponseStatus.GET_STORIES_EMPTY_STORY_ID;
-import static com.example.demo.config.BaseResponseStatus.GET_STORIES_EMPTY_USER_ID;
+import static com.example.demo.config.BaseResponseStatus.*;
 
 @RestController
 @RequestMapping("/app/stories")
@@ -91,6 +90,27 @@ public class StoryController {
             GetStoryRes getStoryRes = storyProvider.getStoryByStoryId(userIdByJwt,storyId);
             return new BaseResponse<>(getStoryRes);
         } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    /**
+     * 스토리 삭제 API
+     * [PATCH] /app/stories/:story-id
+     * @return BaseResponse<String>
+     */
+    @ResponseBody
+    @PatchMapping("/{story-id}")
+    public BaseResponse<String> patchStory(@PathVariable("story-id") int storyId){
+        try {
+            int userIdByJwt = jwtService.getUserId();
+            if(userIdByJwt != storyProvider.getStoryUserByStoryId(storyId)){
+                throw new BaseException(INVALID_USER_JWT);
+            }
+            storyService.patchStory(userIdByJwt, storyId);
+            String result = "";
+            return new BaseResponse<>(result);
+        } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
         }
     }
