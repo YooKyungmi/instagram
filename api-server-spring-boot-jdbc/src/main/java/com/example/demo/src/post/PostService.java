@@ -93,16 +93,24 @@ public class PostService {
         }
     }
 
-    public void updatePlace (PatchPlaceReq patchPlaceReq) throws BaseException{
+    public void updatePlace (PatchObjectReq patchObjectReq) throws BaseException{
         try{
-            postDao.updatePlace(patchPlaceReq.getPostId(), patchPlaceReq.getPlace());
+            postDao.updatePlace(patchObjectReq.getPostId(), patchObjectReq.getDetail());
         }catch (Exception exception) {
             logger.error("Post - updatePlace Service Error", exception);
             throw new BaseException(POST_FAILED);
         }
     }
 
-    public void updateLikeShowStatus(int postId, boolean status) throws BaseException{
+    public void updatePostsContent (PatchObjectReq patchObjectReq) throws BaseException {
+        try {
+            postDao.updatePlace(patchObjectReq.getPostId(), patchObjectReq.getDetail());
+        } catch (Exception exception) {
+            logger.error("Post - updatePostsContent Service Error", exception);
+            throw new BaseException(POST_FAILED);
+        }
+    }
+        public void updateLikeShowStatus(int postId, boolean status) throws BaseException{
         try{
             postDao.updateLikeShowStatus(postId,status);
         }catch (Exception exception) {

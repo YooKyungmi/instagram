@@ -226,14 +226,32 @@ public class PostController {
 
     /**
      * 게시물 장소 수정 API
-     * [POST] /app/posts/place
+     * [PATCH] /app/posts/place
      * @return BaseResponse<String>
      */
 
-    @PostMapping("/place")
-    public BaseResponse<String> updatePlace (@Valid @RequestBody PatchPlaceReq patchPlaceReq){
+    @PatchMapping("/place")
+    public BaseResponse<String> updatePlace (@Valid @RequestBody PatchObjectReq patchObjectReq){
         try{
-            postService.updatePlace(patchPlaceReq);
+            postService.updatePlace(patchObjectReq);
+            String result = "";
+            return new BaseResponse<>(result);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+
+    /**
+     * 게시물 장소 수정 API
+     * [PATCH] /app/posts/place
+     * @return BaseResponse<String>
+     */
+
+    @PatchMapping("/content")
+    public BaseResponse<String> updatePostsContent (@Valid @RequestBody PatchObjectReq patchObjectReq){
+        try{
+            postService.updatePostsContent(patchObjectReq);
             String result = "";
             return new BaseResponse<>(result);
         } catch(BaseException exception){
@@ -243,10 +261,10 @@ public class PostController {
 
     /**
      * 게시물 좋아요 여부 수정 API
-     * [POST] /app/posts/showed-like/{post-id}/{status}
+     * [PATCH] /app/posts/showed-like/{post-id}/{status}
      * @return BaseResponse<String>
      */
-    @PostMapping("/showed-like/{post-id}/{status}")
+    @PatchMapping("/showed-like/{post-id}/{status}")
     public BaseResponse<String> updateLikeShowStatus(@PathVariable("post-id") int postId,
                                                      @PathVariable("status") boolean status){
         try{
@@ -260,10 +278,10 @@ public class PostController {
 
     /**
      * 게시물 댓글 기능 여부 수정 API
-     * [POST] /app/posts/showed-comment/:post-id/:status
+     * [PATCH] /app/posts/showed-comment/:post-id/:status
      * @return BaseResponse<String>
      */
-    @PostMapping("/showed-comment/{post-id}/{status}")
+    @PatchMapping("/showed-comment/{post-id}/{status}")
     public BaseResponse<String> updateCommentShowStatus(@PathVariable("post-id") int postId,
                                                      @PathVariable("status") boolean status){
         try{
