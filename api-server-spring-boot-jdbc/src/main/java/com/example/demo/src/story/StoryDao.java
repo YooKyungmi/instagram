@@ -20,24 +20,27 @@ public class StoryDao {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
+    // and TIMEDIFF(current_timestamp,updatedAt) < '24:00:00'
     public int checkStory(int userId) {
-        String checkStoryQuery = "select exists(select userStoryId from UserStory where userId = ? and status = 1 and TIMEDIFF(current_timestamp,updatedAt) < '24:00:00')";
+        String checkStoryQuery = "select exists(select userStoryId from UserStory where userId = ? and status = 1)";
         int checkStoryParams = userId;
         return this.jdbcTemplate.queryForObject(checkStoryQuery,
                 int.class,
                 checkStoryParams);
     }
 
+    //and TIMEDIFF(current_timestamp,updatedAt) < '24:00:00'
     public int checkStoryNotViewedExist(int userId, int onlineUserId) {
-        String checkStoryQuery = "select exists(select userStoryId from UserStory where userStoryId = (select userStoryId from UserStory where userId = ? and status = 1 and TIMEDIFF(current_timestamp,updatedAt)<'24:00:00' limit 1) and userStoryId NOT IN (select userStoryId from StoryViewer where userId = ?))";
+        String checkStoryQuery = "select exists(select userStoryId from UserStory where userStoryId = (select userStoryId from UserStory where userId = ? and status = 1 limit 1) and userStoryId NOT IN (select userStoryId from StoryViewer where userId = ?))";
         Object[] checkStoryParams = new Object[]{userId, onlineUserId};
         return this.jdbcTemplate.queryForObject(checkStoryQuery,
                 int.class,
                 checkStoryParams);
     }
 
+    // and TIMEDIFF(current_timestamp,updatedAt) < '24:00:00'
     public StoryProvider.StoryUser getStoryUsersInfo(int userId, int selfStatus, int viewStatus) {
-        String getStoryUsersInfoQuery = "select s.updatedAt, s.userId, u.nickname, u.profileImageUrl from UserStory as s inner join User as u where userStoryId = (select userStoryId from UserStory where userId = ? and status = 1 and TIMEDIFF(current_timestamp,updatedAt)<'24:00:00' order by updatedAt desc limit 1) and u.userId=s.userId";
+        String getStoryUsersInfoQuery = "select s.updatedAt, s.userId, u.nickname, u.profileImageUrl from UserStory as s inner join User as u where userStoryId = (select userStoryId from UserStory where userId = ? and status = 1 order by updatedAt desc limit 1) and u.userId=s.userId";
         int getStoryUsersInfoParams = userId;
         return this.jdbcTemplate.queryForObject(getStoryUsersInfoQuery,
                 (rs, rowNum) -> StoryProvider.StoryUser.builder()
@@ -52,8 +55,9 @@ public class StoryDao {
 
     }
 
+    // and TIMEDIFF(current_timestamp,s.updatedAt)<'24:00:00'
     public List<GetStoryRes> getStoryByUserId(int userId) {
-        String getStoryByUserIdQuery = "select s.*, nickname, profileImageUrl from UserStory as s inner join User as u where s.userId = ? and s.status = 1 and TIMEDIFF(current_timestamp,s.updatedAt)<'24:00:00' and u.userId = s.userId order by s.updatedAt";
+        String getStoryByUserIdQuery = "select s.*, nickname, profileImageUrl from UserStory as s inner join User as u where s.userId = ? and s.status = 1 and u.userId = s.userId order by s.updatedAt";
         int getStoryByUserIdParams = userId;
         return this.jdbcTemplate.query(getStoryByUserIdQuery,
                 (rs, rowNum) -> GetStoryRes.builder()
@@ -84,8 +88,9 @@ public class StoryDao {
                 getStoryViewerProfileImageUrlsParams);
     }
 
+    // and TIMEDIFF(current_timestamp,updatedAt)<'24:00:00'
     public int checkStoryId(int storyId) {
-        String checkStoryIdQuery = "select exists(select userStoryId from UserStory where userStoryId=? and status = 1 and TIMEDIFF(current_timestamp,updatedAt)<'24:00:00')";
+        String checkStoryIdQuery = "select exists(select userStoryId from UserStory where userStoryId=? and status = 1)";
         int checkStoryIdParams = storyId;
         return this.jdbcTemplate.queryForObject(checkStoryIdQuery,
                 int.class,
