@@ -2,10 +2,7 @@ package com.example.demo.src.story;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.src.follow.FollowProvider;
-import com.example.demo.src.story.model.GetStoryRes;
-import com.example.demo.src.story.model.GetStoryUserRes;
-import com.example.demo.src.story.model.GetStoryViewerListRes;
-import com.example.demo.src.story.model.GetStoryViewerRes;
+import com.example.demo.src.story.model.*;
 import com.example.demo.src.user.UserProvider;
 import com.example.demo.utils.JwtService;
 import lombok.*;
@@ -171,6 +168,16 @@ public class StoryProvider {
             return getStoryViewerListRes;
         } catch (Exception exception) {
             logger.error("App - getStoryUserByStoryId Provider Error", exception);
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public List<GetStoryHistoryRes> getAllStories(int userId) throws BaseException {
+        try{
+            List<GetStoryHistoryRes> getStoryHistoryResList = storyDao.getAllStories(userId);
+            return getStoryHistoryResList;
+        }catch (Exception exception) {
+            logger.error("App - getAllStories Provider Error", exception);
             throw new BaseException(DATABASE_ERROR);
         }
     }

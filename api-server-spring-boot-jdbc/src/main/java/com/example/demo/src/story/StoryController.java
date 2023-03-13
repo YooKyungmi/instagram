@@ -2,6 +2,7 @@ package com.example.demo.src.story;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
+import com.example.demo.src.story.model.GetStoryHistoryRes;
 import com.example.demo.src.story.model.GetStoryRes;
 import com.example.demo.src.story.model.GetStoryUserRes;
 import com.example.demo.src.story.model.GetStoryViewerListRes;
@@ -143,7 +144,7 @@ public class StoryController {
     }
 
     /**
-     * 스토리 좋아요 수정 API
+     * 조회한 스토리 좋아요 수정 API
      * [PATCH] /app/stories/likes/:story-id?user-id= & like-status =
      *
      * @return BaseResponse<String>
@@ -167,6 +168,31 @@ public class StoryController {
             storyService.patchStoryLikeStatus(userId, storyId,likeStatus);
             String result = "";
             return new BaseResponse<>(result);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+
+
+    /**
+     * 특정 유저의 스토리 전체 조회 API
+     * [GET] /app/stories/histories?user-id=
+     *
+     * @return BaseResponse<List<GetStoryHistoryRes>>
+     */
+    @GetMapping("/histories")
+    public BaseResponse<List<GetStoryHistoryRes>> getAllStories(@RequestParam("user-id")Integer userId) {
+        if(userId==null){
+            return new BaseResponse<>(GET_STORIES_EMPTY_USER_ID);
+        }
+        try{
+            int userIdByJwt = jwtService.getUserId();
+            if(userIdByJwt!=userId){
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+            List<GetStoryHistoryRes> getStoryHistoryResList = storyProvider.getAllStories(userId);
+            return new BaseResponse<>(getStoryHistoryResList);
         } catch(BaseException exception){
             return new BaseResponse<>((exception.getStatus()));
         }
