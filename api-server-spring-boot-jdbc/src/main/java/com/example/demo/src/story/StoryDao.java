@@ -119,4 +119,16 @@ public class StoryDao {
                 int.class,
                 checkStoryViewerParams);
     }
+
+    public int getStoryUserByStoryId(int storyId) {
+        String getStoryUserByStoryIdQuery = "select userId from UserStory where userStoryId = ?";
+        int getStoryUserByStoryIdParams = storyId;
+        return this.jdbcTemplate.queryForObject(getStoryUserByStoryIdQuery,int.class,getStoryUserByStoryIdParams);
+    }
+
+    public int patchStory(int status, int storyId) {
+        String patchStoryQuery = "update UserStory set status = ? where userStoryId = ?";
+        Object[] patchStoryParams = new Object[]{status, storyId};
+        return this.jdbcTemplate.update(patchStoryQuery, patchStoryParams);
+    }
 }

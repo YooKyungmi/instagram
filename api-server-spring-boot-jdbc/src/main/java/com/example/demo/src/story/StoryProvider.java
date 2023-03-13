@@ -138,6 +138,15 @@ public class StoryProvider {
 
     }
 
+    public int getStoryUserByStoryId(int storyId) throws BaseException {
+        try{
+            return storyDao.getStoryUserByStoryId(storyId);
+        }catch (Exception exception) {
+            logger.error("App - getStoryUserByStoryId Provider Error", exception);
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
     @Getter
     @Setter
     @NoArgsConstructor
