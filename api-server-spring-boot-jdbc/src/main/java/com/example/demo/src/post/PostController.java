@@ -243,8 +243,8 @@ public class PostController {
 
 
     /**
-     * 게시물 장소 수정 API
-     * [PATCH] /app/posts/place
+     * 게시물 설명 수정 API
+     * [PATCH] /app/posts/content
      * @return BaseResponse<String>
      */
 
