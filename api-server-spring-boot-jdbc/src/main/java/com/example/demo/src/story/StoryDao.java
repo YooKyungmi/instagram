@@ -161,7 +161,7 @@ public class StoryDao {
     }
 
     public List<GetStoryHistoryRes> getAllStories(int userId) {
-        String getAllStoriesQuery = "select userStoryId, storyUrl, createdAt from UserStory where userId = ? and status = 1";
+        String getAllStoriesQuery = "select userStoryId, storyUrl, createdAt from UserStory where userId = ? and status = 1 order by createdAt";
         int getAllStoriesParams = userId;
         return this.jdbcTemplate.query(getAllStoriesQuery,
                 (rs, rowNum) -> GetStoryHistoryRes.builder()
