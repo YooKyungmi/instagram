@@ -4,7 +4,6 @@ import com.example.demo.config.BaseException;
 import com.example.demo.src.follow.FollowProvider;
 import com.example.demo.src.story.model.*;
 import com.example.demo.src.user.UserProvider;
-import com.example.demo.utils.JwtService;
 import lombok.*;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -21,16 +20,14 @@ import static com.example.demo.config.BaseResponseStatus.*;
 @Service
 public class StoryProvider {
     private final StoryDao storyDao;
-    private final JwtService jwtService;
     private final UserProvider userProvider;
     private final FollowProvider followProvider;
 
     final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public StoryProvider(StoryDao storyDao, JwtService jwtService, UserProvider userProvider, FollowProvider followProvider) {
+    public StoryProvider(StoryDao storyDao, UserProvider userProvider, FollowProvider followProvider) {
         this.storyDao = storyDao;
-        this.jwtService = jwtService;
         this.userProvider = userProvider;
         this.followProvider = followProvider;
     }
