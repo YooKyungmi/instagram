@@ -102,7 +102,8 @@ public class HighlightService {
             if(result == 0){
                 throw new BaseException(MODIFY_FAIL_HIGHLIGHT);
             }
-            result = patchHighlightStory(postHighlightReq.getStoryIdList(),highlightDao.getAllStoryIdByHighlightId(highlightId),highlightId);
+            List<Integer> originStoryIdList = highlightDao.getAllStoryIdByHighlightId(highlightId);
+            result = patchHighlightStory(postHighlightReq.getStoryIdList(), originStoryIdList, highlightId);
             if(result == 0){
                 throw new BaseException(MODIFY_FAIL_HIGHLIGHT);
             }
@@ -115,6 +116,9 @@ public class HighlightService {
     private int patchHighlightStory(List<Integer> storyIdList, List<Integer> originStoryIdList,int highlightId) {
         List<Integer>addIdList = storyIdList.stream().filter(id->originStoryIdList.stream().noneMatch(Predicate.isEqual(id))).collect(Collectors.toList());
         List<Integer>deleteIdList = originStoryIdList.stream().filter(id -> storyIdList.stream().noneMatch(Predicate.isEqual(id))).collect(Collectors.toList());
+        if(addIdList.size()==0 &&deleteIdList.size()==0){
+            return 1;
+        }
         int result = 0;
         for(Integer id : deleteIdList){
             result = highlightDao.deleteStoryFromHighlight(id);
