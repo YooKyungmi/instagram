@@ -1,5 +1,6 @@
 package com.example.demo.src.highlight;
 
+import com.example.demo.src.highlight.model.GetHighlightByHighlightIdRes;
 import com.example.demo.src.highlight.model.GetHighlightByUserIdRes;
 import com.example.demo.src.highlight.model.PostHighlightReq;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,5 +58,29 @@ public class HighlightDao {
                         .coverImgUrl(rs.getString("coverImgUrl"))
                         .build(),
         getHighlightsByUserIdParams);
+    }
+
+    public int checkHighlightByHighlightId(int highlightId) {
+        String checkHighlightByHighlightIdQuery = "select exists(select userHighlightId from UserHighlight where userHighlightId = ? and status = 1)";
+        int checkHighlightByHighlightIdParams = highlightId;
+        return this.jdbcTemplate.queryForObject(checkHighlightByHighlightIdQuery,
+                int.class,
+                checkHighlightByHighlightIdParams);
+    }
+
+    public List<GetHighlightByHighlightIdRes> getAllStoriesByHighlightId(int highlightId) {
+        String getAllStoriesByHighlightIdQuery = "select s.userId, s.storyUrl, s.userStoryId, s.createdAt, uh.userHighlightId, uh.title, uh.coverImgUrl from UserHighlight as uh inner join UserStory as s, Highlight as h where s.userStoryId IN (select userStoryId from Highlight where userHighlightId = ? and status = 1) and uh.userHighlightId = ? and uh.userHighlightId = h.userHighLightId and s.userStoryId = h.userStoryId and s.status = 1 order by s.createdAt";
+        Object[] getAllStoriesByHighlightIdParams = new Object[]{highlightId, highlightId};
+        return this.jdbcTemplate.query(getAllStoriesByHighlightIdQuery,
+                (rs,rowNum)->GetHighlightByHighlightIdRes.builder()
+                        .userHighlightId(rs.getInt("uh.userHighlightId"))
+                        .userId(rs.getInt("s.userId"))
+                        .storyId(rs.getInt("s.userStoryId"))
+                        .title(rs.getString("uh.title"))
+                        .coverImgUrl(rs.getString("uh.coverImgUrl"))
+                        .storyUrl(rs.getString("s.storyUrl"))
+                        .createdAt(rs.getTimestamp("s.createdAt").toString())
+                        .build(),
+                getAllStoriesByHighlightIdParams);
     }
 }

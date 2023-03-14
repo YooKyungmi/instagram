@@ -1,6 +1,7 @@
 package com.example.demo.src.highlight;
 
 import com.example.demo.config.BaseException;
+import com.example.demo.src.highlight.model.GetHighlightByHighlightIdRes;
 import com.example.demo.src.highlight.model.GetHighlightByUserIdRes;
 import com.example.demo.src.user.UserDao;
 import org.slf4j.Logger;
@@ -54,5 +55,25 @@ public class HighlightProvider {
             throw new BaseException(POST_USERS_ACCOUNT_DELETED);
         }
 
+    }
+
+    public List<GetHighlightByHighlightIdRes> getAllStoriesByHighlightId(int highlightId) throws BaseException {
+        try {
+            List<GetHighlightByHighlightIdRes> getHighlightByHighlightIdResList = highlightDao.getAllStoriesByHighlightId(highlightId);
+            return getHighlightByHighlightIdResList;
+        }catch (Exception exception) {
+            logger.error("App - getAllStoriesByHighlightId Provider Error", exception);
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public int checkHighlightByHighlightId(int highlightId) throws BaseException {
+        try {
+            return highlightDao.checkHighlightByHighlightId(highlightId);
+
+        }catch (Exception exception) {
+            logger.error("App - checkHighlightByHighlightId Provider Error", exception);
+            throw new BaseException(DATABASE_ERROR);
+        }
     }
 }

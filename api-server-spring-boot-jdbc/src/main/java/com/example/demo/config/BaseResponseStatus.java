@@ -94,6 +94,11 @@ public enum BaseResponseStatus {
 
     //[GET] /app/highlights?user-id=
     GET_HIGHLIGHTS_EMPTY_USER_ID(false,2051,"유저 식별자를 입력해주세요."),
+
+    //[GET] /app/highlights/:highlight-id
+    GET_STORIES_EMPTY_HIGHLIGHT_ID(false,2052,"하이라이트 식별자를 입력해주세요."),
+    GET_HIGHLIGHTS_INVALID_HIGHLIGHT_ID(false,2053,"존재하지 않는 하이라이트입니다."),
+
     /**
      * 3000 : Response 오류
      */
