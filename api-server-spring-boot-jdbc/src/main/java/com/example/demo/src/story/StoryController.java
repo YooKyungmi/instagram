@@ -170,6 +170,9 @@ public class StoryController {
         if(likeStatus==null){
             return new BaseResponse<>(PATCH_STORIES_EMPTY_LIKE_STATUS);
         }
+        if(likeStatus!=1&&likeStatus!=0){
+            return new BaseResponse<>(PATCH_STORIES_INVALID_LIKE_STATUS);
+        }
         try{
             int userIdByJwt = jwtService.getUserId();
             if(userIdByJwt!=userId){
@@ -182,8 +185,6 @@ public class StoryController {
             return new BaseResponse<>((exception.getStatus()));
         }
     }
-
-
 
     /**
      * 특정 유저의 스토리 전체 조회 API
@@ -203,6 +204,33 @@ public class StoryController {
             }
             List<GetStoryHistoryRes> getStoryHistoryResList = storyProvider.getAllStories(userId);
             return new BaseResponse<>(getStoryHistoryResList);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    /**
+     * 하이라이트에 스토리 추가 API
+     * [PATCH] /app/stories/:story-id?highlight-id=
+     *
+     * @return BaseResponse<String>
+     */
+    @PatchMapping("/{story-id}/highlights/{highlight-id}")
+    public BaseResponse<String> addStoryInHighlight(@PathVariable("story-id") Integer storyId, @PathVariable("highlight-id")Integer highlightId) {
+        if(storyId==null){
+            return new BaseResponse<>(PATCH_STORIES_EMPTY_STORY_ID);
+        }
+        if(highlightId==null){
+            return new BaseResponse<>(PATCH_HIGHLIGHTS_EMPTY_HIGHLIGHT_ID);
+        }
+        try{
+            int userIdByJwt = jwtService.getUserId();
+            if(userIdByJwt!=storyProvider.getStoryUserByStoryId(storyId)){
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+            storyService.addStoryInHighlight(storyId,highlightId);
+            String result = "";
+            return new BaseResponse<>(result);
         } catch(BaseException exception){
             return new BaseResponse<>((exception.getStatus()));
         }

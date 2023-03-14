@@ -135,4 +135,12 @@ public class HighlightDao {
         int deleteStoriesInDeletedHighlightParams = highlightId;
         return this.jdbcTemplate.update(deleteStoriesInDeletedHighlightQuery,deleteStoriesInDeletedHighlightParams);
     }
+
+    public int checkStoryInHighlightId(int storyId, int highlightId) {
+        String checkStoryInHighlightIdQuery = "select exists(select userStoryId from Highlight where userStoryId = ? and status = 1 and userHighlightId = ?)";
+        Object[] checkStoryInHighlightIdParams =new Object[]{storyId, highlightId};
+        return this.jdbcTemplate.queryForObject(checkStoryInHighlightIdQuery,
+                int.class,
+                checkStoryInHighlightIdParams);
+    }
 }

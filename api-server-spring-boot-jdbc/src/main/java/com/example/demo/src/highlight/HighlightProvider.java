@@ -94,4 +94,13 @@ public class HighlightProvider {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    public int checkStoryIdInHighlightId(int storyId, int highlightId) throws BaseException {
+        try{
+            return highlightDao.checkStoryInHighlightId(storyId,highlightId);
+        }catch (Exception exception) {
+            logger.error("App - checkStoryIdInHighlightId Provider Error", exception);
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }

@@ -67,6 +67,7 @@ public enum BaseResponseStatus {
     //[PATCH] /app/stories/likes/:story-id?user-id= & like-status =
     PATCH_STORIES_EMPTY_USER_ID(false,2045,"유저 식별자를 입력해주세요."),
     PATCH_STORIES_EMPTY_LIKE_STATUS(false,2046,"좋아요 상태값을 입력해주세요."),
+    PATCH_STORIES_INVALID_LIKE_STATUS(false,2054,"좋아요 상태값(1,0) 형식을 확인해주세요."),
 
     //highlight
 
@@ -123,6 +124,9 @@ public enum BaseResponseStatus {
     //[PATCH] /app/stories/likes/:story-id?user-id= & like-status =
     GET_STORIES_STORY_VIEWER_NOT_EXISTS(false, 3013,"조회한 적 없는 스토리입니다."),
 
+    //[PATCH] /app/stories/:story-id/highlights/:highlight-id
+    PATCH_STORIES_ALREADY_IN_HIGHLIGHT(false,3016,"이미 해당 하이라이트에 추가된 스토리입니다."),
+
     //highlight
 
     //[POST] /app/highlights
@@ -156,6 +160,9 @@ public enum BaseResponseStatus {
 
     //[PATCH] /app/stories/likes/:story-id?user-id= & like-status =
     MODIFY_FAIL_STORY_VIEWER_LIKE(false,4018,"조회한 스토리의 좋아요 수정에 실패하였습니다."),
+
+    //[PATCH] /app/stories/:story-id/highlights/:highlight-id
+    MODIFY_FAIL_STORY_HIGHLIGHT(false,4020,"스토리를 하이라이트에 추가하는데 실패하였습니다."),
 
     //highlight
 
