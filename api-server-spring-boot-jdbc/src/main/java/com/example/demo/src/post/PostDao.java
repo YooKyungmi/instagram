@@ -236,7 +236,7 @@ public class PostDao {
     }
 
     public List<GetCommentRes> getBigComments(int parentCommentId, int userId){
-        String Query = "Select commentId from Comment where groupId = ? and postId = ? and status = true";
+        String Query = "Select commentId from Comment where groupId = ? and status = true";
         List<GetCommentRes> postBigCommentList = new ArrayList<>();
         List<Integer> commentIdList = this.jdbcTemplate.query(Query,
                 (rs, rowNum) -> rs.getInt("commentId"),
