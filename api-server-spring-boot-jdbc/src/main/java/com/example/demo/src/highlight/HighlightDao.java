@@ -143,4 +143,18 @@ public class HighlightDao {
                 int.class,
                 checkStoryInHighlightIdParams);
     }
+
+    public int patchHighlightInfo(int highlightId, PostHighlightReq postHighlightReq) {
+        String patchHighlightInfoQuery = "update UserHighlight set title = ?, coverImgUrl = ? where userHighlightId = ?";
+        Object[] patchHighlightInfoParams = new Object[]{postHighlightReq.getTitle(),postHighlightReq.getCoverImgUrl(),highlightId};
+        return this.jdbcTemplate.update(patchHighlightInfoQuery,patchHighlightInfoParams);
+    }
+
+    public List<Integer> getAllStoryIdByHighlightId(int highlightId) {
+        String getAllStoryIdByHighlightIdQuery = "select userStoryId from Highlight where userHighlightId = ? and status = 1";
+        int getAllStoryIdByHighlightIdParams = highlightId;
+        return this.jdbcTemplate.query(getAllStoryIdByHighlightIdQuery,
+                (rs,rowNum) -> rs.getInt("userStoryId"),
+                getAllStoryIdByHighlightIdParams);
+    }
 }

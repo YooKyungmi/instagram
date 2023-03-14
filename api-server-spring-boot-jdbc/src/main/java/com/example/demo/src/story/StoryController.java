@@ -112,9 +112,6 @@ public class StoryController {
             return new BaseResponse<>(PATCH_STORIES_EMPTY_STORY_ID);
         }
         try {
-            if(storyProvider.checkStoryId(storyId)==0){
-                throw new BaseException(GET_STORIES_STORY_ID_NOT_EXISTS);
-            }
             int userIdByJwt = jwtService.getUserId();
             if(userIdByJwt != storyProvider.getStoryUserByStoryId(storyId)){
                 return new BaseResponse<>(INVALID_USER_JWT);

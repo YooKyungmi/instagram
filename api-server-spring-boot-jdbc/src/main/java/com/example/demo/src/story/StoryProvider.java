@@ -188,9 +188,9 @@ public class StoryProvider {
         }
     }
 
-    public int checkStoryId(Integer storyId) throws BaseException {
+    public int checkStoryId(int storyId) throws BaseException {
         try {
-            return storyDao.checkStory(storyId);
+            return storyDao.checkStoryId(storyId);
         } catch (Exception exception) {
             logger.error("App - checkStoryId Provider Error", exception);
             throw new BaseException(DATABASE_ERROR);

@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static com.example.demo.config.BaseResponseStatus.*;
 
@@ -71,6 +73,9 @@ public class HighlightService {
     }
 
     public void patchHighlight(int highlightId) throws BaseException {
+        if(highlightProvider.checkHighlightByHighlightId(highlightId)==0){
+            throw new BaseException(GET_HIGHLIGHTS_INVALID_HIGHLIGHT_ID);
+        }
         try{
             int result = highlightDao.deleteHighlight(highlightId);
             if(result ==0){
@@ -85,4 +90,40 @@ public class HighlightService {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    public void patchHighlightInfo(int highlightId, PostHighlightReq postHighlightReq) throws BaseException {
+        for (int storyId : postHighlightReq.getStoryIdList()) {
+            if (storyDao.checkStoryIdExists(storyId) == 0) {
+                throw new BaseException(GET_STORIES_STORY_ID_NOT_EXISTS);
+            }
+        }
+        try{
+            int result = highlightDao.patchHighlightInfo(highlightId,postHighlightReq);
+            if(result == 0){
+                throw new BaseException(MODIFY_FAIL_HIGHLIGHT);
+            }
+            result = patchHighlightStory(postHighlightReq.getStoryIdList(),highlightDao.getAllStoryIdByHighlightId(highlightId),highlightId);
+            if(result == 0){
+                throw new BaseException(MODIFY_FAIL_HIGHLIGHT);
+            }
+        }catch (Exception exception) {
+            logger.error("App - patchHighlightInfo Service Error", exception);
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    private int patchHighlightStory(List<Integer> storyIdList, List<Integer> originStoryIdList,int highlightId) {
+        List<Integer>addIdList = storyIdList.stream().filter(id->originStoryIdList.stream().noneMatch(Predicate.isEqual(id))).collect(Collectors.toList());
+        List<Integer>deleteIdList = originStoryIdList.stream().filter(id -> storyIdList.stream().noneMatch(Predicate.isEqual(id))).collect(Collectors.toList());
+        int result = 0;
+        for(Integer id : deleteIdList){
+            result = highlightDao.deleteStoryFromHighlight(id);
+        }
+        for(Integer id : addIdList){
+            result = highlightDao.createHighlight(highlightId,id);
+        }
+        return result;
+    }
+
+
 }
