@@ -31,6 +31,9 @@ public class StoryService {
     }
 
     public void patchStory(int storyId) throws BaseException {
+        if(storyProvider.checkStoryId(storyId)==0){
+            throw new BaseException(GET_STORIES_STORY_ID_NOT_EXISTS);
+        }
         try{
             int result = storyDao.patchStory(0,storyId);
             if (result == 0) {

@@ -130,7 +130,7 @@ public enum BaseResponseStatus {
     //highlight
 
     //[POST] /app/highlights
-    POST_HIGHLIGHTS_INVALID_STORY_ID(false, 3014, "존재하지 않는 스토리 식별자입니다."),
+    POST_HIGHLIGHTS_INVALID_STORY_ID(false, 3014, "존재하지 않는 스토리입니다."),
 
     //[GET] /app/highlights/:highlight-id
     GET_HIGHLIGHTS_INVALID_HIGHLIGHT_ID(false,3015,"존재하지 않는 하이라이트입니다."),

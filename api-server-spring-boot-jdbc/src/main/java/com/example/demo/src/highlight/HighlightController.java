@@ -136,9 +136,6 @@ public class HighlightController {
             return new BaseResponse<>(PATCH_HIGHLIGHTS_EMPTY_HIGHLIGHT_ID);
         }
         try {
-            if(highlightProvider.checkHighlightByHighlightId(highlightId)==0){
-                throw new BaseException(GET_HIGHLIGHTS_INVALID_HIGHLIGHT_ID);
-            }
             int userIdByJwt = jwtService.getUserId();
             if(userIdByJwt != highlightProvider.getHighlightUserByHighlightId(highlightId)){
                 return new BaseResponse<>(INVALID_USER_JWT);
@@ -151,6 +148,42 @@ public class HighlightController {
         }
     }
 
-
+    /**
+     * 하이라이트 수정 API
+     * [PATCH] app/highlights/infos/:highlight-id
+     * @return BaseResponse<String>
+     */
+    @ResponseBody
+    @PatchMapping("/infos/{highlight-id}")
+    public BaseResponse<String> patchHighlightInfo(@PathVariable(value = "highlight-id") Integer highlightId,@RequestBody PostHighlightReq postHighlightReq){
+        if(highlightId==null){
+            return new BaseResponse<>(PATCH_HIGHLIGHTS_EMPTY_HIGHLIGHT_ID);
+        }
+        if (postHighlightReq.getTitle() == null) {
+            postHighlightReq.setTitle(defaultTitle);
+        }
+        if (postHighlightReq.getCoverImgUrl() == null) {
+            postHighlightReq.setCoverImgUrl(defaultCoverImgUrl);
+        }
+        try {
+            int userIdByJwt = jwtService.getUserId();
+            if(highlightProvider.checkHighlightByHighlightId(highlightId)==0){
+                return new BaseResponse<>(GET_HIGHLIGHTS_INVALID_HIGHLIGHT_ID);
+            }
+            if(userIdByJwt != highlightProvider.getHighlightUserByHighlightId(highlightId)){
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+            if (postHighlightReq.getStoryIdList() == null || postHighlightReq.getStoryIdList().size() == 0) {
+                highlightService.patchHighlight(highlightId);
+            }else {
+                postHighlightReq.setUserId(userIdByJwt);
+                highlightService.patchHighlightInfo(highlightId, postHighlightReq);
+            }
+            String result = "";
+            return new BaseResponse<>(result);
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
 
 }
