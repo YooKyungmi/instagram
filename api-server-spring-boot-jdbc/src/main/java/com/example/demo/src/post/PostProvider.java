@@ -60,6 +60,18 @@ public class PostProvider {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    public List<GetPostRes> getPostScrap(int userIdByJwt) throws BaseException {
+
+        try {
+            List<GetPostRes> getPostRes = postDao.getPostScrap(userIdByJwt); //수정 필요
+            return getPostRes;
+
+        } catch (Exception exception) {
+            logger.error("Post - getPostScrap Provider Error", exception);
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
     public List<GetPostRes> getPostFollowing(int userIdByJwt) throws BaseException {
         try {
             List<Integer> followingsList = followDao.getFollowings(userIdByJwt);
