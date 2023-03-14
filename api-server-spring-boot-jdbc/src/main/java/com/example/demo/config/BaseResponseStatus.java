@@ -37,18 +37,7 @@ public enum BaseResponseStatus {
     POST_USERS_INVALID_NICKNAME(false,2022, "닉네임에는 영문자, 숫자, 마침표, 밑줄만 사용 가능합니다."),
     POST_USERS_EMPTY_PASSWORD(false,2023,"비밀번호를 입력해주세요."),
     POST_USERS_INVALID_PASSWORD(false,2024,"비밀번호를 6자 이상 입력해주세요."),
-    POST_USERS_EXISTS_EMAIL_ADDRESS(false,2025,"중복된 이메일입니다."),
-    POST_USERS_EXISTS_PHONE_NUMBER(false,2026,"중복된 전화번호입니다."),
-    POST_USERS_EXISTS_NICKNAME(false,2027,"중복된 닉네임입니다."),
 
-    //[POST] /app/users/login
-    POST_USERS_EMPTY_ID(false,2028,"전화번호, 이메일 주소 또는 사용자 이름을 입력해주세요."),
-    POST_USERS_ID_NOT_EXIST(false,2029,"해당 전화번호, 이메일 주소 또는 사용자 이름을 가진 유저가 존재하지 않습니다."),
-    POST_USERS_ACCOUNT_INACTIVE(false,2030,"해당 계정은 비활성화 상태입니다."),
-    POST_USERS_ACCOUNT_DELETED(false,2031,"해당 계정은 더이상 존재하지 않습니다."),
-
-    //[GET] /app/users/:user-id
-    GET_USERS_INVALID_USER_ID(false,2032, "존재하지 않는 유저입니다."),
 
     //[GET] /app/users/identifications/:userId
     GET_USERS_EMPTY_PASSWORD(false,2038,"비밀번호를 입력해주세요."),
@@ -58,16 +47,12 @@ public enum BaseResponseStatus {
 
     //[PATCH] /app/users/accounts/:user-id?account-status=
     PATCH_USERS_EMPTY_ACCOUNT_STATUS(false,2037,"변경할 계정 상태 값을 입력해주세요."),
+    PATCH_USERS_INVALID_ACCOUNT_STATUS(false,2054,"변경할 계정 상태 값 형식을 확인해주세요.(ACTIVE,INACTIVE,DELETED)"),
 
     //follows
 
     //[GET] /app/follows/connected-follows?user-id=
-    GET_FOLLOWS_NO_CONNECTED_FOLLOWS(false,2034,"함께 아는 친구가 존재하지 않습니다."),
     GET_FOLLOWS_NO_CONNECTED_FOLLOWS_FOR_ONE_SELF(false,2039,"본인에 대해서는 함께 아는 친구 정보를 제공하지 않습니다."),
-
-    //[POST] /app/follows/connected-follows?user-id=
-    //[PATCH] /app/follows/connected-follows?user-id=
-    PATCH_FOLLOWS_NOT_EXIST(false,2036,"해당 유저를 팔로우하고 있지 않습니다."),
 
     //UserStory
     //[GET] /app/stories?user-id=
@@ -75,7 +60,6 @@ public enum BaseResponseStatus {
 
     //[GET] /app/stories/:story-id
     GET_STORIES_EMPTY_STORY_ID(false,2041,"스토리 식별자를 입력해주세요."),
-    GET_STORIES_STORY_ID_NOT_EXISTS(false,2042,"존재하지 않는 스토리입니다."),
 
     //[PATCH] /app/stories/:story-id
     PATCH_STORIES_EMPTY_STORY_ID(false,2044,"스토리 식별자를 입력해주세요."),
@@ -83,13 +67,11 @@ public enum BaseResponseStatus {
     //[PATCH] /app/stories/likes/:story-id?user-id= & like-status =
     PATCH_STORIES_EMPTY_USER_ID(false,2045,"유저 식별자를 입력해주세요."),
     PATCH_STORIES_EMPTY_LIKE_STATUS(false,2046,"좋아요 상태값을 입력해주세요."),
-    GET_STORIES_STORY_VIEWER_NOT_EXISTS(false, 2047,"조회한 적 없는 스토리입니다."),
 
     //highlight
 
     //[POST] /app/highlights
     POST_HIGHLIGHTS_EMPTY_STORY_ID_LIST(false,2048,"하이라이트로 생성할 스토리를 골라주세요."),
-    POST_HIGHLIGHTS_INVALID_STORY_ID(false, 2049, "존재하지 않는 스토리 식별자입니다."),
     POST_HIGHLIGHTS_INVALID_STORY_JWT(false,2050,"해당 스토리는 유저에게 접근 권한이 없습니다."),
 
     //[GET] /app/highlights?user-id=
@@ -97,7 +79,6 @@ public enum BaseResponseStatus {
 
     //[GET] /app/highlights/:highlight-id
     GET_STORIES_EMPTY_HIGHLIGHT_ID(false,2052,"하이라이트 식별자를 입력해주세요."),
-    GET_HIGHLIGHTS_INVALID_HIGHLIGHT_ID(false,2053,"존재하지 않는 하이라이트입니다."),
 
     /**
      * 3000 : Response 오류
@@ -106,11 +87,49 @@ public enum BaseResponseStatus {
     RESPONSE_ERROR(false, 3000, "값을 불러오는데 실패하였습니다."),
 
     // [POST] /users
-    DUPLICATED_EMAIL(false, 3013, "중복된 이메일입니다."),
+    POST_USERS_EXISTS_EMAIL_ADDRESS(false,3002,"중복된 이메일입니다."),
+    POST_USERS_EXISTS_PHONE_NUMBER(false,3003,"중복된 전화번호입니다."),
+    POST_USERS_EXISTS_NICKNAME(false,3004,"중복된 닉네임입니다."),
     FAILED_TO_LOGIN(false,3014,"없는 아이디거나 비밀번호가 틀렸습니다."),
     FAILED_TO_IDENTIFY(false,3015,"비밀번호가 틀렸습니다."),
 
+    //[POST] /app/users/login
+    POST_USERS_EMPTY_ID(false,3005,"전화번호, 이메일 주소 또는 사용자 이름을 입력해주세요."),
+    POST_USERS_ID_NOT_EXIST(false,3006,"해당 전화번호, 이메일 주소 또는 사용자 이름을 가진 유저가 존재하지 않습니다."),
+    POST_USERS_ACCOUNT_INACTIVE(false,3007,"해당 계정은 비활성화 상태입니다."),
+    POST_USERS_ACCOUNT_DELETED(false,3008,"해당 계정은 더이상 존재하지 않습니다."),
 
+
+    //[GET] /app/users/:user-id
+    GET_USERS_INVALID_USER_ID(false,3009, "존재하지 않는 유저입니다."),
+
+    //follow
+
+    //[GET] /app/follows/connected-follows?user-id=
+    GET_FOLLOWS_NO_CONNECTED_FOLLOWS(false,3010,"함께 아는 친구가 존재하지 않습니다."),
+
+    //[POST] /app/follows/connected-follows?user-id=
+    //[PATCH] /app/follows/connected-follows?user-id=
+    PATCH_FOLLOWS_NOT_EXIST(false,3011,"해당 유저를 팔로우하고 있지 않습니다."),
+
+    //UserStory
+
+    //[GET] /app/stories/:story-id
+    GET_STORIES_STORY_ID_NOT_EXISTS(false,3012,"존재하지 않는 스토리입니다."),
+
+    //[PATCH] /app/stories/likes/:story-id?user-id= & like-status =
+    GET_STORIES_STORY_VIEWER_NOT_EXISTS(false, 3013,"조회한 적 없는 스토리입니다."),
+
+    //highlight
+
+    //[POST] /app/highlights
+    POST_HIGHLIGHTS_INVALID_STORY_ID(false, 3014, "존재하지 않는 스토리 식별자입니다."),
+
+    //[GET] /app/highlights/:highlight-id
+    GET_HIGHLIGHTS_INVALID_HIGHLIGHT_ID(false,3015,"존재하지 않는 하이라이트입니다."),
+
+    //[PATCH]
+    MODIFY_FAIL_HIGHLIGHT(false,3016,"하이라이트 수정/삭제에 실패하였습니다."),
 
     /**
      * 4000 : Database, Server 오류

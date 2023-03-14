@@ -2,6 +2,8 @@ package com.example.demo.src.story;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
+import com.example.demo.src.highlight.HighlightProvider;
+import com.example.demo.src.highlight.HighlightService;
 import com.example.demo.src.story.model.GetStoryHistoryRes;
 import com.example.demo.src.story.model.GetStoryRes;
 import com.example.demo.src.story.model.GetStoryUserRes;
@@ -27,11 +29,17 @@ public class StoryController {
     @Autowired
     private final StoryService storyService;
     @Autowired
+    private final HighlightService highlightService;
+    @Autowired
+    private final HighlightProvider highlightProvider;
+    @Autowired
     private final JwtService jwtService;
 
-    public StoryController(StoryProvider storyProvider, StoryService storyService, JwtService jwtService) {
+    public StoryController(StoryProvider storyProvider, StoryService storyService, HighlightService highlightService, HighlightProvider highlightProvider, JwtService jwtService) {
         this.storyProvider = storyProvider;
         this.storyService = storyService;
+        this.highlightService = highlightService;
+        this.highlightProvider = highlightProvider;
         this.jwtService = jwtService;
     }
 
@@ -104,12 +112,15 @@ public class StoryController {
             return new BaseResponse<>(PATCH_STORIES_EMPTY_STORY_ID);
         }
         try {
+            if(storyProvider.checkStoryId(storyId)==0){
+                throw new BaseException(GET_STORIES_STORY_ID_NOT_EXISTS);
+            }
             int userIdByJwt = jwtService.getUserId();
             if(userIdByJwt != storyProvider.getStoryUserByStoryId(storyId)){
                 return new BaseResponse<>(INVALID_USER_JWT);
             }
-            if(storyProvider.checkStoryId(storyId)==0){
-                throw new BaseException(GET_STORIES_STORY_ID_NOT_EXISTS);
+            if(highlightProvider.checkStoryIdInHighlight(storyId)==1) {
+                highlightService.deleteStoryFromHighlight(storyId);
             }
             storyService.patchStory(storyId);
             String result = "";

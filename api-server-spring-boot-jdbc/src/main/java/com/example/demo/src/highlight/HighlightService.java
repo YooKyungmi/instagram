@@ -10,6 +10,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 import static com.example.demo.config.BaseResponseStatus.*;
 
 @Service
@@ -47,4 +49,24 @@ public class HighlightService {
         }
     }
 
+    public void deleteStoryFromHighlight(int storyId) throws BaseException {
+        try {
+            List<Integer> highlightIdList = highlightDao.getHighlightIdByStoryId(storyId);
+            for(int userHighlightId : highlightIdList){
+                if(highlightDao.countStoryFromHighlight(userHighlightId)<=1){
+                    int r = highlightDao.deleteHighlight(userHighlightId);
+                    if(r==0){
+                        throw new BaseException(MODIFY_FAIL_HIGHLIGHT);
+                    }
+                }
+            }
+            int result = highlightDao.deleteStoryFromHighlight(storyId);
+            if (result == 0) {
+                throw new BaseException(MODIFY_FAIL_USER_STORY);
+            }
+        } catch (Exception exception) {
+            logger.error("App - createHighlight Service Error", exception);
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }
