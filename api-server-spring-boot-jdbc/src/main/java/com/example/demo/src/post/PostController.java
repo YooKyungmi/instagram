@@ -69,6 +69,22 @@ public class PostController {
     }
 
     /**
+     * 스크랩 게시물 전체 조회 API
+     * [GET] /app/posts/scraped
+     * @return BaseResponse<List<GetPostRes>>
+     */
+    @GetMapping("/scraped")
+    public BaseResponse<List<GetPostRes>> getPostScrap() {
+        try{
+            int userIdByJwt = jwtService.getUserId();
+            List<GetPostRes> getPostRes = postProvider.getPostScrap(userIdByJwt);
+            return new BaseResponse<>(getPostRes);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    /**
      * 사용자 팔로우 게시물 조회 API
      * [GET] /app/posts/followings
      * @return BaseResponse<List<GetPostRes>>
