@@ -17,5 +17,4 @@ public class PostCommentReq {
     private int groupId;
     @NotEmpty(message ="comment는 필수 입력요소 입니다.")
     private String comment;
-    private List<Integer> mention;
 }
