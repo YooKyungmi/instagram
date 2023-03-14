@@ -98,7 +98,7 @@ public class PostService {
             postDao.updatePlace(patchObjectReq.getPostId(), patchObjectReq.getDetail());
         }catch (Exception exception) {
             logger.error("Post - updatePlace Service Error", exception);
-            throw new BaseException(POST_FAILED);
+            throw new BaseException(PATCH_FAILED);
         }
     }
 
@@ -107,15 +107,15 @@ public class PostService {
             postDao.updatePostsContent(patchObjectReq.getPostId(), patchObjectReq.getDetail());
         } catch (Exception exception) {
             logger.error("Post - updatePostsContent Service Error", exception);
-            throw new BaseException(POST_FAILED);
+            throw new BaseException(PATCH_FAILED);
         }
     }
-        public void updateLikeShowStatus(int postId, boolean status) throws BaseException{
+    public void updateLikeShowStatus(int postId, boolean status) throws BaseException{
         try{
             postDao.updateLikeShowStatus(postId,status);
         }catch (Exception exception) {
         logger.error("Post - updateLikeShowStatus Service Error", exception);
-        throw new BaseException(POST_FAILED);
+        throw new BaseException(PATCH_FAILED);
         }
     }
 
@@ -124,9 +124,38 @@ public class PostService {
             postDao.updateCommentShowStatus(postId,status);
         }catch (Exception exception) {
             logger.error("Post - updateCommentShowStatus Service Error", exception);
-            throw new BaseException(POST_FAILED);
+            throw new BaseException(PATCH_FAILED);
         }
     }
+
+    public void updatePostLikeOn(int postLikeId, boolean status) throws BaseException{
+        try{
+            postDao.updatePostLikeOn(postLikeId,status);
+        }catch (Exception exception) {
+            logger.error("Post - updatePostLikeOn Service Error", exception);
+            throw new BaseException(PATCH_FAILED);
+        }
+    }
+
+    public void updateScrapOn(int scrapId, boolean status) throws BaseException{
+        try{
+            postDao.updateScrapOn(scrapId,status);
+        }catch (Exception exception) {
+            logger.error("Post - updateScrapOn Service Error", exception);
+            throw new BaseException(PATCH_FAILED);
+        }
+    }
+
+
+    public void updateCommentLikeOn(int commentLikeId, boolean status) throws BaseException{
+        try{
+            postDao.updateCommentLikeOn(commentLikeId,status);
+        }catch (Exception exception) {
+            logger.error("Post - updateCommentLikeOn Service Error", exception);
+            throw new BaseException(PATCH_FAILED);
+        }
+    }
+
 
     public PostCommentRes createComment(PostCommentReq postCommentReq, int userId) throws BaseException {
         throwIfInvalidUserIdDetected(userId);
@@ -140,6 +169,8 @@ public class PostService {
             throw new BaseException(POST_FAILED);
         }
     }
+
+
 
     private void throwIfInvalidUserIdDetected(int userId) throws BaseException {
         if (userProvider.checkUserId(userId) == 0) {

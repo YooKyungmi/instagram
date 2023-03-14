@@ -294,6 +294,59 @@ public class PostController {
     }
 
     /**
+     * 게시물 좋아요 여부 수정 API
+     * [PATCH] /app/posts/likes/:like-id/:status
+     * @return BaseResponse<String>
+     */
+    @PatchMapping("/likes/{like-id}/{status}")
+    public BaseResponse<String> updatePostLikeOn(@PathVariable("like-id") int postLikeId,
+                                                        @PathVariable("status") boolean status){
+        try{
+            postService.updatePostLikeOn(postLikeId,status);
+            String result = "";
+            return new BaseResponse<>(result);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    /**
+     * 게시물 스크랩 여부 수정 API
+     * [PATCH] /app/posts/srcaped/:scrap-id/:status
+     * @return BaseResponse<String>
+     */
+    @PatchMapping("/srcaped/{scrap-id}/{status}")
+    public BaseResponse<String> updateScrapOn(@PathVariable("scrap-id") int scrapId,
+                                                        @PathVariable("status") boolean status){
+        try{
+            postService.updateScrapOn(scrapId,status);
+            String result = "";
+            return new BaseResponse<>(result);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    /**
+     * 댓글 좋아요 여부 수정 API
+     * [PATCH] /app/posts/comments/like-status/:like-id/:status
+     * @return BaseResponse<String>
+     */
+    @PatchMapping("/comments/like-status/{like-id}/{status}")
+    public BaseResponse<String> updateCommentLikeOn(@PathVariable("like-id") int commentLikeId,
+                                                        @PathVariable("status") boolean status){
+        try{
+            postService.updateCommentLikeOn(commentLikeId,status);
+            String result = "";
+            return new BaseResponse<>(result);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+
+
+    /**
      * 댓글 좋아요 추가 API
      * [POST] /app/posts/comments/like-status/:comment-id
      * @return BaseResponse<String>

@@ -121,7 +121,7 @@ public class PostDao {
 
 
     public int getScrapOn(int postId,int userId){
-        String Query = "select status from Scrap where userId = ? and postId = ? ";
+        String Query = "select scrapId from Scrap where userId = ? and postId = ? ";
         Object[] params = new Object[]{userId,postId};
         try{
         return this.jdbcTemplate.queryForObject(Query,
@@ -319,7 +319,6 @@ public class PostDao {
     }
 
     public void addUserTag (int postId, List<Photo> tagPhoto){
-        String checkPhotoQuery = "";
         String UserTagQuery = "insert into UserTag (userId, postId, photoUrl) values (?,?,?)";
         for (Photo photo : tagPhoto ) {
             for (String userTagId : photo.getUserTagId()) {
@@ -353,6 +352,23 @@ public class PostDao {
         this.jdbcTemplate.update(Query, Params);
     }
 
+    public void updatePostLikeOn (int postLikeId, Boolean status){
+        String Query = "update PostUser set postLikeStatus = ? where postLikeId = ? and status = true";
+        Object[] Params = new Object[]{status,postLikeId};
+        this.jdbcTemplate.update(Query, Params);
+    }
+
+    public void updateScrapOn (int scrapId, Boolean status){
+        String Query = "update Scrap set status = ? where scrapId = ? ";
+        Object[] Params = new Object[]{status,scrapId};
+        this.jdbcTemplate.update(Query, Params);
+    }
+
+    public void updateCommentLikeOn (int commentLikeId, Boolean status){
+        String Query = "update CommentLike set status = ? where commentLikeId = ? ";
+        Object[] Params = new Object[]{status,commentLikeId};
+        this.jdbcTemplate.update(Query, Params);
+    }
     public int createComment (int userId, PostCommentReq postCommentReq) {
         String Query = "insert into Comment (userId,postId,groupId,comment) values (?,?,?,?)";
         Object[] params = new Object[]{userId, postCommentReq.getPostId(), postCommentReq.getGroupId(), postCommentReq.getComment()};
