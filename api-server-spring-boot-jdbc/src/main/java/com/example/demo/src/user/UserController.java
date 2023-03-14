@@ -200,6 +200,9 @@ public class UserController {
         if(accountStatus==null){
             return new BaseResponse<>(PATCH_USERS_EMPTY_ACCOUNT_STATUS);
         }
+        if(accountStatus!="INACTIVE"&&accountStatus!="ACTIVE"&&accountStatus!="DELETED"){
+            return new BaseResponse<>(PATCH_USERS_INVALID_ACCOUNT_STATUS);
+        }
         try {
             int userIdByJwt = jwtService.getUserId();
             if(userId != userIdByJwt){

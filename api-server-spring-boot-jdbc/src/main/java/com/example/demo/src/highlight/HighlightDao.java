@@ -83,4 +83,42 @@ public class HighlightDao {
                         .build(),
                 getAllStoriesByHighlightIdParams);
     }
+
+    public int deleteStoryFromHighlight(int storyId) {
+        String deleteStoryFromHighlightQuery = "update Highlight set status = 0 where userStoryId = ?";
+        int deleteStoryFromHighlightParams = storyId;
+        return this.jdbcTemplate.update(deleteStoryFromHighlightQuery,
+                deleteStoryFromHighlightParams);
+    }
+
+    public int countStoryFromHighlight(int highlightId){
+        String countStoryFromHighlightQuery = "select count(userHighlightId) from Highlight where userHighlightid =? and status = 1";
+        int countStoryFromHighLightParams = highlightId;
+        return this.jdbcTemplate.queryForObject(countStoryFromHighlightQuery,
+                int.class,
+                countStoryFromHighLightParams);
+    }
+
+    public int checkStoryInHighlight(int storyId) {
+        String checkStoryInHighlightQuery = "select exists(select userStoryId from Highlight where userStoryId = ? and status = 1)";
+        int checkStoryInHighlightParams =storyId;
+        return this.jdbcTemplate.queryForObject(checkStoryInHighlightQuery,
+                int.class,
+                checkStoryInHighlightParams);
+    }
+
+    public List<Integer> getHighlightIdByStoryId(int storyId) {
+        String getHighlightIdByStoryIdQuery = "select distinct userHighlightId from Highlight where userStoryId = ? and status = 1";
+        int getHighlightIdByStoryIdParams = storyId;
+        return this.jdbcTemplate.query(getHighlightIdByStoryIdQuery,
+                (rs,rowNum) -> rs.getInt("userHighlightId"),
+                getHighlightIdByStoryIdParams);
+    }
+
+    public int deleteHighlight(int userHighlightId) {
+        String patchHighlightQuery = "update UserHighlight set status = 0 where userHighlightId = ?";
+        int patchHighlightParams = userHighlightId;
+        return this.jdbcTemplate.update(patchHighlightQuery,
+                patchHighlightParams);
+    }
 }
