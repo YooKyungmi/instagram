@@ -24,9 +24,9 @@ public class GetPostRes {
     private int likeCount;
     private String profileName;
     private String profilePicture;
-    private int scrapOn;
+    private GetWhetherDTO scrapOn;
     private List<String> tagWord;
-    private int likeOn;
+    private GetWhetherDTO likeOn;
     private int userStoryOn;
     private int userFollowOn;
 
