@@ -199,7 +199,8 @@ public class PostController {
     @PostMapping("/content-tag")
     public BaseResponse<String> addContentTag (@Valid @RequestBody PostContentTagReq postContentTagReq){
         try{
-            postService.addContentTag(postContentTagReq);
+            int userIdByJwt = jwtService.getUserId();
+            postService.addContentTag(postContentTagReq,userIdByJwt);
             String result = "";
             return new BaseResponse<>(result);
         } catch(BaseException exception){
@@ -216,7 +217,8 @@ public class PostController {
     @PostMapping("/user-tag")
     public BaseResponse<String> addUserTag (@Valid @RequestBody PostUserTagReq postUserTagReq){
         try{
-            postService.addUserTag(postUserTagReq);
+            int userIdByJwt = jwtService.getUserId();
+            postService.addUserTag(postUserTagReq,userIdByJwt);
             String result = "";
             return new BaseResponse<>(result);
         } catch(BaseException exception){
@@ -233,7 +235,8 @@ public class PostController {
     @PatchMapping("/place")
     public BaseResponse<String> updatePlace (@Valid @RequestBody PatchObjectReq patchObjectReq){
         try{
-            postService.updatePlace(patchObjectReq);
+            int userIdByJwt = jwtService.getUserId();
+            postService.updatePlace(patchObjectReq,userIdByJwt);
             String result = "";
             return new BaseResponse<>(result);
         } catch(BaseException exception){
@@ -251,7 +254,8 @@ public class PostController {
     @PatchMapping("/content")
     public BaseResponse<String> updatePostsContent (@Valid @RequestBody PatchObjectReq patchObjectReq){
         try{
-            postService.updatePostsContent(patchObjectReq);
+            int userIdByJwt = jwtService.getUserId();
+            postService.updatePostsContent(patchObjectReq,userIdByJwt);
             String result = "";
             return new BaseResponse<>(result);
         } catch(BaseException exception){
@@ -268,7 +272,8 @@ public class PostController {
     public BaseResponse<String> updateLikeShowStatus(@PathVariable("post-id") int postId,
                                                      @PathVariable("status") boolean status){
         try{
-            postService.updateLikeShowStatus(postId,status);
+            int userIdByJwt = jwtService.getUserId();
+            postService.updateLikeShowStatus(postId,status,userIdByJwt);
             String result = "";
             return new BaseResponse<>(result);
         } catch(BaseException exception){
@@ -285,7 +290,8 @@ public class PostController {
     public BaseResponse<String> updateCommentShowStatus(@PathVariable("post-id") int postId,
                                                      @PathVariable("status") boolean status){
         try{
-            postService.updateCommentShowStatus(postId,status);
+            int userIdByJwt = jwtService.getUserId();
+            postService.updateCommentShowStatus(postId,status,userIdByJwt);
             String result = "";
             return new BaseResponse<>(result);
         } catch(BaseException exception){
@@ -302,7 +308,8 @@ public class PostController {
     public BaseResponse<String> updatePostLikeOn(@PathVariable("like-id") int postLikeId,
                                                         @PathVariable("status") boolean status){
         try{
-            postService.updatePostLikeOn(postLikeId,status);
+            int userIdByJwt = jwtService.getUserId();
+            postService.updatePostLikeOn(postLikeId,status,userIdByJwt);
             String result = "";
             return new BaseResponse<>(result);
         } catch(BaseException exception){
@@ -319,7 +326,8 @@ public class PostController {
     public BaseResponse<String> updateScrapOn(@PathVariable("scrap-id") int scrapId,
                                                         @PathVariable("status") boolean status){
         try{
-            postService.updateScrapOn(scrapId,status);
+            int userIdByJwt = jwtService.getUserId();
+            postService.updateScrapOn(scrapId,status,userIdByJwt);
             String result = "";
             return new BaseResponse<>(result);
         } catch(BaseException exception){
@@ -336,7 +344,8 @@ public class PostController {
     public BaseResponse<String> updateCommentLikeOn(@PathVariable("like-id") int commentLikeId,
                                                         @PathVariable("status") boolean status){
         try{
-            postService.updateCommentLikeOn(commentLikeId,status);
+            int userIdByJwt = jwtService.getUserId();
+            postService.updateCommentLikeOn(commentLikeId,status,userIdByJwt);
             String result = "";
             return new BaseResponse<>(result);
         } catch(BaseException exception){

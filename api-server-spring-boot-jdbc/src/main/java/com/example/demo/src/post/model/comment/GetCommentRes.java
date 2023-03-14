@@ -1,5 +1,6 @@
 package com.example.demo.src.post.model.comment;
 
+import com.example.demo.src.post.model.postModel.GetWhetherDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,6 +20,6 @@ public class GetCommentRes {
     private String updatedAt;
     private int bigCommentCount;
     private int likeCount;
-    private int likeOn;
+    private GetWhetherDTO likeOn;
 
 }

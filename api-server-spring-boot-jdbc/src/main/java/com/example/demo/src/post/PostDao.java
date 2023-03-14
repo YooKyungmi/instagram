@@ -120,15 +120,20 @@ public class PostDao {
     }
 
 
-    public int getScrapOn(int postId,int userId){
-        String Query = "select scrapId from Scrap where userId = ? and postId = ? ";
+    public GetWhetherDTO getScrapOn(int postId,int userId){
+        String Query = "select scrapId,status from Scrap where userId = ? and postId = ? ";
         Object[] params = new Object[]{userId,postId};
         try{
         return this.jdbcTemplate.queryForObject(Query,
-                int.class,
-                params);
+                (rs, rowNum) -> GetWhetherDTO.builder()
+                        .on(rs.getInt("status"))
+                        .id(rs.getInt("scrapId"))
+                        .build(), params);
         }catch (EmptyResultDataAccessException e) {
-            return 0;
+            return GetWhetherDTO.builder()
+                    .on(0)
+                    .id(0)
+                    .build();
 
         }
     }
@@ -139,27 +144,39 @@ public class PostDao {
                 (rs, rowNum) -> rs.getString("tagWord") ,postId);
     }
 
-    public int getPostLikeOn(int postId, int userId){
-        String Query = "select postLikeId from PostUser where userId = ? and postId = ?";
+    public GetWhetherDTO getPostLikeOn(int postId, int userId){
+        String Query = "select postLikeId,postLikeStatus from PostUser where userId = ? and postId = ?";
         Object[] params = new Object[]{userId,postId};
         try{
-        return this.jdbcTemplate.queryForObject(Query,
-                int.class,
-                params);
-        }catch (EmptyResultDataAccessException e){
-            return 0;
+            return this.jdbcTemplate.queryForObject(Query,
+                    (rs, rowNum) -> GetWhetherDTO.builder()
+                            .on(rs.getInt("postLikeStatus"))
+                            .id(rs.getInt("postLikeId"))
+                            .build(), params);
+        }catch (EmptyResultDataAccessException e) {
+            return GetWhetherDTO.builder()
+                    .on(0)
+                    .id(0)
+                    .build();
+
         }
     }
 
-    public int getCommentLikeOn(int commentId, int userId){
-        String Query = "select commentLikeId from CommentLike where userId = ? and commentId = ?";
+    public GetWhetherDTO getCommentLikeOn(int commentId, int userId){
+        String Query = "select commentLikeId, status from CommentLike where userId = ? and commentId = ?";
         Object[] params = new Object[]{userId,commentId};
         try{
             return this.jdbcTemplate.queryForObject(Query,
-                    int.class,
-                    params);
-        }catch (EmptyResultDataAccessException e){
-            return 0;
+                    (rs, rowNum) -> GetWhetherDTO.builder()
+                            .on(rs.getInt("status"))
+                            .id(rs.getInt("commentLikeId"))
+                            .build(), params);
+        }catch (EmptyResultDataAccessException e) {
+            return GetWhetherDTO.builder()
+                    .on(0)
+                    .id(0)
+                    .build();
+
         }
     }
 
@@ -328,45 +345,45 @@ public class PostDao {
         }
     }
 
-    public void updatePlace (int postId, String place){
-        String ContentTagQuery = "update Post set place = ? where postId = ?";
-            Object[] Params = new Object[]{place,postId};
+    public void updatePlace (int postId, String place, int userId){
+        String ContentTagQuery = "update Post set place = ? where postId = ? and userId = ?";
+            Object[] Params = new Object[]{place,postId,userId};
             this.jdbcTemplate.update(ContentTagQuery, Params);
     }
 
-    public void updatePostsContent (int postId, String content){
-        String ContentTagQuery = "update Post set content = ? where postId = ?";
-        Object[] Params = new Object[]{content,postId};
+    public void updatePostsContent (int postId, String content, int userId){
+        String ContentTagQuery = "update Post set content = ? where postId = ? and userId = ?";
+        Object[] Params = new Object[]{content,postId,userId};
         this.jdbcTemplate.update(ContentTagQuery, Params);
     }
 
-    public void updateLikeShowStatus (int postId, Boolean status){
-        String Query = "update Post set likeShowStatus = ? where postId = ?";
-        Object[] Params = new Object[]{status,postId};
+    public void updateLikeShowStatus (int postId, Boolean status, int userId){
+        String Query = "update Post set likeShowStatus = ? where postId = ? and userId = ?";
+        Object[] Params = new Object[]{status,postId,userId};
         this.jdbcTemplate.update(Query, Params);
     }
 
-    public void updateCommentShowStatus (int postId, Boolean status){
-        String Query = "update Post set commentShowStatus = ? where postId = ?";
-        Object[] Params = new Object[]{status,postId};
+    public void updateCommentShowStatus (int postId, Boolean status, int userId){
+        String Query = "update Post set commentShowStatus = ? where postId = ? and userId = ?";
+        Object[] Params = new Object[]{status,postId,userId};
         this.jdbcTemplate.update(Query, Params);
     }
 
-    public void updatePostLikeOn (int postLikeId, Boolean status){
-        String Query = "update PostUser set postLikeStatus = ? where postLikeId = ? and status = true";
-        Object[] Params = new Object[]{status,postLikeId};
+    public void updatePostLikeOn (int postLikeId, Boolean status, int userId){
+        String Query = "update PostUser set postLikeStatus = ? where postLikeId = ? and status = true and userId = ?";
+        Object[] Params = new Object[]{status,postLikeId,userId};
         this.jdbcTemplate.update(Query, Params);
     }
 
-    public void updateScrapOn (int scrapId, Boolean status){
-        String Query = "update Scrap set status = ? where scrapId = ? ";
-        Object[] Params = new Object[]{status,scrapId};
+    public void updateScrapOn (int scrapId, Boolean status, int userId){
+        String Query = "update Scrap set status = ? where scrapId = ? and userId = ? ";
+        Object[] Params = new Object[]{status,scrapId,userId};
         this.jdbcTemplate.update(Query, Params);
     }
 
-    public void updateCommentLikeOn (int commentLikeId, Boolean status){
-        String Query = "update CommentLike set status = ? where commentLikeId = ? ";
-        Object[] Params = new Object[]{status,commentLikeId};
+    public void updateCommentLikeOn (int commentLikeId, Boolean status, int userId){
+        String Query = "update CommentLike set status = ? where commentLikeId = ? and userId = ? ";
+        Object[] Params = new Object[]{status,commentLikeId,userId};
         this.jdbcTemplate.update(Query, Params);
     }
     public int createComment (int userId, PostCommentReq postCommentReq) {
