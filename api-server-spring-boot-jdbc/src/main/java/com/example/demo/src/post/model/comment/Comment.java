@@ -9,7 +9,6 @@ import javax.validation.constraints.NotEmpty;
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
-@Builder
 public class Comment {
     private int commentId;
     private int postId;
