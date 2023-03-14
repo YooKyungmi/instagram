@@ -225,11 +225,14 @@ public class PostDao {
     public List<GetCommentRes> getPostComments(int postId, int userId){
         String Query = "Select commentId from Comment where postId = ? and groupId = 0 and status = true order by createdAt DESC ";
         List<GetCommentRes> postCommentList = new ArrayList<>();
-        List<Integer> commentIdList = this.jdbcTemplate.query(Query,
-                (rs, rowNum) -> rs.getInt("commentId"),
+        List<Comment> commentList = this.jdbcTemplate.query(Query,
+                (rs, rowNum) -> Comment.builder()
+                        .commentId(rs.getInt("commentId"))
+                        .userId(rs.getInt("userId"))
+                        .build(),
                 postId);
-        for (int commentId : commentIdList ){
-            postCommentList.add(getComment(commentId,userId));
+        for (Comment comment: commentList ){
+            postCommentList.add(getComment(comment.getCommentId(),comment.getUserId()));
         }
 
         return postCommentList;

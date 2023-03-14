@@ -80,6 +80,25 @@ public enum BaseResponseStatus {
     //[PATCH] /app/stories/:story-id
     PATCH_STORIES_EMPTY_STORY_ID(false,2044,"스토리 식별자를 입력해주세요."),
 
+    //[PATCH] /app/stories/likes/:story-id?user-id= & like-status =
+    PATCH_STORIES_EMPTY_USER_ID(false,2045,"유저 식별자를 입력해주세요."),
+    PATCH_STORIES_EMPTY_LIKE_STATUS(false,2046,"좋아요 상태값을 입력해주세요."),
+    GET_STORIES_STORY_VIEWER_NOT_EXISTS(false, 2047,"조회한 적 없는 스토리입니다."),
+
+    //highlight
+
+    //[POST] /app/highlights
+    POST_HIGHLIGHTS_EMPTY_STORY_ID_LIST(false,2048,"하이라이트로 생성할 스토리를 골라주세요."),
+    POST_HIGHLIGHTS_INVALID_STORY_ID(false, 2049, "존재하지 않는 스토리 식별자입니다."),
+    POST_HIGHLIGHTS_INVALID_STORY_JWT(false,2050,"해당 스토리는 유저에게 접근 권한이 없습니다."),
+
+    //[GET] /app/highlights?user-id=
+    GET_HIGHLIGHTS_EMPTY_USER_ID(false,2051,"유저 식별자를 입력해주세요."),
+
+    //[GET] /app/highlights/:highlight-id
+    GET_STORIES_EMPTY_HIGHLIGHT_ID(false,2052,"하이라이트 식별자를 입력해주세요."),
+    GET_HIGHLIGHTS_INVALID_HIGHLIGHT_ID(false,2053,"존재하지 않는 하이라이트입니다."),
+
     /**
      * 3000 : Response 오류
      */
@@ -115,6 +134,9 @@ public enum BaseResponseStatus {
 
     //[PATCH] /app/stories/:story-id
     MODIFY_FAIL_USER_STORY(false,4017,"스토리 삭제에 실패하였습니다."),
+
+    //[PATCH] /app/stories/likes/:story-id?user-id= & like-status =
+    MODIFY_FAIL_STORY_VIEWER_LIKE(false,4018,"조회한 스토리의 좋아요 수정에 실패하였습니다."),
 
 
     PASSWORD_ENCRYPTION_ERROR(false, 4011, "비밀번호 암호화에 실패하였습니다."),

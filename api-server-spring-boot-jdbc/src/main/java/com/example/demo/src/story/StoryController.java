@@ -2,9 +2,10 @@ package com.example.demo.src.story;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
+import com.example.demo.src.story.model.GetStoryHistoryRes;
 import com.example.demo.src.story.model.GetStoryRes;
 import com.example.demo.src.story.model.GetStoryUserRes;
-import com.example.demo.src.user.UserProvider;
+import com.example.demo.src.story.model.GetStoryViewerListRes;
 import com.example.demo.utils.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,14 +28,11 @@ public class StoryController {
     private final StoryService storyService;
     @Autowired
     private final JwtService jwtService;
-    @Autowired
-    private final UserProvider userProvider;
 
-    public StoryController(StoryProvider storyProvider, StoryService storyService, JwtService jwtService, UserProvider userProvider) {
+    public StoryController(StoryProvider storyProvider, StoryService storyService, JwtService jwtService) {
         this.storyProvider = storyProvider;
         this.storyService = storyService;
         this.jwtService = jwtService;
-        this.userProvider = userProvider;
     }
 
     /**
@@ -110,10 +108,88 @@ public class StoryController {
             if(userIdByJwt != storyProvider.getStoryUserByStoryId(storyId)){
                 return new BaseResponse<>(INVALID_USER_JWT);
             }
-            storyService.patchStory(userIdByJwt, storyId);
+            storyService.patchStory(storyId);
             String result = "";
             return new BaseResponse<>(result);
         } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    /**
+     * 스토리 조회한 사람 목록 조회 API
+     * [GET] /app/stories/story-viewers?story-id=
+     *
+     * @return BaseResponse<GetStoryViewerListRes>
+     */
+    @GetMapping("/story-viewers")
+    public BaseResponse<GetStoryViewerListRes> getStoryViewers(@RequestParam("story-id")Integer storyId) {
+        if(storyId==null){
+            return new BaseResponse<>(GET_STORIES_EMPTY_STORY_ID);
+        }
+        try{
+            int userIdByJwt = jwtService.getUserId();
+            if(userIdByJwt != storyProvider.getStoryUserByStoryId(storyId)){
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+            GetStoryViewerListRes getStoryViewerListRes = storyProvider.getStoryViewers(storyId);
+            return new BaseResponse<>(getStoryViewerListRes);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    /**
+     * 조회한 스토리 좋아요 수정 API
+     * [PATCH] /app/stories/likes/:story-id?user-id= & like-status =
+     *
+     * @return BaseResponse<String>
+     */
+    @PatchMapping("/likes/{story-id}")
+    public BaseResponse<String> patchFollows(@PathVariable("story-id") Integer storyId, @RequestParam("user-id")Integer userId, @RequestParam("like-status")Integer likeStatus) {
+        if(storyId==null){
+            return new BaseResponse<>(PATCH_STORIES_EMPTY_STORY_ID);
+        }
+        if(userId==null){
+            return new BaseResponse<>(PATCH_STORIES_EMPTY_USER_ID);
+        }
+        if(likeStatus==null){
+            return new BaseResponse<>(PATCH_STORIES_EMPTY_LIKE_STATUS);
+        }
+        try{
+            int userIdByJwt = jwtService.getUserId();
+            if(userIdByJwt!=userId){
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+            storyService.patchStoryLikeStatus(userId, storyId,likeStatus);
+            String result = "";
+            return new BaseResponse<>(result);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+
+
+    /**
+     * 특정 유저의 스토리 전체 조회 API
+     * [GET] /app/stories/histories?user-id=
+     *
+     * @return BaseResponse<List<GetStoryHistoryRes>>
+     */
+    @GetMapping("/histories")
+    public BaseResponse<List<GetStoryHistoryRes>> getAllStories(@RequestParam("user-id")Integer userId) {
+        if(userId==null){
+            return new BaseResponse<>(GET_STORIES_EMPTY_USER_ID);
+        }
+        try{
+            int userIdByJwt = jwtService.getUserId();
+            if(userIdByJwt!=userId){
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+            List<GetStoryHistoryRes> getStoryHistoryResList = storyProvider.getAllStories(userId);
+            return new BaseResponse<>(getStoryHistoryResList);
+        } catch(BaseException exception){
             return new BaseResponse<>((exception.getStatus()));
         }
     }
