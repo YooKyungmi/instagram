@@ -92,6 +92,8 @@ public enum BaseResponseStatus {
     POST_HIGHLIGHTS_INVALID_STORY_ID(false, 2049, "존재하지 않는 스토리 식별자입니다."),
     POST_HIGHLIGHTS_INVALID_STORY_JWT(false,2050,"해당 스토리는 유저에게 접근 권한이 없습니다."),
 
+    //[GET] /app/highlights?user-id=
+    GET_HIGHLIGHTS_EMPTY_USER_ID(false,2051,"유저 식별자를 입력해주세요."),
     /**
      * 3000 : Response 오류
      */
