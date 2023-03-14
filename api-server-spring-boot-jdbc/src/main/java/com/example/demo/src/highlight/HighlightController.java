@@ -2,6 +2,7 @@ package com.example.demo.src.highlight;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
+import com.example.demo.src.highlight.model.GetHighlightByHighlightIdRes;
 import com.example.demo.src.highlight.model.GetHighlightByUserIdRes;
 import com.example.demo.src.highlight.model.PostHighlightReq;
 import com.example.demo.src.highlight.model.PostHighlightRes;
@@ -101,25 +102,28 @@ public class HighlightController {
         }
     }
 
-   /* *//**
-     * 특정 유저의 스토리 전체 조회 API
-     * [GET] /app/stories?user-id=
+    /**
+     * 특정 하이라이트 내 스토리 전체 조회 API
+     * [GET] /app/highlights/:highlight-id
      *
-     * @return BaseResponse<List<GetStoryRes>>
-     *//*
-    @GetMapping("")
-    public BaseResponse<List<GetStoryRes>> getStoryByUserId(@RequestParam("user-id")Integer userId) {
-        if(userId==null){
-            return new BaseResponse<>(GET_STORIES_EMPTY_USER_ID);
+     * @return BaseResponse<List<GetHighlightByHighlightIdRes>>
+     */
+    @GetMapping("/{highlight-id}")
+    public BaseResponse<List<GetHighlightByHighlightIdRes>> getHighlightByHighlightId(@PathVariable("highlight-id")Integer highlightId) {
+        if(highlightId==null){
+            return new BaseResponse<>(GET_STORIES_EMPTY_HIGHLIGHT_ID);
         }
         try{
-            int userIdByJwt = jwtService.getUserId();
-            List<GetStoryRes> getStoryResList = storyProvider.getStoryByUserId(userIdByJwt,userId);
-            return new BaseResponse<>(getStoryResList);
+            if(highlightProvider.checkHighlightByHighlightId(highlightId)==0) {
+                return new BaseResponse<>(GET_HIGHLIGHTS_INVALID_HIGHLIGHT_ID);
+            }
+            List<GetHighlightByHighlightIdRes> getHighlightByHighlightIdResList = highlightProvider.getAllStoriesByHighlightId(highlightId);
+            return new BaseResponse<>(getHighlightByHighlightIdResList);
         } catch(BaseException exception){
             return new BaseResponse<>((exception.getStatus()));
         }
     }
-*/
+
+
 
 }
