@@ -24,7 +24,7 @@ public class StoryService {
         this.jwtService = jwtService;
     }
 
-    public void patchStory(int userIdByJwt, int storyId) throws BaseException {
+    public void patchStory(int storyId) throws BaseException {
         try{
             if(storyDao.checkStoryId(storyId)==0){
                 throw new BaseException(GET_STORIES_STORY_ID_NOT_EXISTS);
@@ -32,6 +32,24 @@ public class StoryService {
             int result = storyDao.patchStory(0,storyId);
             if (result == 0) {
                 throw new BaseException(MODIFY_FAIL_USER_STORY);
+            }
+        }catch (Exception exception) {
+            logger.error("App - patchStory Provider Error", exception);
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public void patchStoryLikeStatus(int userId, int storyId, int likeStatus) throws BaseException {
+        if (storyDao.checkStoryId(storyId) == 0) {
+            throw new BaseException(GET_STORIES_STORY_ID_NOT_EXISTS);
+        }
+        if (storyDao.checkStoryViewer(storyId, userId) == 0) {
+            throw new BaseException(GET_STORIES_STORY_VIEWER_NOT_EXISTS);
+        }
+        try{
+            int result = storyDao.patchStoryLikeStatus(userId,storyId,likeStatus);
+            if (result == 0) {
+                throw new BaseException(MODIFY_FAIL_STORY_VIEWER_LIKE);
             }
         }catch (Exception exception) {
             logger.error("App - patchStory Provider Error", exception);
