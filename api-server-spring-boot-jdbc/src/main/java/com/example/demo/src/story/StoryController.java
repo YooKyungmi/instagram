@@ -6,7 +6,6 @@ import com.example.demo.src.story.model.GetStoryHistoryRes;
 import com.example.demo.src.story.model.GetStoryRes;
 import com.example.demo.src.story.model.GetStoryUserRes;
 import com.example.demo.src.story.model.GetStoryViewerListRes;
-import com.example.demo.src.user.UserProvider;
 import com.example.demo.utils.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,14 +28,11 @@ public class StoryController {
     private final StoryService storyService;
     @Autowired
     private final JwtService jwtService;
-    @Autowired
-    private final UserProvider userProvider;
 
-    public StoryController(StoryProvider storyProvider, StoryService storyService, JwtService jwtService, UserProvider userProvider) {
+    public StoryController(StoryProvider storyProvider, StoryService storyService, JwtService jwtService) {
         this.storyProvider = storyProvider;
         this.storyService = storyService;
         this.jwtService = jwtService;
-        this.userProvider = userProvider;
     }
 
     /**

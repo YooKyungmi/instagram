@@ -176,4 +176,12 @@ public class StoryDao {
                         .build(),
                 getAllStoriesParams);
     }
+
+    public int checkStoryIdExists(int storyId) {
+        String checkStoryQuery = "select exists(select userStoryId from UserStory where userStoryId = ? and status = 1)";
+        int checkStoryParams = storyId;
+        return this.jdbcTemplate.queryForObject(checkStoryQuery,
+                int.class,
+                checkStoryParams);
+    }
 }

@@ -173,11 +173,20 @@ public class StoryProvider {
     }
 
     public List<GetStoryHistoryRes> getAllStories(int userId) throws BaseException {
-        try{
+        try {
             List<GetStoryHistoryRes> getStoryHistoryResList = storyDao.getAllStories(userId);
             return getStoryHistoryResList;
-        }catch (Exception exception) {
+        } catch (Exception exception) {
             logger.error("App - getAllStories Provider Error", exception);
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public int checkStoryIdExists(int storyId) throws BaseException {
+        try {
+            return storyDao.checkStoryIdExists(storyId);
+        } catch (Exception exception) {
+            logger.error("App - checkStoryIdExists Provider Error", exception);
             throw new BaseException(DATABASE_ERROR);
         }
     }
