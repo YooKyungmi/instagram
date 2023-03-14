@@ -223,7 +223,7 @@ public class PostDao {
     }
 
     public List<GetCommentRes> getPostComments(int postId, int userId){
-        String Query = "Select commentId from Comment where postId = ? and groupId is null and status = true";
+        String Query = "Select commentId from Comment where postId = ? and groupId = 0 and status = true order by createdAt DESC ";
         List<GetCommentRes> postCommentList = new ArrayList<>();
         List<Integer> commentIdList = this.jdbcTemplate.query(Query,
                 (rs, rowNum) -> rs.getInt("commentId"),
@@ -359,13 +359,6 @@ public class PostDao {
         this.jdbcTemplate.update(Query, params);
         String lastInsertIdQuery = "select last_insert_id()";
         int commentId = this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
-        String mentionQuery = "insert into mention (userId, commentId) values (?,?)";
-        if (postCommentReq.getMention().size()>0){
-            for (Integer mentionId : postCommentReq.getMention()) {
-                Object[] mentionParams = new Object[]{mentionId, commentId};
-                this.jdbcTemplate.update(mentionQuery, mentionParams);
-            }
-        }
         return commentId;
     }
 }
