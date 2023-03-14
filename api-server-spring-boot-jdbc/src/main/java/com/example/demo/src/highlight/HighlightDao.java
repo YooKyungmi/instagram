@@ -121,4 +121,18 @@ public class HighlightDao {
         return this.jdbcTemplate.update(patchHighlightQuery,
                 patchHighlightParams);
     }
+
+    public int getHighlightUserByHighlightId(int highlightId) {
+        String getHighlightUserByHighlightIdQuery = "select userId from UserHighlight where userHighlightId = ?";
+        int getHighlightUserByHighlightIdParams = highlightId;
+        return this.jdbcTemplate.queryForObject(getHighlightUserByHighlightIdQuery,
+                (rs,rowNum)->rs.getInt("userId"),
+                getHighlightUserByHighlightIdParams);
+    }
+
+    public int deleteStoriesInDeletedHighlight(int highlightId) {
+        String deleteStoriesInDeletedHighlightQuery = "update Highlight set status = 0 where userHighlightId = ?";
+        int deleteStoriesInDeletedHighlightParams = highlightId;
+        return this.jdbcTemplate.update(deleteStoriesInDeletedHighlightQuery,deleteStoriesInDeletedHighlightParams);
+    }
 }

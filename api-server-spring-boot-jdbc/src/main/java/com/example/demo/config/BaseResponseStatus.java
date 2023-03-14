@@ -80,6 +80,9 @@ public enum BaseResponseStatus {
     //[GET] /app/highlights/:highlight-id
     GET_STORIES_EMPTY_HIGHLIGHT_ID(false,2052,"하이라이트 식별자를 입력해주세요."),
 
+    //[PATCH] /app/highlights/:highlight-id
+    PATCH_HIGHLIGHTS_EMPTY_HIGHLIGHT_ID(false,2053,"하이라이트 식별자를 입력해주세요."),
+
     /**
      * 3000 : Response 오류
      */
@@ -128,9 +131,6 @@ public enum BaseResponseStatus {
     //[GET] /app/highlights/:highlight-id
     GET_HIGHLIGHTS_INVALID_HIGHLIGHT_ID(false,3015,"존재하지 않는 하이라이트입니다."),
 
-    //[PATCH]
-    MODIFY_FAIL_HIGHLIGHT(false,3016,"하이라이트 수정/삭제에 실패하였습니다."),
-
     /**
      * 4000 : Database, Server 오류
      */
@@ -157,6 +157,10 @@ public enum BaseResponseStatus {
     //[PATCH] /app/stories/likes/:story-id?user-id= & like-status =
     MODIFY_FAIL_STORY_VIEWER_LIKE(false,4018,"조회한 스토리의 좋아요 수정에 실패하였습니다."),
 
+    //highlight
+
+    //[PATCH] /app/highlights/:highlight-id
+    MODIFY_FAIL_HIGHLIGHT(false,4019,"하이라이트 수정/삭제에 실패하였습니다."),
 
     PASSWORD_ENCRYPTION_ERROR(false, 4011, "비밀번호 암호화에 실패하였습니다."),
     PASSWORD_DECRYPTION_ERROR(false, 4012, "비밀번호 복호화에 실패하였습니다."),

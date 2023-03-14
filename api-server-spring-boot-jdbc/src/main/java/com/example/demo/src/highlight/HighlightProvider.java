@@ -85,4 +85,13 @@ public class HighlightProvider {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    public int getHighlightUserByHighlightId(int highlightId) throws BaseException {
+        try{
+            return highlightDao.getHighlightUserByHighlightId(highlightId);
+        }catch (Exception exception) {
+            logger.error("App - getHighlightUserByHighlightId Provider Error", exception);
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }

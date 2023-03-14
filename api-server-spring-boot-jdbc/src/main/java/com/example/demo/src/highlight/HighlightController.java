@@ -124,4 +124,31 @@ public class HighlightController {
         }
     }
 
+    /**
+     * 하이라이트 삭제 API
+     * [PATCH] app/highlights/:highlight-id
+     * @return BaseResponse<String>
+     */
+    @ResponseBody
+    @PatchMapping("/{highlight-id}")
+    public BaseResponse<String> patchHighlight(@PathVariable(value = "highlight-id") Integer highlightId){
+        if(highlightId==null){
+            return new BaseResponse<>(PATCH_HIGHLIGHTS_EMPTY_HIGHLIGHT_ID);
+        }
+        try {
+            if(highlightProvider.checkHighlightByHighlightId(highlightId)==0){
+                throw new BaseException(GET_HIGHLIGHTS_INVALID_HIGHLIGHT_ID);
+            }
+            int userIdByJwt = jwtService.getUserId();
+            if(userIdByJwt != highlightProvider.getHighlightUserByHighlightId(highlightId)){
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+            highlightService.patchHighlight(highlightId);
+            String result = "";
+            return new BaseResponse<>(result);
+        } catch (BaseException exception) {
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
 }

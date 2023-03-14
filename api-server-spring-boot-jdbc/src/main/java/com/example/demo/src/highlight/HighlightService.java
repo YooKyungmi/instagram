@@ -69,4 +69,20 @@ public class HighlightService {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    public void patchHighlight(int highlightId) throws BaseException {
+        try{
+            int result = highlightDao.deleteHighlight(highlightId);
+            if(result ==0){
+                throw new BaseException(MODIFY_FAIL_HIGHLIGHT);
+            }
+            result = highlightDao.deleteStoriesInDeletedHighlight(highlightId);
+            if(result ==0){
+                throw new BaseException(MODIFY_FAIL_HIGHLIGHT);
+            }
+        }catch (Exception exception) {
+            logger.error("App - patchHighlight Service Error", exception);
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }
