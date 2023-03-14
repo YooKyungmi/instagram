@@ -225,21 +225,18 @@ public class PostDao {
     public List<GetCommentRes> getPostComments(int postId, int userId){
         String Query = "Select commentId from Comment where postId = ? and groupId = 0 and status = true order by createdAt DESC ";
         List<GetCommentRes> postCommentList = new ArrayList<>();
-        List<Comment> commentList = this.jdbcTemplate.query(Query,
-                (rs, rowNum) -> Comment.builder()
-                        .commentId(rs.getInt("commentId"))
-                        .userId(rs.getInt("userId"))
-                        .build(),
+        List<Integer> commentList = this.jdbcTemplate.query(Query,
+                (rs, rowNum) -> rs.getInt("commentId"),
                 postId);
-        for (Comment comment: commentList ){
-            postCommentList.add(getComment(comment.getCommentId(),comment.getUserId()));
+        for (int commentId: commentList ){
+            postCommentList.add(getComment(commentId,userId));
         }
 
         return postCommentList;
     }
 
     public List<GetCommentRes> getBigComments(int parentCommentId, int userId){
-        String Query = "Select commentId from Comment where groupId = ? and status = true";
+        String Query = "Select commentId from Comment where groupId = ? and postId = ? and status = true";
         List<GetCommentRes> postBigCommentList = new ArrayList<>();
         List<Integer> commentIdList = this.jdbcTemplate.query(Query,
                 (rs, rowNum) -> rs.getInt("commentId"),
