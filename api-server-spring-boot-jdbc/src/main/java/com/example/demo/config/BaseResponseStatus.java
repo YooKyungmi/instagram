@@ -85,6 +85,13 @@ public enum BaseResponseStatus {
     PATCH_STORIES_EMPTY_LIKE_STATUS(false,2046,"좋아요 상태값을 입력해주세요."),
     GET_STORIES_STORY_VIEWER_NOT_EXISTS(false, 2047,"조회한 적 없는 스토리입니다."),
 
+    //highlight
+
+    //[POST] /app/highlights
+    POST_HIGHLIGHTS_EMPTY_STORY_ID_LIST(false,2048,"하이라이트로 생성할 스토리를 골라주세요."),
+    POST_HIGHLIGHTS_INVALID_STORY_ID(false, 2049, "존재하지 않는 스토리 식별자입니다."),
+    POST_HIGHLIGHTS_INVALID_STORY_JWT(false,2050,"해당 스토리는 유저에게 접근 권한이 없습니다."),
+
     /**
      * 3000 : Response 오류
      */
