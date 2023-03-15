@@ -166,4 +166,10 @@ public class UserDao {
                         .build(),
                 searchByUserNicknameParams);
     }
+
+    public int modifyProfileImage(PatchProfileImageReq patchProfileImageReq) {
+        String modifyProfileImageQuery ="update User set profileImageUrl = ? where userId = ?";
+        Object[] modifyProfileImageParams = new Object[]{patchProfileImageReq.getProfileImageUrl(),patchProfileImageReq.getUserId()};
+        return this.jdbcTemplate.update(modifyProfileImageQuery,modifyProfileImageParams);
+    }
 }

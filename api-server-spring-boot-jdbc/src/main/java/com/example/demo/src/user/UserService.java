@@ -146,4 +146,16 @@ public class UserService {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    public void modifyProfileImage(PatchProfileImageReq patchProfileImageReq) throws BaseException {
+        try{
+            int result = userDao.modifyProfileImage(patchProfileImageReq);
+            if (result == 0) {
+                throw new BaseException(MODIFY_FAIL_USER);
+            }
+        }catch (Exception exception) {
+            logger.error("App - modifyProfileImage Service Error", exception);
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
 }
