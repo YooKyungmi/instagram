@@ -151,6 +151,7 @@ public class HighlightController {
     /**
      * 하이라이트 수정 API
      * [PATCH] /app/highlights/infos/:highlight-id
+     *
      * @return BaseResponse<String>
      */
     @ResponseBody

@@ -191,6 +191,17 @@ public class PostDao {
         return getPostResList;
     }
 
+    public List<GetPostRes> getPostScrap(int userId){
+        List<GetPostRes> getPostResList  = new ArrayList<>();
+        String Query ="select postId from Scrap where userId = ? and status = true order by createdAt DESC";
+        List<Integer> postList = this.jdbcTemplate.query(Query,
+                (rs, rowNum) -> rs.getInt("postId") ,userId);
+        for (int postId : postList ){
+            getPostResList.add(getPost(postId, userId));
+        }
+        return getPostResList;
+    }
+
     public List<GetPostRes> getPostFollowing(int userId,List<Integer> followingsList){
         List<GetPostRes> getPostResList  = new ArrayList<>();
         String followList=followingsList.toString();
