@@ -78,6 +78,9 @@ public class PostService {
     @Transactional
     public void addContentTag (PostContentTagReq postContentTagReq, int userId) throws BaseException{
         throwIfInvalidUserIdDetected(userId);
+        if (!(postDao.checkPostUser(userId, postContentTagReq.getPostId()))){
+            throw new BaseException(NO_AUTHORIZED);
+        }
         try{
             postDao.addContentTag(postContentTagReq.getPostId(), postContentTagReq.getTagWord());
         }catch (Exception exception) {
@@ -88,6 +91,9 @@ public class PostService {
     @Transactional
     public void addUserTag(PostUserTagReq postUserTagReq, int userId) throws BaseException{
         throwIfInvalidUserIdDetected(userId);
+        if (!(postDao.checkPostUser(userId, postUserTagReq.getPostId()))){
+            throw new BaseException(NO_AUTHORIZED);
+        }
         try{
             postDao.addUserTag(postUserTagReq.getPostId(), postUserTagReq.getPhotos());
         }catch (Exception exception) {
@@ -98,6 +104,9 @@ public class PostService {
     @Transactional
     public void updatePlace (PatchObjectReq patchObjectReq, int userId) throws BaseException{
         throwIfInvalidUserIdDetected(userId);
+        if (!(postDao.checkPostUser(userId, patchObjectReq.getPostId()))){
+            throw new BaseException(NO_AUTHORIZED);
+        }
         try{
             postDao.updatePlace(patchObjectReq.getPostId(), patchObjectReq.getDetail(),userId);
         }catch (Exception exception) {
@@ -108,6 +117,9 @@ public class PostService {
     @Transactional
     public void updatePostsContent (PatchObjectReq patchObjectReq, int userId) throws BaseException {
         throwIfInvalidUserIdDetected(userId);
+        if (!(postDao.checkPostUser(userId, patchObjectReq.getPostId()))){
+            throw new BaseException(NO_AUTHORIZED);
+        }
         try {
             postDao.updatePostsContent(patchObjectReq.getPostId(), patchObjectReq.getDetail(),userId);
         } catch (Exception exception) {
@@ -179,6 +191,36 @@ public class PostService {
         } catch (Exception exception) {
             logger.error("Post - createComment Service Error", exception);
             throw new BaseException(POST_FAILED);
+        }
+    }
+
+    @Transactional
+    public void deletePost(int postId, int userId) throws BaseException{
+        throwIfInvalidUserIdDetected(userId);
+        if (!(postDao.checkPostUser(userId,postId))){
+            throw new BaseException(NO_AUTHORIZED);
+        }
+        try{
+            System.out.println("userId = " + userId);
+            System.out.println("postDao.checkPostUser(userId,postId) = " + postDao.checkPostUser(userId,postId));
+            postDao.deletePost(postId);
+        }catch (Exception exception) {
+            logger.error("Post - deletePost Service Error", exception);
+            throw new BaseException(PATCH_FAILED);
+        }
+    }
+
+    @Transactional
+    public void deleteComment(int commentId, int userId) throws BaseException{
+        throwIfInvalidUserIdDetected(userId);
+        if (!(postDao.checkCommentUser(userId,commentId))){
+            throw new BaseException(NO_AUTHORIZED);
+        }
+        try{
+            postDao.deleteComment(commentId);
+        }catch (Exception exception) {
+            logger.error("Post - deleteComment Service Error", exception);
+            throw new BaseException(PATCH_FAILED);
         }
     }
 

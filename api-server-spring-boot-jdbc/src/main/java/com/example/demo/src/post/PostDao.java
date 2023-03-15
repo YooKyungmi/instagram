@@ -405,4 +405,66 @@ public class PostDao {
         int commentId = this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
         return commentId;
     }
+
+    public void deleteComment (int commentId){
+        String commentQuery = "update Comment set status = false where commentId = ?";
+        String commentLikeQuery = "update CommentLike set status = false where commentId = ?";
+        this.jdbcTemplate.update(commentQuery, commentId);
+        this.jdbcTemplate.update(commentLikeQuery, commentId);
+    }
+
+    public void deletePost (int postId){
+        String PostQuery = "update Post set status = false where postId = ?";
+        String ContentTagQuery = "update ContentTag set status = false where postId = ?";
+        String UserTagQuery = "update UserTag set status = false where postId = ?";
+        String PostUserQuery = "update PostUser set status = false where postId = ?";
+        String ScrapQuery = "update Scrap set status = false where postId = ?";
+        String commentQuery = "select commentId from Comment where postId = ?";
+        this.jdbcTemplate.update(PostQuery, postId);
+        this.jdbcTemplate.update(ContentTagQuery, postId);
+        this.jdbcTemplate.update(UserTagQuery, postId);
+        this.jdbcTemplate.update(PostUserQuery, postId);
+        this.jdbcTemplate.update(ScrapQuery, postId);
+        List<Integer> commentList = this.jdbcTemplate.query(commentQuery,
+                (rs, rowNum) -> rs.getInt("commentId"),
+                postId);
+        for (int commentId : commentList){
+            deleteComment(commentId);
+        }
+    }
+
+    public void deleteUserPost (int userId){
+        String PostQuery = "update Post set status = false where userId = ?";
+        String ContentTagQuery = "update ContentTag set status = false where userId = ?";
+        String UserTagQuery = "update UserTag set status = false where userId = ?";
+        String PostUserQuery = "update PostUser set status = false where userId = ?";
+        String ScrapQuery = "update Scrap set status = false where userId = ?";
+        String commentQuery = "update Comment set status = false where userId = ?";
+        String commentLikeQuery = "update CommentLike set status = false where userId = ?";
+        this.jdbcTemplate.update(PostQuery, userId);
+        this.jdbcTemplate.update(ContentTagQuery, userId);
+        this.jdbcTemplate.update(UserTagQuery, userId);
+        this.jdbcTemplate.update(PostUserQuery, userId);
+        this.jdbcTemplate.update(ScrapQuery, userId);
+        this.jdbcTemplate.update(commentQuery, userId);
+        this.jdbcTemplate.update(commentLikeQuery, userId);
+    }
+
+    public boolean checkPostUser (int userId, int postId){
+        String PostQuery = "select ifnull(max(postId),0) postId from Post where userId = ? and postId = ? and status = true";
+        Object[] params = new Object[]{userId,postId};
+        int check =  this.jdbcTemplate.queryForObject(PostQuery, int.class,params);
+        System.out.println("check = " + check);
+        return (check!= 0);
+    }
+
+    public boolean checkCommentUser (int userId, int commentId){
+        String PostQuery = "select ifnull(max(commentId),0) commentId from Comment where userId = ? and commentId = ? and status = true";
+        Object[] params = new Object[]{userId,commentId};
+        int check =  this.jdbcTemplate.queryForObject(PostQuery, int.class,params);
+        return (check!= 0);
+    }
+
+
+
 }
