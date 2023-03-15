@@ -1,3 +1,4 @@
+/*
 package com.example.demo.config;
 
 import com.amazonaws.auth.AWSCredentials;
@@ -31,3 +32,4 @@ public class AmazonConfig {
                 .build();
     }
 }
+*/
