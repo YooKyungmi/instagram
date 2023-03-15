@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -36,6 +37,7 @@ public class PostProvider {
         this.userDao = userDao;
     }
 
+    @Transactional
     public GetPostRes getPost(int userIdByJwt, int postId) throws BaseException {
         try {
             GetPostRes getPostRes = postDao.getPost(postId, userIdByJwt); //수정 필요
@@ -47,7 +49,7 @@ public class PostProvider {
             throw new BaseException(DATABASE_ERROR);
         }
     }
-
+    @Transactional
     public List<GetPostRes> getPostProfile(int userIdByJwt, int searchUserId) throws BaseException {
 
         throwIfInvalidUserStatus(userDao.getUser(searchUserId));
@@ -60,7 +62,7 @@ public class PostProvider {
             throw new BaseException(DATABASE_ERROR);
         }
     }
-
+    @Transactional
     public List<GetPostRes> getPostScrap(int userIdByJwt) throws BaseException {
 
         try {
@@ -72,6 +74,8 @@ public class PostProvider {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    @Transactional
     public List<GetPostRes> getPostFollowing(int userIdByJwt) throws BaseException {
         try {
             List<Integer> followingsList = followDao.getFollowings(userIdByJwt);
@@ -82,7 +86,7 @@ public class PostProvider {
             throw new BaseException(DATABASE_ERROR);
         }
     }
-
+    @Transactional
     public List<GetCommentRes> getPostComments(int postId, int userId) throws BaseException {
         try {
             List<GetCommentRes> getPostCommentsList = postDao.getPostComments(postId, userId);
@@ -93,7 +97,7 @@ public class PostProvider {
             throw new BaseException(DATABASE_ERROR);
         }
     }
-
+    @Transactional
     public List<GetCommentRes> getBigComments(int commentId, int userId) throws BaseException {
         try {
             List<GetCommentRes> getBigCommentsList = postDao.getBigComments(commentId, userId);
@@ -104,7 +108,7 @@ public class PostProvider {
             throw new BaseException(DATABASE_ERROR);
         }
     }
-
+    @Transactional
     public int getPostCount(int userId) throws BaseException {
         try {
             return postDao.getPostCount(userId);
@@ -113,7 +117,7 @@ public class PostProvider {
             throw new BaseException(DATABASE_ERROR);
         }
     }
-
+    @Transactional
     public List<GetPostRecommendRes> getPostRecommend () throws BaseException{
         try{
             return postDao.getPostRecommend();
@@ -122,6 +126,7 @@ public class PostProvider {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
     private void throwIfInvalidUserStatus(User user) throws BaseException {
         if (user.getAccountStatus().equals("INACTIVE")) {
             throw new BaseException(POST_USERS_ACCOUNT_INACTIVE);

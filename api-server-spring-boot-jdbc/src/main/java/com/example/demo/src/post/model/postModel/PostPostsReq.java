@@ -18,6 +18,7 @@ public class PostPostsReq {
     private int likeShowStatus;
     @NotNull(message ="commentShowStatus는 필수 입력요소 입니다")
     private int commentShowStatus;
+    @NotEmpty
     private List<Photo> photos;
     private List<String> tagWord;
 }
