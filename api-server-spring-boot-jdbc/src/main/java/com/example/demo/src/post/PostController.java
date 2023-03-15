@@ -406,4 +406,38 @@ public class PostController {
         }
     }
 
+    /**
+     * 게시물 삭제 API
+     * [PATCH] /app/posts/deleted/:post-id
+     * @return BaseResponse<String>
+     */
+    @PatchMapping("/deleted/{post-id}")
+    public BaseResponse<String> deletePost(@PathVariable("post-id") int postId){
+        try{
+            int userIdByJwt = jwtService.getUserId();
+            postService.deletePost(postId,userIdByJwt);
+            String result = "";
+            return new BaseResponse<>(result);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    /**
+     * 댓글 삭제 API
+     * [PATCH] /app/posts/comments/deleted/:comment-id
+     * @return BaseResponse<String>
+     */
+    @PatchMapping("/comments/deleted/{comment-id}")
+    public BaseResponse<String> deleteComment(@PathVariable("comment-id") int commentId){
+        try{
+            int userIdByJwt = jwtService.getUserId();
+            postService.deleteComment(commentId,userIdByJwt);
+            String result = "";
+            return new BaseResponse<>(result);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
 }

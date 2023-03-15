@@ -138,6 +138,8 @@ public enum BaseResponseStatus {
     //[GET] /app/highlights/:highlight-id
     GET_HIGHLIGHTS_INVALID_HIGHLIGHT_ID(false,3015,"존재하지 않는 하이라이트입니다."),
 
+    NO_AUTHORIZED(false,3020,"해당 데이터에 대해 수정 권한이 없습니다."),
+
     /**
      * 4000 : Database, Server 오류
      */
@@ -179,6 +181,8 @@ public enum BaseResponseStatus {
 
     // [POST] /app/posts
     POST_FAILED(false, 4016, "요청하신 데이터를 추가할 수 없습니다.");
+
+
 
 
     // 5000 : 필요시 만들어서 쓰세요
