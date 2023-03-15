@@ -84,6 +84,9 @@ public enum BaseResponseStatus {
     //[PATCH] /app/highlights/:highlight-id
     PATCH_HIGHLIGHTS_EMPTY_HIGHLIGHT_ID(false,2053,"하이라이트 식별자를 입력해주세요."),
 
+    //request 형식 오류 어노테이션으로 잡기
+    WRONG_REQUEST(false,2060,"올바른 request 형식이 들어오지 않았습니다."),
+
     /**
      * 3000 : Response 오류
      */

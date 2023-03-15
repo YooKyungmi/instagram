@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.example.demo.config.BaseResponseStatus.*;
 
@@ -30,7 +31,7 @@ public class PostService {
         this.userProvider = userProvider;
         this.jwtService = jwtService;
     }
-
+    @Transactional
     public PostPostsRes createPost(PostPostsReq postPostsReq, int userId) throws BaseException {
         throwIfInvalidUserIdDetected(userId);
         try {
@@ -44,7 +45,7 @@ public class PostService {
             throw new BaseException(POST_FAILED);
         }
     }
-
+    @Transactional
     public void addPostLike(int postId, int userId) throws BaseException {
         throwIfInvalidUserIdDetected(userId);
         try {
@@ -54,7 +55,7 @@ public class PostService {
             throw new BaseException(POST_FAILED);
         }
     }
-
+    @Transactional
     public void addPostScrap(int postId, int userId) throws BaseException {
         throwIfInvalidUserIdDetected(userId);
         try {
@@ -64,7 +65,7 @@ public class PostService {
             throw new BaseException(POST_FAILED);
         }
     }
-
+    @Transactional
     public void addCommentLike (int commentId, int userId) throws BaseException {
         throwIfInvalidUserIdDetected(userId);
         try {
@@ -74,7 +75,7 @@ public class PostService {
             throw new BaseException(POST_FAILED);
         }
     }
-
+    @Transactional
     public void addContentTag (PostContentTagReq postContentTagReq, int userId) throws BaseException{
         throwIfInvalidUserIdDetected(userId);
         try{
@@ -84,7 +85,7 @@ public class PostService {
             throw new BaseException(POST_FAILED);
         }
     }
-
+    @Transactional
     public void addUserTag(PostUserTagReq postUserTagReq, int userId) throws BaseException{
         throwIfInvalidUserIdDetected(userId);
         try{
@@ -94,7 +95,7 @@ public class PostService {
             throw new BaseException(POST_FAILED);
         }
     }
-
+    @Transactional
     public void updatePlace (PatchObjectReq patchObjectReq, int userId) throws BaseException{
         throwIfInvalidUserIdDetected(userId);
         try{
@@ -104,7 +105,7 @@ public class PostService {
             throw new BaseException(PATCH_FAILED);
         }
     }
-
+    @Transactional
     public void updatePostsContent (PatchObjectReq patchObjectReq, int userId) throws BaseException {
         throwIfInvalidUserIdDetected(userId);
         try {
@@ -114,6 +115,8 @@ public class PostService {
             throw new BaseException(PATCH_FAILED);
         }
     }
+
+    @Transactional
     public void updateLikeShowStatus(int postId, boolean status, int userId) throws BaseException{
         throwIfInvalidUserIdDetected(userId);
         try{
@@ -123,7 +126,7 @@ public class PostService {
         throw new BaseException(PATCH_FAILED);
         }
     }
-
+    @Transactional
     public void updateCommentShowStatus(int postId, boolean status, int userId) throws BaseException{
         throwIfInvalidUserIdDetected(userId);
         try{
@@ -133,7 +136,7 @@ public class PostService {
             throw new BaseException(PATCH_FAILED);
         }
     }
-
+    @Transactional
     public void updatePostLikeOn(int postLikeId, boolean status, int userId) throws BaseException{
         throwIfInvalidUserIdDetected(userId);
         try{
@@ -143,7 +146,7 @@ public class PostService {
             throw new BaseException(PATCH_FAILED);
         }
     }
-
+    @Transactional
     public void updateScrapOn(int scrapId, boolean status, int userId) throws BaseException{
         throwIfInvalidUserIdDetected(userId);
         try{
@@ -154,7 +157,7 @@ public class PostService {
         }
     }
 
-
+    @Transactional
     public void updateCommentLikeOn(int commentLikeId, boolean status, int userId) throws BaseException{
         throwIfInvalidUserIdDetected(userId);
         try{
@@ -165,7 +168,7 @@ public class PostService {
         }
     }
 
-
+    @Transactional
     public PostCommentRes createComment(PostCommentReq postCommentReq, int userId) throws BaseException {
         throwIfInvalidUserIdDetected(userId);
         try {

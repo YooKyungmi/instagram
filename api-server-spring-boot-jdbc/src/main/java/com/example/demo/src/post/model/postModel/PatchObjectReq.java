@@ -2,6 +2,7 @@ package com.example.demo.src.post.model.postModel;
 
 import lombok.*;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Getter
@@ -12,5 +13,6 @@ import javax.validation.constraints.NotNull;
 public class PatchObjectReq {
     @NotNull(message ="postId는 필수 입력요소 입니다")
     private int postId;
+    @NotEmpty
     private String detail;
 }

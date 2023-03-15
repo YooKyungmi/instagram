@@ -140,7 +140,7 @@ public class PostController {
      * [GET] /app/posts/comments/bigComment?parent-id=
      * @return BaseResponse<List<GetCommentRes>>
      */
-    @GetMapping("/comments/bigComment")
+    @GetMapping("/comments/big-comment")
     public BaseResponse<List<GetCommentRes>> getPostComments(@RequestParam("parent-id") Integer commentId){
         try{
             int userIdByJwt = jwtService.getUserId();

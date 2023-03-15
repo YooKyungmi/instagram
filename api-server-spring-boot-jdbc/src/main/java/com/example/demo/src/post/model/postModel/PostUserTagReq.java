@@ -15,5 +15,6 @@ import java.util.List;
 public class PostUserTagReq {
     @NotNull(message ="postId는 필수 입력요소 입니다")
     private int postId;
+    @NotEmpty
     private List<Photo> photos;
 }
