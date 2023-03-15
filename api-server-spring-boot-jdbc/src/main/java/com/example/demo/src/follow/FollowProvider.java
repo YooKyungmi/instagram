@@ -217,4 +217,14 @@ public class FollowProvider {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    public int checkIfFollowing(int onlineUserId, int findingUserId) throws BaseException {
+        try{
+            return followDao.checkIfFollowing(onlineUserId,findingUserId);
+        }catch(Exception exception){
+            logger.error("App - checkIfFollowing Provider Error", exception);
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
 }

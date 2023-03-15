@@ -36,6 +36,10 @@ public class GetUserRes {
     private Integer connectedCount;
     @JsonProperty("connected_friend_profiles")
     private List<GetUserProfileRes> connectedFriendProfiles;
+    @JsonProperty("follow_status")
+    private Integer followStatus;
+    @JsonProperty("story_status")
+    private int storyStatus;
     @JsonProperty("account_status")
     private String accountStatus;
     @JsonProperty("created_at")
