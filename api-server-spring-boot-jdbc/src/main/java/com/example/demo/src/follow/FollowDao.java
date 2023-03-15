@@ -120,4 +120,12 @@ public class FollowDao {
                 (rs,rowNum)->rs.getString("u.nickname"),
         getConnectedFriedNicknameParams);
     }
+
+    public int checkIfFollowing(int onlineUserId, int findingUserId) {
+        String checkIfFollowingQuery = "select exists(select followingId from UserFollow where followerId = ? and followingId = ? and status = 1)";
+        Object[] checkIfFollowingParams = new Object[]{onlineUserId,findingUserId};
+        return this.jdbcTemplate.queryForObject(checkIfFollowingQuery,
+                int.class,
+                checkIfFollowingParams);
+    }
 }

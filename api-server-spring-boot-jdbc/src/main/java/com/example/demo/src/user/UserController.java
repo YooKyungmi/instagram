@@ -307,7 +307,7 @@ public class UserController {
      * 유저 닉네임으로 검색 API
      * [GET] /app/users?user-nickname=
      *
-     * @return BaseResponse<List < GetUserSearchRes>>
+     * @return BaseResponse<List<GetUserSearchRes>>
      */
     @ResponseBody
     @GetMapping("")

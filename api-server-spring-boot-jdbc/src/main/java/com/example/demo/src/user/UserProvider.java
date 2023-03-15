@@ -5,6 +5,7 @@ import com.example.demo.config.BaseException;
 import com.example.demo.config.secret.Secret;
 import com.example.demo.src.follow.FollowProvider;
 import com.example.demo.src.post.PostProvider;
+import com.example.demo.src.story.StoryDao;
 import com.example.demo.src.user.model.*;
 import com.example.demo.utils.AES128;
 import com.example.demo.utils.JwtService;
@@ -25,16 +26,17 @@ public class UserProvider {
     private final JwtService jwtService;
     private final PostProvider postProvider;
     private final FollowProvider followProvider;
-
+    private final StoryDao storyDao;
 
     final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    public UserProvider(UserDao userDao, JwtService jwtService, PostProvider postProvider, FollowProvider followProvider) {
+    public UserProvider(UserDao userDao, JwtService jwtService, PostProvider postProvider, FollowProvider followProvider, StoryDao storyDao) {
         this.userDao = userDao;
         this.jwtService = jwtService;
         this.postProvider = postProvider;
         this.followProvider = followProvider;
+        this.storyDao = storyDao;
     }
 
     public int checkEmailAddress(String email) throws BaseException {
@@ -114,6 +116,16 @@ public class UserProvider {
             getUserRes.setPostCount(postProvider.getPostCount(findingUserId));
             getUserRes.setFollowerCount(followProvider.getFollowerCount(findingUserId));
             getUserRes.setFollowingCount(followProvider.getFollowingCount(findingUserId));
+            if(onlineUserId!=findingUserId) {
+                if (followProvider.checkIfFollowing(onlineUserId, findingUserId) == 1) {
+                    getUserRes.setFollowStatus(1);
+                } else {
+                    getUserRes.setFollowStatus(0);
+                }
+            }
+            if(storyDao.checkStory(findingUserId)==1){
+                getUserRes.setStoryStatus(1);
+            }
             if (onlineUserId != findingUserId) {
                 getUserRes.setConnectedCount(followProvider.getConnectedFriendCount(onlineUserId, findingUserId));
                 getUserRes.setConnectedFriendProfiles(setConnectedFriendProfileList(followProvider.getConnectedFollowId(onlineUserId, findingUserId)));
@@ -176,6 +188,9 @@ public class UserProvider {
                     res.setConnectedCount(followProvider.getConnectedFriendCount(userIdByJwt, res.getUserId()));
                     if(res.getConnectedCount()!=0){
                         res.setConnectedFriendNickname(followProvider.getConnectedFriedNickname(userIdByJwt, res.getUserId()));
+                    }
+                    if(storyDao.checkStory(res.getUserId())==1){
+                        res.setStoryStatus(1);
                     }
                 } catch (BaseException e) {
                     throw new RuntimeException(e);

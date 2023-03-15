@@ -20,5 +20,7 @@ public class GetUserSearchRes {
     private Integer connectedCount;
     @JsonProperty("connected_friend_nickname")
     private String connectedFriendNickname;
+    @JsonProperty("story_status")
+    private int storyStatus;
 
 }
