@@ -114,6 +114,20 @@ public class PostService {
             throw new BaseException(PATCH_FAILED);
         }
     }
+
+    @Transactional
+    public void deletePlace (int postId, int userId) throws BaseException{
+        throwIfInvalidUserIdDetected(userId);
+        if (!(postDao.checkPostUser(userId, postId))){
+            throw new BaseException(NO_AUTHORIZED);
+        }
+        try{
+            postDao.deletePlace(postId,userId);
+        }catch (Exception exception) {
+            logger.error("Post - deletePlace Service Error", exception);
+            throw new BaseException(PATCH_FAILED);
+        }
+    }
     @Transactional
     public void updatePostsContent (PatchObjectReq patchObjectReq, int userId) throws BaseException {
         throwIfInvalidUserIdDetected(userId);
