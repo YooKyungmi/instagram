@@ -86,6 +86,28 @@ public class PostProvider {
             throw new BaseException(DATABASE_ERROR);
         }
     }
+
+    @Transactional
+    public List<GetPostRes> getPostContentTag(int userIdByJwt, String tagWord) throws BaseException {
+        try {
+            List<GetPostRes> getPostRes = postDao.getPostContentTag(userIdByJwt, tagWord);
+            return getPostRes;
+        } catch (Exception exception) {
+            logger.error("Post - getPostContentTag Provider Error", exception);
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    @Transactional
+    public List<GetPostRes> getPostUserTag(int userIdByJwt,int userTagId) throws BaseException {
+        try {
+            List<GetPostRes> getPostRes = postDao.getPostUserTag(userIdByJwt, userTagId);
+            return getPostRes;
+        } catch (Exception exception) {
+            logger.error("Post - getPostUserTag Provider Error", exception);
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
     @Transactional
     public List<GetCommentRes> getPostComments(int postId, int userId) throws BaseException {
         try {

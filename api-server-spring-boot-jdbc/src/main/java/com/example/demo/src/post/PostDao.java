@@ -13,9 +13,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @Repository
 
@@ -217,6 +215,31 @@ public class PostDao {
         return getPostResList;
     }
 
+    public List<GetPostRes> getPostContentTag(int userId,String tagWord){
+        List<GetPostRes> getPostResList  = new ArrayList<>();
+        String ContentTagQuery ="select postId from ContentTag where tagWord = ?  and status = true order by createdAt DESC";
+        List<Integer> postList = this.jdbcTemplate.query(ContentTagQuery,
+                (rs, rowNum) -> rs.getInt("postId"),tagWord);
+        for (int postId : postList ){
+            getPostResList.add(getPost(postId, userId));
+        }
+        return getPostResList;
+    }
+
+    public List<GetPostRes> getPostUserTag(int userId,int userTagId){
+        List<GetPostRes> getPostResList  = new ArrayList<>();
+        String ContentTagQuery ="select postId from UserTag where userId = ?  and status = true order by createdAt DESC";
+        List<Integer> postList = this.jdbcTemplate.query(ContentTagQuery,
+                (rs, rowNum) -> rs.getInt("postId"),userTagId);
+        Set<Integer> set = new HashSet<>(postList);
+        List<Integer> newList =new ArrayList<>(set);
+        for (int postId : newList ){
+            getPostResList.add(getPost(postId, userId));
+        }
+        return getPostResList;
+    }
+
+
     public Comment getCommentModel(int commentId){
         String Query = "select * from Comment where commentId = ?";
         return this.jdbcTemplate.queryForObject(Query,
@@ -236,6 +259,7 @@ public class PostDao {
         Comment comment = getCommentModel(commentId);
         String Query = "select nickname, profileImageUrl from User where userId = ? and status = true";
         int userParam = comment.getUserId();
+        System.out.println("userParam = " + userParam);
         return this.jdbcTemplate.queryForObject(Query,
                 (rs, rowNum) -> new GetCommentRes(
                         comment.getCommentId(),
@@ -438,9 +462,9 @@ public class PostDao {
     }
 
     public int deletePhoto (int postId, int index, String photoUrl){
-        String postQuery = "update Post set photoUrl?= \"\" where postId = ? and photoUrl? = ?";
+        String postQuery = "update Post set "+"photoUrl"+index+" = \"\" where postId = ? and "+"photoUrl"+index +" = ?";
         String userTagQuery = "update UserTag set status = false where postId = ? and photoUrl = ?";
-        Object[] postparams = new Object[]{index,postId,photoUrl};
+        Object[] postparams = new Object[]{postId,photoUrl};
         Object[] userTagParams = new Object[]{postId,photoUrl};
         if(this.jdbcTemplate.update(postQuery, postparams)==0) return 0;
         if(this.jdbcTemplate.update(userTagQuery, userTagParams)==0) return 0;
@@ -492,6 +516,8 @@ public class PostDao {
         this.jdbcTemplate.update(commentQuery, userId);
         this.jdbcTemplate.update(commentLikeQuery, userId);
     }
+
+
 
     public boolean checkPostUser (int userId, int postId){
         String PostQuery = "select ifnull(max(postId),0) postId from Post where userId = ? and postId = ? and status = true";
