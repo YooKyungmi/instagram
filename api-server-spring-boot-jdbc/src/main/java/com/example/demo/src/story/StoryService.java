@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.example.demo.config.BaseResponseStatus.*;
 
@@ -30,6 +31,7 @@ public class StoryService {
         this.highlightDao = highlightDao;
     }
 
+    @Transactional
     public void patchStory(int storyId) throws BaseException {
         if(storyProvider.checkStoryId(storyId)==0){
             throw new BaseException(GET_STORIES_STORY_ID_NOT_EXISTS);
@@ -45,6 +47,7 @@ public class StoryService {
         }
     }
 
+    @Transactional
     public void patchStoryLikeStatus(int userId, int storyId, int likeStatus) throws BaseException {
         if (storyDao.checkStoryId(storyId) == 0) {
             throw new BaseException(GET_STORIES_STORY_ID_NOT_EXISTS);
@@ -63,6 +66,7 @@ public class StoryService {
         }
     }
 
+    @Transactional
     public void addStoryInHighlight(int storyId, int highlightId) throws BaseException {
         if (storyDao.checkStoryId(storyId) == 0) {
             throw new BaseException(GET_STORIES_STORY_ID_NOT_EXISTS);

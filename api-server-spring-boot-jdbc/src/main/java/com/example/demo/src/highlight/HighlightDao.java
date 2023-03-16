@@ -6,6 +6,7 @@ import com.example.demo.src.highlight.model.PostHighlightReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -21,6 +22,7 @@ public class HighlightDao {
     }
 
 
+    @Transactional
     public int createUserHighlight(PostHighlightReq postHighlightReq) {
         String createHighlightQuery = "insert into UserHighlight (userId, title, coverImgUrl) VALUES (?,?,?)";
         Object[] createHighlightParams = new Object[]{postHighlightReq.getUserId(),postHighlightReq.getTitle(), postHighlightReq.getCoverImgUrl()};
@@ -30,6 +32,7 @@ public class HighlightDao {
         return this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
     }
 
+    @Transactional
     public int createHighlight(int userHighlightId, int storyId) {
         String createHighlightQuery = "insert into Highlight (userHighlightId, userStoryId) VALUES (?,?)";
         Object[] createHighlightParams = new Object[]{userHighlightId,storyId};

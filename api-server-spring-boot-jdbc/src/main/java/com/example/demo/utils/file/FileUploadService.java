@@ -16,6 +16,7 @@
 //
 //    private final UploadService s3Service;
 //
+//    @Transactional(timeout = 1)
 //    public String uploadImage(MultipartFile file){
 //        String fileName = createFileName(file.getOriginalFilename());
 //        ObjectMetadata objectMetadata = new ObjectMetadata();

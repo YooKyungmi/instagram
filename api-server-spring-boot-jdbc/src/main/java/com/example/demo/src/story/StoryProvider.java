@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,6 +33,7 @@ public class StoryProvider {
         this.followProvider = followProvider;
     }
 
+    @Transactional
     public List<GetStoryUserRes> getStoryUsers(int userIdByJwt) throws BaseException {
         throwIfInvalidUserIdDetected(userIdByJwt);
         try {
@@ -79,6 +81,7 @@ public class StoryProvider {
                 .build();
     }
 
+    @Transactional
     public List<GetStoryRes> getStoryByUserId(int userIdByJwt, int userId) throws BaseException {
         throwIfInvalidUserIdDetected(userId);
         throwIfInvalidUserStatus(userProvider.checkUserAccountStatus(userId));
@@ -97,6 +100,7 @@ public class StoryProvider {
         }
     }
 
+    @Transactional
     public GetStoryRes getStoryByStoryId(int userIdByJwt, int storyId) throws BaseException {
         if (storyDao.checkStoryId(storyId) == 0) {
             throw new BaseException(GET_STORIES_STORY_ID_NOT_EXISTS);
@@ -143,6 +147,7 @@ public class StoryProvider {
         }
     }
 
+    @Transactional
     public GetStoryViewerListRes getStoryViewers(int storyId) throws BaseException {
         if (storyDao.checkStoryId(storyId) == 0) {
             throw new BaseException(GET_STORIES_STORY_ID_NOT_EXISTS);
