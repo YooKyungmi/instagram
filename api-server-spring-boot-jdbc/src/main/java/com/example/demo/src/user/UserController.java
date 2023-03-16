@@ -4,10 +4,12 @@ import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
 import com.example.demo.src.user.model.*;
 import com.example.demo.utils.JwtService;
+import com.example.demo.utils.file.FileUploadService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -21,8 +23,8 @@ public class UserController {
 
     private final String defaultProfileImageUrl = "https://trudylin.s3.ap-northeast-2.amazonaws.com/postPhoto/profile+Image.png";
 
-    //@Autowired
-    //private final FileUploadService fileUploadService;
+    @Autowired
+    private final FileUploadService fileUploadService;
     @Autowired
     private final UserProvider userProvider;
     @Autowired
@@ -30,7 +32,8 @@ public class UserController {
     @Autowired
     private final JwtService jwtService;
 
-    public UserController(UserProvider userProvider, UserService userService, JwtService jwtService) {
+    public UserController(FileUploadService fileUploadService, UserProvider userProvider, UserService userService, JwtService jwtService) {
+        this.fileUploadService = fileUploadService;
         this.userProvider = userProvider;
         this.userService = userService;
         this.jwtService = jwtService;
@@ -324,13 +327,12 @@ public class UserController {
         }
     }
 
-    /*
-     *//**
+    /**
      * 프로필 사진 추가 API
-     * [GET] /app/users/profile-images/:user-id
+     * [PATCH] /app/users/profile-images/:user-id
      *
      * @return BaseResponse<String>
-     *//*
+     */
     @ResponseBody
     @PatchMapping("/profile-images/{user-id}")
     public BaseResponse<String> modifyProfileImage(@PathVariable("user-id") Integer userId, @RequestPart(value = "image", required = false) MultipartFile imageFile){
@@ -353,6 +355,6 @@ public class UserController {
         } catch (BaseException exception) {
             return new BaseResponse<>(exception.getStatus());
         }
-    }*/
+    }
 
 }

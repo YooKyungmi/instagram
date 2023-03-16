@@ -1,4 +1,3 @@
-/*
 package com.example.demo.utils.file;
 
 import lombok.Getter;
@@ -15,4 +14,3 @@ public class S3Component {
     private String bucket;
 
 }
-*/

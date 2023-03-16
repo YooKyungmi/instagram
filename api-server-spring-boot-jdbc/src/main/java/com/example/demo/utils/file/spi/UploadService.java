@@ -1,4 +1,3 @@
-/*
 package com.example.demo.utils.file.spi;
 
 import com.amazonaws.services.s3.model.ObjectMetadata;
@@ -11,4 +10,3 @@ public interface UploadService {
 
     String getFileUrl(String fileName);
 }
-*/
