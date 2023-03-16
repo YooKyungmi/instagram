@@ -37,7 +37,7 @@ public enum BaseResponseStatus {
     POST_USERS_INVALID_NICKNAME(false,2022, "닉네임에는 영문자, 숫자, 마침표, 밑줄만 사용 가능합니다."),
     POST_USERS_EMPTY_PASSWORD(false,2023,"비밀번호를 입력해주세요."),
     POST_USERS_INVALID_PASSWORD(false,2024,"비밀번호를 6자 이상 입력해주세요."),
-
+    POST_USERS_INVALID_PROFILE_IMAGE_URL(false,2059, "잘못된 이미지 url 형식입니다."),
 
     //[GET] /app/users/identifications/:userId
     GET_USERS_EMPTY_PASSWORD(false,2038,"비밀번호를 입력해주세요."),
@@ -55,6 +55,7 @@ public enum BaseResponseStatus {
     GET_FOLLOWS_NO_CONNECTED_FOLLOWS_FOR_ONE_SELF(false,2039,"본인에 대해서는 함께 아는 친구 정보를 제공하지 않습니다."),
 
     //UserStory
+
     //[GET] /app/stories?user-id=
     GET_STORIES_EMPTY_USER_ID(false,2040,"유저 식별자를 입력해주세요."),
 
@@ -68,6 +69,10 @@ public enum BaseResponseStatus {
     PATCH_STORIES_EMPTY_USER_ID(false,2045,"유저 식별자를 입력해주세요."),
     PATCH_STORIES_EMPTY_LIKE_STATUS(false,2046,"좋아요 상태값을 입력해주세요."),
     PATCH_STORIES_INVALID_LIKE_STATUS(false,2054,"좋아요 상태값(1,0) 형식을 확인해주세요."),
+
+    //[POST] /app/stories
+    POST_STORIES_EMPTY_STORY_URL(false,2057,"이미지 주소를 입력해주세요."),
+    POST_STORIES_INVALID_STORY_URL(false,2058,"잘못된 이미지 url 형식입니다."),
 
     //highlight
 
