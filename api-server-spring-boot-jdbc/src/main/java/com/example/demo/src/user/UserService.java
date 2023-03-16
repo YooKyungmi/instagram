@@ -3,6 +3,7 @@ package com.example.demo.src.user;
 
 import com.example.demo.config.BaseException;
 import com.example.demo.config.secret.Secret;
+import com.example.demo.src.post.PostDao;
 import com.example.demo.src.user.model.*;
 import com.example.demo.utils.AES128;
 import com.example.demo.utils.JwtService;
@@ -24,13 +25,14 @@ public class UserService {
     private final UserDao userDao;
     private final UserProvider userProvider;
     private final JwtService jwtService;
+    private final PostDao postDao;
 
     @Autowired
-    public UserService(UserDao userDao, UserProvider userProvider, JwtService jwtService) {
+    public UserService(UserDao userDao, UserProvider userProvider, JwtService jwtService, PostDao postDao) {
         this.userDao = userDao;
         this.userProvider = userProvider;
         this.jwtService = jwtService;
-
+        this.postDao = postDao;
     }
 
     @Transactional
@@ -108,9 +110,13 @@ public class UserService {
         }
     }
 
+    @Transactional
     public void modifyUserAccountStatus(int userId, String accountStatus) throws BaseException {
         try {
             int result = userDao.updateUserAccountStatus(userId, accountStatus);
+            if(accountStatus.equals("DELETED")){
+                postDao.deleteUserPost(userId);
+            }
             if (result == 0) {
                 throw new BaseException(MODIFY_FAIL_USER);
             }
