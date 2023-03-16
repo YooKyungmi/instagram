@@ -65,10 +65,10 @@ public class FollowService {
         throwIfInvalidUserIdDetected(userId);
         throwIfInvalidUserIdDetected(followUserId);
         throwIfInvalidUserStatus(userProvider.checkUserAccountStatus(followUserId));
+        if (followDao.checkUserFollow(userId, followUserId) == 0) {
+            throw new BaseException(PATCH_FOLLOWS_NOT_EXIST);
+        }
         try {
-            if (followDao.checkUserFollow(userId,followUserId)==0) {
-                throw new BaseException(PATCH_FOLLOWS_NOT_EXIST);
-            }
             Integer userFollowId = followDao.getUserFollowId(userId, followUserId);
             int result = followDao.patchFollows(0, userId, followUserId);
             if (result == 0) {

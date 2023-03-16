@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import static com.example.demo.config.BaseResponseStatus.INVALID_FOLLOW_USER_ID;
 import static com.example.demo.config.BaseResponseStatus.INVALID_USER_JWT;
 
 @RestController
@@ -51,6 +52,9 @@ public class FollowController {
             if(userIdByJwt!=userId){
                 return new BaseResponse<>(INVALID_USER_JWT);
             }
+            if(userId==followUserId){
+                return new BaseResponse<>(INVALID_FOLLOW_USER_ID);
+            }
             PostPatchFollowRes postPatchFollowRes = followService.addFollows(userId, followUserId);
             return new BaseResponse<>(postPatchFollowRes);
         } catch(BaseException exception){
@@ -70,6 +74,9 @@ public class FollowController {
             int userIdByJwt = jwtService.getUserId();
             if(userIdByJwt!=userId){
                 return new BaseResponse<>(INVALID_USER_JWT);
+            }
+            if(userId==followUserId){
+                return new BaseResponse<>(INVALID_FOLLOW_USER_ID);
             }
             PostPatchFollowRes postPatchFollowRes = followService.patchFollows(userId, followUserId);
             return new BaseResponse<>(postPatchFollowRes);

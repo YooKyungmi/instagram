@@ -51,6 +51,9 @@ public enum BaseResponseStatus {
 
     //follows
 
+    //
+    INVALID_FOLLOW_USER_ID(false,2070,"본인을 팔로우 추가/취소 할 수 없습니다."),
+
     //[GET] /app/follows/connected-follows?user-id=
     GET_FOLLOWS_NO_CONNECTED_FOLLOWS_FOR_ONE_SELF(false,2039,"본인에 대해서는 함께 아는 친구 정보를 제공하지 않습니다."),
 
