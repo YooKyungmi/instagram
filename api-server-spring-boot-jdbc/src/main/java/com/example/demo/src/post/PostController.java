@@ -202,7 +202,7 @@ public class PostController {
         try{
             int userIdByJwt = jwtService.getUserId();
             PostPostsRes postPostsRes = postService.createPost(postPostsReq,userIdByJwt);
-             return new BaseResponse<>(postPostsRes);
+            return new BaseResponse<>(postPostsRes);
         } catch(BaseException exception){
             return new BaseResponse<>((exception.getStatus()));
         }
@@ -418,7 +418,7 @@ public class PostController {
      */
     @PatchMapping("/showed-comment/{post-id}/{status}")
     public BaseResponse<String> updateCommentShowStatus(@PathVariable("post-id") int postId,
-                                                     @PathVariable("status") boolean status){
+                                                        @PathVariable("status") boolean status){
         try{
             int userIdByJwt = jwtService.getUserId();
             postService.updateCommentShowStatus(postId,status,userIdByJwt);
@@ -436,7 +436,7 @@ public class PostController {
      */
     @PatchMapping("/likes/{like-id}/{status}")
     public BaseResponse<String> updatePostLikeOn(@PathVariable("like-id") int postLikeId,
-                                                        @PathVariable("status") boolean status){
+                                                 @PathVariable("status") boolean status){
         try{
             int userIdByJwt = jwtService.getUserId();
             postService.updatePostLikeOn(postLikeId,status,userIdByJwt);
@@ -454,7 +454,7 @@ public class PostController {
      */
     @PatchMapping("/scraped/{scrap-id}/{status}")
     public BaseResponse<String> updateScrapOn(@PathVariable("scrap-id") int scrapId,
-                                                        @PathVariable("status") boolean status){
+                                              @PathVariable("status") boolean status){
         try{
             int userIdByJwt = jwtService.getUserId();
             postService.updateScrapOn(scrapId,status,userIdByJwt);
@@ -472,7 +472,7 @@ public class PostController {
      */
     @PatchMapping("/comments/like-status/{like-id}/{status}")
     public BaseResponse<String> updateCommentLikeOn(@PathVariable("like-id") int commentLikeId,
-                                                        @PathVariable("status") boolean status){
+                                                    @PathVariable("status") boolean status){
         try{
             int userIdByJwt = jwtService.getUserId();
             postService.updateCommentLikeOn(commentLikeId,status,userIdByJwt);

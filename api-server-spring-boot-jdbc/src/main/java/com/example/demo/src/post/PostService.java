@@ -228,8 +228,8 @@ public class PostService {
                 throw new BaseException(PATCH_FAILED);
             }
         }catch (Exception exception) {
-        logger.error("Post - updateLikeShowStatus Service Error", exception);
-        throw new BaseException(PATCH_FAILED);
+            logger.error("Post - updateLikeShowStatus Service Error", exception);
+            throw new BaseException(PATCH_FAILED);
         }
     }
     @Transactional
@@ -337,4 +337,3 @@ public class PostService {
         }
     }
 }
-

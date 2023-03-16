@@ -69,7 +69,6 @@ public class PostDao {
     }
     public Post getPostModel(int postId){
         String Query = "select * from Post where postId = ?";
-        System.out.println("postId = " + postId);
         return this.jdbcTemplate.queryForObject(Query,
                 (rs, rowNum) -> new Post(
                         rs.getInt("postId"),
@@ -123,11 +122,11 @@ public class PostDao {
         String Query = "select scrapId,status from Scrap where userId = ? and postId = ? ";
         Object[] params = new Object[]{userId,postId};
         try{
-        return this.jdbcTemplate.queryForObject(Query,
-                (rs, rowNum) -> GetWhetherDTO.builder()
-                        .on(rs.getInt("status"))
-                        .id(rs.getInt("scrapId"))
-                        .build(), params);
+            return this.jdbcTemplate.queryForObject(Query,
+                    (rs, rowNum) -> GetWhetherDTO.builder()
+                            .on(rs.getInt("status"))
+                            .id(rs.getInt("scrapId"))
+                            .build(), params);
         }catch (EmptyResultDataAccessException e) {
             return GetWhetherDTO.builder()
                     .on(0)
@@ -152,7 +151,6 @@ public class PostDao {
                             .on(rs.getInt("postLikeStatus"))
                             .id(rs.getInt("postLikeId"))
                             .build(), params);
-            System.out.println("gets = " + gets);
             return gets;
         }catch (EmptyResultDataAccessException e) {
             return GetWhetherDTO.builder()
@@ -372,12 +370,12 @@ public class PostDao {
 
     public int addContentTag (int postId, List<String> tagWordList){
         String ContentTagQuery = "insert into ContentTag (postId, tagWord) values (?,?)";
-            for (String tagWord : tagWordList) {
-                Object[] ContentTagParams = new Object[]{postId, tagWord};
-                if( this.jdbcTemplate.update(ContentTagQuery, ContentTagParams) ==0 )
-                    return 0;
+        for (String tagWord : tagWordList) {
+            Object[] ContentTagParams = new Object[]{postId, tagWord};
+            if( this.jdbcTemplate.update(ContentTagQuery, ContentTagParams) ==0 )
+                return 0;
         }
-            return 1;
+        return 1;
     }
 
     public int addUserTag (int postId, List<Photo> tagPhoto){
@@ -394,7 +392,7 @@ public class PostDao {
 
     public int updatePlace (int postId, String place, int userId){
         String ContentTagQuery = "update Post set place = ? where postId = ? and userId = ?";
-            Object[] Params = new Object[]{place,postId,userId};
+        Object[] Params = new Object[]{place,postId,userId};
         return this.jdbcTemplate.update(ContentTagQuery, Params);
     }
 
