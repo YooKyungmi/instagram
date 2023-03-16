@@ -3,9 +3,11 @@ package com.example.demo.src.story;
 import com.example.demo.src.story.model.GetStoryHistoryRes;
 import com.example.demo.src.story.model.GetStoryRes;
 import com.example.demo.src.story.model.GetStoryViewerRes;
+import com.example.demo.src.story.model.PostStoryReq;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -183,5 +185,14 @@ public class StoryDao {
         return this.jdbcTemplate.queryForObject(checkStoryQuery,
                 int.class,
                 checkStoryParams);
+    }
+
+    @Transactional
+    public int postStory(PostStoryReq postStoryReq) {
+        String postStoryQuery = "insert into UserStory (userId, storyUrl) VALUES (?,?)";
+        Object[] postStoryParams = new Object[]{postStoryReq.getUserId(),postStoryReq.getStoryUrl()};
+        this.jdbcTemplate.update(postStoryQuery,postStoryParams);
+        String lastInsertIdQuery = "select last_insert_id()";
+        return this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
     }
 }

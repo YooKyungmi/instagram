@@ -20,6 +20,13 @@ public class ValidationRegex {
         return matcher.find();
     }
 
+    public static boolean isRegexImageUrl(String target){
+        String regex = "(http(s)?\\:\\/\\/)(?!\\1)?([-:\\w]+\\.*)+[a-z\\d]{2,4}(:\\d)?([\\/ \\-%#?&\\.=\\w])*";
+        Pattern pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+        Matcher matcher = pattern.matcher(target);
+        return matcher.find();
+    }
+
     public static boolean isRegexCode(String target){
         String regex = "\\d{6}";
         Pattern pattern = Pattern.compile(regex,Pattern.CASE_INSENSITIVE);
@@ -44,5 +51,6 @@ public class ValidationRegex {
     public static boolean isRegexPassword(String target) {
         return target.length() >= 6;
     }
+
 }
 

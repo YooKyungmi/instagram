@@ -73,6 +73,9 @@ public class UserController {
         if (postUserByPhoneReq.getProfileImageUrl() == null) {
             postUserByPhoneReq.setProfileImageUrl(defaultProfileImageUrl);
         }
+        if(!isRegexImageUrl(postUserByPhoneReq.getProfileImageUrl())) {
+            return new BaseResponse<>(POST_USERS_INVALID_PROFILE_IMAGE_URL);
+        }
         try {
             PostUserRes postUserRes = userService.createUserByPhone(postUserByPhoneReq);
             return new BaseResponse<>(postUserRes);
@@ -117,6 +120,9 @@ public class UserController {
         }
         if (postUserByEmailReq.getProfileImageUrl() == null) {
             postUserByEmailReq.setProfileImageUrl(defaultProfileImageUrl);
+        }
+        if(!isRegexImageUrl(postUserByEmailReq.getProfileImageUrl())) {
+            return new BaseResponse<>(POST_USERS_INVALID_PROFILE_IMAGE_URL);
         }
         try {
             PostUserRes postUserRes = userService.createUserByEmail(postUserByEmailReq);
@@ -364,8 +370,11 @@ public class UserController {
     @ResponseBody
     @PatchMapping("/profile-images/{user-id}")
     public BaseResponse<String> modifyProfileImage(@PathVariable("user-id") Integer userId, @RequestBody PatchProfileImageReq patchProfileImageReq){
-        if(patchProfileImageReq.getProfileImageUrl()==null || patchProfileImageReq.getProfileImageUrl()==""){
+        if(patchProfileImageReq.getProfileImageUrl()==null){
             patchProfileImageReq.setProfileImageUrl(defaultProfileImageUrl);
+        }
+        if(!isRegexImageUrl(patchProfileImageReq.getProfileImageUrl())) {
+            return new BaseResponse<>(POST_USERS_INVALID_PROFILE_IMAGE_URL);
         }
         try {
             int userIdByJwt = jwtService.getUserId();

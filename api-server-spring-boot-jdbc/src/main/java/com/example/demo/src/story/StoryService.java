@@ -3,6 +3,8 @@ package com.example.demo.src.story;
 import com.example.demo.config.BaseException;
 import com.example.demo.src.highlight.HighlightDao;
 import com.example.demo.src.highlight.HighlightProvider;
+import com.example.demo.src.story.model.PostStoryReq;
+import com.example.demo.src.story.model.PostStoryRes;
 import com.example.demo.utils.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,6 +86,15 @@ public class StoryService {
             }
         }catch (Exception exception) {
             logger.error("App - addStoryInHighlight Provider Error", exception);
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public PostStoryRes postStory(PostStoryReq postStoryReq) throws BaseException {
+        try{
+            return new PostStoryRes(storyDao.postStory(postStoryReq));
+        }catch (Exception exception){
+            logger.error("App - postStory Provider Error", exception);
             throw new BaseException(DATABASE_ERROR);
         }
     }

@@ -4,10 +4,7 @@ import com.example.demo.config.BaseException;
 import com.example.demo.config.BaseResponse;
 import com.example.demo.src.highlight.HighlightProvider;
 import com.example.demo.src.highlight.HighlightService;
-import com.example.demo.src.story.model.GetStoryHistoryRes;
-import com.example.demo.src.story.model.GetStoryRes;
-import com.example.demo.src.story.model.GetStoryUserRes;
-import com.example.demo.src.story.model.GetStoryViewerListRes;
+import com.example.demo.src.story.model.*;
 import com.example.demo.utils.JwtService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 import static com.example.demo.config.BaseResponseStatus.*;
+import static com.example.demo.utils.ValidationRegex.isRegexImageUrl;
 
 @RestController
 @RequestMapping("/app/stories")
@@ -230,6 +228,31 @@ public class StoryController {
             return new BaseResponse<>(result);
         } catch(BaseException exception){
             return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    /**
+     * 스토리 추가 API
+     * [PATCH] /app/stories
+     *
+     * @return BaseResponse<String>
+     */
+    @ResponseBody
+    @PostMapping("")
+    public BaseResponse<PostStoryRes> postStory(@RequestBody PostStoryReq postStoryReq){
+        if(postStoryReq.getStoryUrl()==null){
+            return new BaseResponse<>(POST_STORIES_EMPTY_STORY_URL);
+        }
+        if(!isRegexImageUrl(postStoryReq.getStoryUrl())) {
+            return new BaseResponse<>(POST_STORIES_INVALID_STORY_URL);
+        }
+        try {
+            int userIdByJwt = jwtService.getUserId();
+            postStoryReq.setUserId(userIdByJwt);
+            PostStoryRes postStoryRes = storyService.postStory(postStoryReq);
+            return new BaseResponse<>(postStoryRes);
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
         }
     }
 
