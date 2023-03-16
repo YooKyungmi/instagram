@@ -353,9 +353,11 @@ public class PostDao {
         for (Photo photo : tagPhoto ) {
             for (String userTagId : photo.getUserTagId()) {
                 Object[] userTagParams = new Object[]{userTagId, postId, photo.getPhotoUrl()};
-                return this.jdbcTemplate.update(UserTagQuery, userTagParams);
+                if (this.jdbcTemplate.update(UserTagQuery, userTagParams)==0)
+                    return 0;
             }
         }
+        return 1;
     }
 
     public int updatePlace (int postId, String place, int userId){
