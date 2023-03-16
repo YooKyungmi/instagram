@@ -38,7 +38,8 @@ public class PostService {
             PostPostsRes postPostsRes = PostPostsRes.builder()
                     .postId(postDao.createPost(postPostsReq, userId))
                     .build();
-
+            if (postPostsRes.getPostId()==0)
+                throw new BaseException(POST_FAILED);
             return postPostsRes;
         } catch (Exception exception) {
             logger.error("Post - createPost Service Error", exception);
@@ -49,7 +50,10 @@ public class PostService {
     public void addPostLike(int postId, int userId) throws BaseException {
         throwIfInvalidUserIdDetected(userId);
         try {
-            postDao.addPostLike(postId, userId);
+            int result = postDao.addPostLike(postId, userId);
+            if (result == 0) {
+                throw new BaseException(POST_FAILED);
+            }
         } catch (Exception exception) {
             logger.error("Post - addPostLike Service Error", exception);
             throw new BaseException(POST_FAILED);
@@ -59,7 +63,10 @@ public class PostService {
     public void addPostScrap(int postId, int userId) throws BaseException {
         throwIfInvalidUserIdDetected(userId);
         try {
-            postDao.addPostScrap(postId, userId);
+            int result = postDao.addPostScrap(postId, userId);
+            if (result == 0) {
+                throw new BaseException(POST_FAILED);
+            }
         } catch (Exception exception) {
             logger.error("Post - addPostScrap Service Error", exception);
             throw new BaseException(POST_FAILED);
@@ -69,7 +76,10 @@ public class PostService {
     public void addCommentLike (int commentId, int userId) throws BaseException {
         throwIfInvalidUserIdDetected(userId);
         try {
-            postDao.addCommentLike(commentId, userId);
+            int result=postDao.addCommentLike(commentId, userId);
+            if (result == 0) {
+                throw new BaseException(POST_FAILED);
+            }
         } catch (Exception exception) {
             logger.error("Post - addPostScrap Service Error", exception);
             throw new BaseException(POST_FAILED);
@@ -82,7 +92,10 @@ public class PostService {
             throw new BaseException(NO_AUTHORIZED);
         }
         try{
-            postDao.addContentTag(postContentTagReq.getPostId(), postContentTagReq.getTagWord());
+            int result=postDao.addContentTag(postContentTagReq.getPostId(), postContentTagReq.getTagWord());
+            if (result == 0) {
+                throw new BaseException(POST_FAILED);
+            }
         }catch (Exception exception) {
             logger.error("Post - addContentTag Service Error", exception);
             throw new BaseException(POST_FAILED);
@@ -95,7 +108,10 @@ public class PostService {
             throw new BaseException(NO_AUTHORIZED);
         }
         try{
-            postDao.addUserTag(postUserTagReq.getPostId(), postUserTagReq.getPhotos());
+            int result=postDao.addUserTag(postUserTagReq.getPostId(), postUserTagReq.getPhotos());
+            if (result == 0) {
+                throw new BaseException(POST_FAILED);
+            }
         }catch (Exception exception) {
             logger.error("Post - addUserTag Service Error", exception);
             throw new BaseException(POST_FAILED);
@@ -109,12 +125,33 @@ public class PostService {
             throw new BaseException(NO_AUTHORIZED);
         }
         try{
-            postDao.deleteUserTag(patchUserTagReq.getPostId(), patchUserTagReq.getUserTagId(), patchUserTagReq.getPhotoUrl());
+            int result =postDao.deleteUserTag(patchUserTagReq.getPostId(), patchUserTagReq.getUserTagId(), patchUserTagReq.getPhotoUrl());
+            if (result == 0) {
+                throw new BaseException(PATCH_FAILED);
+            }
         }catch (Exception exception) {
             logger.error("Post - deleteUserTag Service Error", exception);
-            throw new BaseException(POST_FAILED);
+            throw new BaseException(PATCH_FAILED);
         }
     }
+
+    @Transactional
+    public void deletePhoto(DeletePhotoReq deletePhotoReq, int userId) throws BaseException{
+        throwIfInvalidUserIdDetected(userId);
+        if (!(postDao.checkPostUser(userId, deletePhotoReq.getPostId()))){
+            throw new BaseException(NO_AUTHORIZED);
+        }
+        try{
+            int result =postDao.deletePhoto(deletePhotoReq.getPostId(), deletePhotoReq.getPhotoIndex(), deletePhotoReq.getPhotoUrl());
+            if (result == 0) {
+                throw new BaseException(PATCH_FAILED);
+            }
+        }catch (Exception exception) {
+            logger.error("Post - deleteUserTag Service Error", exception);
+            throw new BaseException(PATCH_FAILED);
+        }
+    }
+
 
     @Transactional
     public void deleteContentTag(PatchObjectReq patchObjectReq, int userId) throws BaseException{
@@ -123,10 +160,13 @@ public class PostService {
             throw new BaseException(NO_AUTHORIZED);
         }
         try{
-            postDao.deleteContentTag(patchObjectReq.getPostId(),patchObjectReq.getDetail());
+            int result =postDao.deleteContentTag(patchObjectReq.getPostId(),patchObjectReq.getDetail());
+            if (result == 0) {
+                throw new BaseException(PATCH_FAILED);
+            }
         }catch (Exception exception) {
             logger.error("Post - deleteContentTag Service Error", exception);
-            throw new BaseException(POST_FAILED);
+            throw new BaseException(PATCH_FAILED);
         }
     }
     @Transactional
@@ -136,7 +176,10 @@ public class PostService {
             throw new BaseException(NO_AUTHORIZED);
         }
         try{
-            postDao.updatePlace(patchObjectReq.getPostId(), patchObjectReq.getDetail(),userId);
+            int result =postDao.updatePlace(patchObjectReq.getPostId(), patchObjectReq.getDetail(),userId);
+            if (result == 0) {
+                throw new BaseException(PATCH_FAILED);
+            }
         }catch (Exception exception) {
             logger.error("Post - updatePlace Service Error", exception);
             throw new BaseException(PATCH_FAILED);
@@ -150,7 +193,10 @@ public class PostService {
             throw new BaseException(NO_AUTHORIZED);
         }
         try{
-            postDao.deletePlace(postId,userId);
+            int result = postDao.deletePlace(postId,userId);
+            if (result == 0) {
+                throw new BaseException(PATCH_FAILED);
+            }
         }catch (Exception exception) {
             logger.error("Post - deletePlace Service Error", exception);
             throw new BaseException(PATCH_FAILED);
@@ -163,7 +209,10 @@ public class PostService {
             throw new BaseException(NO_AUTHORIZED);
         }
         try {
-            postDao.updatePostsContent(patchObjectReq.getPostId(), patchObjectReq.getDetail(),userId);
+            int result =postDao.updatePostsContent(patchObjectReq.getPostId(), patchObjectReq.getDetail(),userId);
+            if (result == 0) {
+                throw new BaseException(PATCH_FAILED);
+            }
         } catch (Exception exception) {
             logger.error("Post - updatePostsContent Service Error", exception);
             throw new BaseException(PATCH_FAILED);
@@ -174,7 +223,10 @@ public class PostService {
     public void updateLikeShowStatus(int postId, boolean status, int userId) throws BaseException{
         throwIfInvalidUserIdDetected(userId);
         try{
-            postDao.updateLikeShowStatus(postId,status,userId);
+            int result= postDao.updateLikeShowStatus(postId,status,userId);
+            if (result == 0) {
+                throw new BaseException(PATCH_FAILED);
+            }
         }catch (Exception exception) {
         logger.error("Post - updateLikeShowStatus Service Error", exception);
         throw new BaseException(PATCH_FAILED);
@@ -184,7 +236,10 @@ public class PostService {
     public void updateCommentShowStatus(int postId, boolean status, int userId) throws BaseException{
         throwIfInvalidUserIdDetected(userId);
         try{
-            postDao.updateCommentShowStatus(postId,status,userId);
+            int result =postDao.updateCommentShowStatus(postId,status,userId);
+            if (result == 0) {
+                throw new BaseException(PATCH_FAILED);
+            }
         }catch (Exception exception) {
             logger.error("Post - updateCommentShowStatus Service Error", exception);
             throw new BaseException(PATCH_FAILED);
@@ -194,7 +249,10 @@ public class PostService {
     public void updatePostLikeOn(int postLikeId, boolean status, int userId) throws BaseException{
         throwIfInvalidUserIdDetected(userId);
         try{
-            postDao.updatePostLikeOn(postLikeId,status,userId);
+            int result=postDao.updatePostLikeOn(postLikeId,status,userId);
+            if (result == 0) {
+                throw new BaseException(PATCH_FAILED);
+            }
         }catch (Exception exception) {
             logger.error("Post - updatePostLikeOn Service Error", exception);
             throw new BaseException(PATCH_FAILED);
@@ -204,7 +262,10 @@ public class PostService {
     public void updateScrapOn(int scrapId, boolean status, int userId) throws BaseException{
         throwIfInvalidUserIdDetected(userId);
         try{
-            postDao.updateScrapOn(scrapId,status,userId);
+            int result=postDao.updateScrapOn(scrapId,status,userId);
+            if (result == 0) {
+                throw new BaseException(PATCH_FAILED);
+            }
         }catch (Exception exception) {
             logger.error("Post - updateScrapOn Service Error", exception);
             throw new BaseException(PATCH_FAILED);
@@ -215,7 +276,10 @@ public class PostService {
     public void updateCommentLikeOn(int commentLikeId, boolean status, int userId) throws BaseException{
         throwIfInvalidUserIdDetected(userId);
         try{
-            postDao.updateCommentLikeOn(commentLikeId,status,userId);
+            int result= postDao.updateCommentLikeOn(commentLikeId,status,userId);
+            if (result == 0) {
+                throw new BaseException(PATCH_FAILED);
+            }
         }catch (Exception exception) {
             logger.error("Post - updateCommentLikeOn Service Error", exception);
             throw new BaseException(PATCH_FAILED);
@@ -229,6 +293,7 @@ public class PostService {
             PostCommentRes postCommentRes = PostCommentRes.builder()
                     .commentId(postDao.createComment(userId,postCommentReq))
                     .build();
+            if (postCommentRes.getCommentId()==0) throw new BaseException(POST_FAILED);
             return postCommentRes;
         } catch (Exception exception) {
             logger.error("Post - createComment Service Error", exception);
@@ -243,9 +308,7 @@ public class PostService {
             throw new BaseException(NO_AUTHORIZED);
         }
         try{
-            System.out.println("userId = " + userId);
-            System.out.println("postDao.checkPostUser(userId,postId) = " + postDao.checkPostUser(userId,postId));
-            postDao.deletePost(postId);
+            if(postDao.deletePost(postId)==0) throw new BaseException(PATCH_FAILED);
         }catch (Exception exception) {
             logger.error("Post - deletePost Service Error", exception);
             throw new BaseException(PATCH_FAILED);
@@ -259,7 +322,7 @@ public class PostService {
             throw new BaseException(NO_AUTHORIZED);
         }
         try{
-            postDao.deleteComment(commentId);
+            if(postDao.deleteComment(commentId)==0) throw new BaseException(PATCH_FAILED);
         }catch (Exception exception) {
             logger.error("Post - deleteComment Service Error", exception);
             throw new BaseException(PATCH_FAILED);
