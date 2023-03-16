@@ -105,13 +105,13 @@ public class PostController {
     }
 
     /**
-     * 사용자 팔로우 게시물 조회 API
-     * [GET] /app/posts/content-tag/:tag-word
+     * contentTag로 게시물 검색 API (게시물목록)
+     * [GET] /app/posts/content-tag?tag-word=
      * @return BaseResponse<List<GetPostRes>>
      */
     @ResponseBody
-    @GetMapping("/content-tag/{tag-word}")
-    public BaseResponse<List<GetPostRes>> getPostContentTag(@PathVariable("tag-word") String tagWord) {
+    @GetMapping("/content-tag")
+    public BaseResponse<List<GetPostRes>> getPostContentTag(@RequestParam("tag-word") String tagWord) {
         try{
 
             int userIdByJwt = jwtService.getUserId();
@@ -123,22 +123,22 @@ public class PostController {
     }
 
     /**
-     * 사용자 팔로우 게시물 조회 API
-     * [GET] /app/posts/content-tag/:tag-word
+     * userTag로 게시물 검색 API (게시물목록)
+     * [GET] /app/posts/user-tag?user-id=
      * @return BaseResponse<List<GetPostRes>>
      */
-//    @ResponseBody
-//    @GetMapping("/content-tag/{tag-word}")
-//    public BaseResponse<List<GetPostRes>> getPostUserTag(@PathVariable("tag-word") String tagWord) {
-//        try{
-//
-//            int userIdByJwt = jwtService.getUserId();
-//            List<GetPostRes> getPostRes = postProvider.getPostContentTag(userIdByJwt,tagWord);
-//            return new BaseResponse<>(getPostRes);
-//        } catch(BaseException exception){
-//            return new BaseResponse<>((exception.getStatus()));
-//        }
-//    }
+    @ResponseBody
+    @GetMapping("/user-tag")
+    public BaseResponse<List<GetPostRes>> getPostUserTag(@RequestParam("user-id")Integer userTagId) {
+        try{
+
+            int userIdByJwt = jwtService.getUserId();
+            List<GetPostRes> getPostRes = postProvider.getPostUserTag(userIdByJwt,userTagId);
+            return new BaseResponse<>(getPostRes);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
 
 
     /**

@@ -69,6 +69,7 @@ public class PostDao {
     }
     public Post getPostModel(int postId){
         String Query = "select * from Post where postId = ?";
+        System.out.println("postId = " + postId);
         return this.jdbcTemplate.queryForObject(Query,
                 (rs, rowNum) -> new Post(
                         rs.getInt("postId"),
@@ -146,7 +147,6 @@ public class PostDao {
         String Query = "select postLikeId,postLikeStatus from PostUser where userId = ? and postId = ?";
         Object[] params = new Object[]{userId,postId};
         try{
-            System.out.println("postId = " + postId);
             GetWhetherDTO gets= this.jdbcTemplate.queryForObject(Query,
                     (rs, rowNum) -> GetWhetherDTO.builder()
                             .on(rs.getInt("postLikeStatus"))
@@ -259,7 +259,6 @@ public class PostDao {
         Comment comment = getCommentModel(commentId);
         String Query = "select nickname, profileImageUrl from User where userId = ? and status = true";
         int userParam = comment.getUserId();
-        System.out.println("userParam = " + userParam);
         return this.jdbcTemplate.queryForObject(Query,
                 (rs, rowNum) -> new GetCommentRes(
                         comment.getCommentId(),
@@ -348,26 +347,26 @@ public class PostDao {
     }
 
     public int addPostLike (int postId,int userId){
-        String Query = "insert into PostUser (userId,postId) values (?,?)" +
-                "SELECT 'userId', 'postId'\n" +
-                "FROM DUAL WHERE NOT EXISTS(SELECT * FROM PostUser WHERE column1 = 'userId' AND column2 = 'postId');";
-        Object[] params = new Object[]{userId, postId};
+        String Query = "insert into PostUser (userId,postId) " +
+                "SELECT  ?,  ? " +
+                "FROM DUAL WHERE NOT EXISTS(SELECT * FROM PostUser WHERE userId =  ? AND postId =  ?)";
+        Object[] params = new Object[]{userId, postId,userId, postId};
         return this.jdbcTemplate.update(Query,params);
     }
 
     public int addPostScrap (int postId,int userId){
-        String Query = "insert into Scrap (userId,postId) values (?,?)"+
-                "SELECT 'userId', 'postId'\n" +
-                "FROM DUAL WHERE NOT EXISTS(SELECT * FROM Scrap WHERE column1 = 'userId' AND column2 = 'postId');";
-        Object[] params = new Object[]{userId, postId};
+        String Query = "insert into Scrap (userId,postId) "+
+                "SELECT ?, ?" +
+                "FROM DUAL WHERE NOT EXISTS(SELECT * FROM Scrap WHERE userId =  ? AND postId =  ?)";
+        Object[] params = new Object[]{userId, postId,userId, postId};
         return this.jdbcTemplate.update(Query,params);
     }
 
     public int addCommentLike (int commentId,int userId){
-        String Query = "insert into CommentLike (userId,commentId) values (?,?)"+
-                "SELECT 'userId', 'commentId'\n" +
-                "FROM DUAL WHERE NOT EXISTS(SELECT * FROM CommentLike WHERE column1 = 'userId' AND column2 = 'commentId');";
-        Object[] params = new Object[]{userId, commentId};
+        String Query = "insert into CommentLike (userId,commentId)"+
+                " SELECT ?, ?" +
+                " FROM DUAL WHERE NOT EXISTS(SELECT * FROM CommentLike WHERE userId = ? AND commentId = ?)";
+        Object[] params = new Object[]{userId, commentId,userId, commentId};
         return this.jdbcTemplate.update(Query,params);
     }
 
