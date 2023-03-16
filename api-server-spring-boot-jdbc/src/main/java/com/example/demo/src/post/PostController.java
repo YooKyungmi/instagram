@@ -261,6 +261,25 @@ public class PostController {
     }
 
 
+
+    /**
+     * 게시물 장소 삭제 API
+     * [PATCH] /app/posts/place/:post-id
+     * @return BaseResponse<String>
+     */
+
+    @PatchMapping("/place/{post-id}")
+    public BaseResponse<String> deletePlace (@PathVariable("post-id") int postId){
+        try{
+            int userIdByJwt = jwtService.getUserId();
+            postService.deletePlace(postId,userIdByJwt);
+            String result = "";
+            return new BaseResponse<>(result);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
     /**
      * 게시물 설명 수정 API
      * [PATCH] /app/posts/content

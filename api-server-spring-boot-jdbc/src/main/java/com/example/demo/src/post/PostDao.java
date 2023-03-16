@@ -362,6 +362,12 @@ public class PostDao {
             this.jdbcTemplate.update(ContentTagQuery, Params);
     }
 
+    public void deletePlace (int postId, int userId){
+        String ContentTagQuery = "update Post set place = \"\" where postId = ? and userId = ?";
+        Object[] Params = new Object[]{postId,userId};
+        this.jdbcTemplate.update(ContentTagQuery, Params);
+    }
+
     public void updatePostsContent (int postId, String content, int userId){
         String ContentTagQuery = "update Post set content = ? where postId = ? and userId = ?";
         Object[] Params = new Object[]{content,postId,userId};
@@ -454,7 +460,6 @@ public class PostDao {
         String PostQuery = "select ifnull(max(postId),0) postId from Post where userId = ? and postId = ? and status = true";
         Object[] params = new Object[]{userId,postId};
         int check =  this.jdbcTemplate.queryForObject(PostQuery, int.class,params);
-        System.out.println("check = " + check);
         return (check!= 0);
     }
 
