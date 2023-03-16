@@ -89,6 +89,9 @@ public class HighlightProvider {
     }
 
     public int getHighlightUserByHighlightId(int highlightId) throws BaseException {
+        if(highlightDao.checkHighlightByHighlightId(highlightId)==0){
+            throw new BaseException(GET_HIGHLIGHTS_INVALID_HIGHLIGHT_ID);
+        }
         try{
             return highlightDao.getHighlightUserByHighlightId(highlightId);
         }catch (Exception exception) {

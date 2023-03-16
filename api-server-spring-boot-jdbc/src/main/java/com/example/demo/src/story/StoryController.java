@@ -32,6 +32,8 @@ public class StoryController {
     private final HighlightProvider highlightProvider;
     @Autowired
     private final JwtService jwtService;
+    //@Autowired
+    //private final FileUploadService fileUploadService;
 
     public StoryController(StoryProvider storyProvider, StoryService storyService, HighlightService highlightService, HighlightProvider highlightProvider, JwtService jwtService) {
         this.storyProvider = storyProvider;
@@ -255,5 +257,29 @@ public class StoryController {
             return new BaseResponse<>(exception.getStatus());
         }
     }
+
+    //s3
+    /**
+     * 스토리 추가 API
+     * [PATCH] /app/stories
+     *
+     * @return BaseResponse<String>
+     *//*
+    @ResponseBody
+    @PostMapping("")
+    public BaseResponse<PostStoryRes> postStory(@RequestPart("image") MultipartFile multipartFile){
+        try {
+            int userIdByJwt = jwtService.getUserId();
+            PostStoryReq postStoryReq = PostStoryReq.builder()
+                    .userId(userIdByJwt)
+                    .storyUrl(fileUploadService.uploadImage(multipartFile));
+            PostStoryRes postStoryRes = storyService.postStory(postStoryReq);
+            return new BaseResponse<>(postStoryRes);
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }*/
+
+
 
 }

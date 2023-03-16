@@ -210,7 +210,7 @@ public class UserController {
         if (accountStatus == null) {
             return new BaseResponse<>(PATCH_USERS_EMPTY_ACCOUNT_STATUS);
         }
-        if (accountStatus != "INACTIVE" && accountStatus != "ACTIVE" && accountStatus != "DELETED") {
+        if (!(accountStatus.equals("INACTIVE") || accountStatus.equals("ACTIVE") || accountStatus.equals("DELETED"))) {
             return new BaseResponse<>(PATCH_USERS_INVALID_ACCOUNT_STATUS);
         }
         try {
@@ -318,7 +318,7 @@ public class UserController {
     @ResponseBody
     @GetMapping("")
     public BaseResponse<List<GetUserSearchRes>> searchByUser(@RequestParam("user-keyword") String keyword) {
-        if (keyword == null) {
+        if (keyword == null || keyword.trim().isEmpty()) {
             return new BaseResponse<>(GET_USERS_EMPTY_NICKNAME);
         }
         try {

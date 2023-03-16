@@ -139,6 +139,9 @@ public class StoryProvider {
     }
 
     public int getStoryUserByStoryId(int storyId) throws BaseException {
+        if (storyDao.checkStoryId(storyId) == 0) {
+            throw new BaseException(GET_STORIES_STORY_ID_NOT_EXISTS);
+        }
         try {
             return storyDao.getStoryUserByStoryId(storyId);
         } catch (Exception exception) {
