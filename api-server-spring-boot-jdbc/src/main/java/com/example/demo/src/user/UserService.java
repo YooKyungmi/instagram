@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
@@ -32,25 +33,26 @@ public class UserService {
 
     }
 
+    @Transactional
     public PostUserRes createUserByPhone(PostUserByPhoneReq postUserByPhoneReq) throws BaseException {
-        if(userProvider.checkPhoneNumber(postUserByPhoneReq.getPhoneNumber()) ==1){
+        if (userProvider.checkPhoneNumber(postUserByPhoneReq.getPhoneNumber()) == 1) {
             throw new BaseException(POST_USERS_EXISTS_PHONE_NUMBER);
         }
-        if(userProvider.checkNickname(postUserByPhoneReq.getNickname()) ==1){
+        if (userProvider.checkNickname(postUserByPhoneReq.getNickname()) == 1) {
             throw new BaseException(POST_USERS_EXISTS_NICKNAME);
         }
         throwIfInvalidBirthDateFormat(postUserByPhoneReq.getBirthDate());
         String pwd;
-        try{
+        try {
             pwd = new AES128(Secret.USER_INFO_PASSWORD_KEY).encrypt(postUserByPhoneReq.getPassword());
             postUserByPhoneReq.setPassword(pwd);
         } catch (Exception ignored) {
             throw new BaseException(PASSWORD_ENCRYPTION_ERROR);
         }
-        try{
+        try {
             int userId = userDao.createUserByPhone(postUserByPhoneReq);
             String jwt = jwtService.createJwt(userId);
-            return new PostUserRes(jwt,userId);
+            return new PostUserRes(jwt, userId);
         } catch (Exception exception) {
             logger.error("App - createUserByPhone Service Error", exception);
             throw new BaseException(DATABASE_ERROR);
@@ -58,25 +60,26 @@ public class UserService {
     }
 
 
+    @Transactional
     public PostUserRes createUserByEmail(PostUserByEmailReq postUserByEmailReq) throws BaseException {
-        if(userProvider.checkEmailAddress(postUserByEmailReq.getEmailAddress()) ==1){
+        if (userProvider.checkEmailAddress(postUserByEmailReq.getEmailAddress()) == 1) {
             throw new BaseException(POST_USERS_EXISTS_EMAIL_ADDRESS);
         }
-        if(userProvider.checkNickname(postUserByEmailReq.getNickname()) ==1){
+        if (userProvider.checkNickname(postUserByEmailReq.getNickname()) == 1) {
             throw new BaseException(POST_USERS_EXISTS_NICKNAME);
         }
         throwIfInvalidBirthDateFormat(postUserByEmailReq.getBirthDate());
         String pwd;
-        try{
+        try {
             pwd = new AES128(Secret.USER_INFO_PASSWORD_KEY).encrypt(postUserByEmailReq.getPassword());
             postUserByEmailReq.setPassword(pwd);
         } catch (Exception ignored) {
             throw new BaseException(PASSWORD_ENCRYPTION_ERROR);
         }
-        try{
+        try {
             int userId = userDao.createUserByEmail(postUserByEmailReq);
             String jwt = jwtService.createJwt(userId);
-            return new PostUserRes(jwt,userId);
+            return new PostUserRes(jwt, userId);
         } catch (Exception exception) {
             logger.error("App - createUserByEmail Service Error", exception);
             throw new BaseException(DATABASE_ERROR);
@@ -85,10 +88,10 @@ public class UserService {
 
     private void throwIfInvalidBirthDateFormat(String birthDate) throws BaseException {
         try {
-            if(LocalDate.parse(birthDate).isAfter(LocalDate.now())){
+            if (LocalDate.parse(birthDate).isAfter(LocalDate.now())) {
                 throw new BaseException(POST_USERS_INVALID_BIRTH_DATE);
             }
-        }catch(DateTimeParseException DTPE){
+        } catch (DateTimeParseException DTPE) {
             throw new BaseException(POST_USERS_INVALID_BIRTH_DATE_FORMAT);
         }
     }
@@ -99,7 +102,7 @@ public class UserService {
             if (result == 0) {
                 throw new BaseException(MODIFY_FAIL_USER);
             }
-        }catch (Exception exception) {
+        } catch (Exception exception) {
             logger.error("App - modifyUserInfo Service Error", exception);
             throw new BaseException(DATABASE_ERROR);
         }
@@ -111,12 +114,13 @@ public class UserService {
             if (result == 0) {
                 throw new BaseException(MODIFY_FAIL_USER);
             }
-        }catch (Exception exception) {
+        } catch (Exception exception) {
             logger.error("App - modifyUserAccountStatus Service Error", exception);
             throw new BaseException(DATABASE_ERROR);
         }
     }
 
+    @Transactional
     public void modifyUserEmail(PatchUserEmailReq patchUserEmailReq) throws BaseException {
         if (userProvider.checkEmailAddress(patchUserEmailReq.getEmailAddress()) == 1) {
             throw new BaseException(POST_USERS_EXISTS_EMAIL_ADDRESS);
@@ -126,12 +130,13 @@ public class UserService {
             if (result == 0) {
                 throw new BaseException(MODIFY_FAIL_USER);
             }
-        }catch (Exception exception) {
+        } catch (Exception exception) {
             logger.error("App - modifyUserEmail Service Error", exception);
             throw new BaseException(DATABASE_ERROR);
         }
     }
 
+    @Transactional
     public void modifyUserPhone(PatchUserPhoneReq patchUserPhoneReq) throws BaseException {
         if (userProvider.checkPhoneNumber(patchUserPhoneReq.getPhoneNumber()) == 1) {
             throw new BaseException(POST_USERS_EXISTS_PHONE_NUMBER);
@@ -141,19 +146,19 @@ public class UserService {
             if (result == 0) {
                 throw new BaseException(MODIFY_FAIL_USER);
             }
-        }catch (Exception exception) {
+        } catch (Exception exception) {
             logger.error("App - modifyUserEmail Service Error", exception);
             throw new BaseException(DATABASE_ERROR);
         }
     }
 
     public void modifyProfileImage(PatchProfileImageReq patchProfileImageReq) throws BaseException {
-        try{
+        try {
             int result = userDao.modifyProfileImage(patchProfileImageReq);
             if (result == 0) {
                 throw new BaseException(MODIFY_FAIL_USER);
             }
-        }catch (Exception exception) {
+        } catch (Exception exception) {
             logger.error("App - modifyProfileImage Service Error", exception);
             throw new BaseException(DATABASE_ERROR);
         }

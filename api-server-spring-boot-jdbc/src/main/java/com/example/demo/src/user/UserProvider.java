@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,6 +67,7 @@ public class UserProvider {
         }
     }
 
+    @Transactional
     public PostLoginRes login(PostLoginReq postLoginReq) throws BaseException {
         if (checkNickname(postLoginReq.getId()) == 0 && checkPhoneNumber(postLoginReq.getId()) == 0 && checkEmailAddress(postLoginReq.getId()) == 0) {
             throw new BaseException(POST_USERS_ID_NOT_EXIST);
@@ -99,6 +101,7 @@ public class UserProvider {
         }
     }
 
+    @Transactional
     public GetUserRes getUser(int onlineUserId, int findingUserId) throws BaseException {
         if (checkUserId(findingUserId) == 0) {
             throw new BaseException(GET_USERS_INVALID_USER_ID);
@@ -155,6 +158,7 @@ public class UserProvider {
         }
     }
 
+    @Transactional
     public PostLoginRes identifyUser(GetIdentifyUserReq getIdentifyUserReq) throws BaseException {
         User user;
         try {
@@ -180,6 +184,7 @@ public class UserProvider {
 
     }
 
+    @Transactional
     public List<GetUserSearchRes> searchByUser(int userIdByJwt, String keyword) throws BaseException {
         try {
             List<GetUserSearchRes> getUserSearchResList = userDao.searchByUser(userIdByJwt,keyword);

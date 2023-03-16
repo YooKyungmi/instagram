@@ -3,6 +3,7 @@ package com.example.demo.src.follow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -89,6 +90,7 @@ public class FollowDao {
                 checkFollowingParams);
     }
 
+    @Transactional
     public int addFollows(int userId, int followUserId) {
         String createUserQuery = "insert into UserFollow (followerId, followingId) VALUES (?,?)";
         Object[] createUserParams = new Object[]{userId,followUserId};

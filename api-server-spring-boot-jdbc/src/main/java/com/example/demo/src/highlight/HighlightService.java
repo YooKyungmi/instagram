@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -37,7 +38,7 @@ public class HighlightService {
         this.storyProvider = storyProvider;
     }
 
-
+    @Transactional
     public PostHighlightRes createHighlight(PostHighlightReq postHighlightReq) throws BaseException {
         try {
             int userHighlightId = highlightDao.createUserHighlight(postHighlightReq);
@@ -51,6 +52,7 @@ public class HighlightService {
         }
     }
 
+    @Transactional
     public void deleteStoryFromHighlight(int storyId) throws BaseException {
         try {
             List<Integer> highlightIdList = highlightDao.getHighlightIdByStoryId(storyId);
@@ -72,6 +74,7 @@ public class HighlightService {
         }
     }
 
+    @Transactional
     public void patchHighlight(int highlightId) throws BaseException {
         if(highlightProvider.checkHighlightByHighlightId(highlightId)==0){
             throw new BaseException(GET_HIGHLIGHTS_INVALID_HIGHLIGHT_ID);
@@ -91,6 +94,7 @@ public class HighlightService {
         }
     }
 
+    @Transactional
     public void patchHighlightInfo(int highlightId, PostHighlightReq postHighlightReq) throws BaseException {
         for (int storyId : postHighlightReq.getStoryIdList()) {
             if (storyDao.checkStoryIdExists(storyId) == 0) {
@@ -113,6 +117,7 @@ public class HighlightService {
         }
     }
 
+    @Transactional
     private int patchHighlightStory(List<Integer> storyIdList, List<Integer> originStoryIdList,int highlightId) {
         List<Integer>addIdList = storyIdList.stream().filter(id->originStoryIdList.stream().noneMatch(Predicate.isEqual(id))).collect(Collectors.toList());
         List<Integer>deleteIdList = originStoryIdList.stream().filter(id -> storyIdList.stream().noneMatch(Predicate.isEqual(id))).collect(Collectors.toList());

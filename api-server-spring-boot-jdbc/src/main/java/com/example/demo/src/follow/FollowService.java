@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.example.demo.config.BaseResponseStatus.*;
 
@@ -29,6 +30,7 @@ public class FollowService {
         this.jwtService = jwtService;
     }
 
+    @Transactional
     public PostPatchFollowRes addFollows(int userId, int followUserId) throws BaseException {
         throwIfInvalidUserIdDetected(userId);
         throwIfInvalidUserIdDetected(followUserId);
@@ -58,6 +60,7 @@ public class FollowService {
         }
     }
 
+    @Transactional
     public PostPatchFollowRes patchFollows(Integer userId, Integer followUserId) throws BaseException {
         throwIfInvalidUserIdDetected(userId);
         throwIfInvalidUserIdDetected(followUserId);

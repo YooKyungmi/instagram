@@ -5,6 +5,7 @@ import com.example.demo.src.user.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -19,6 +20,7 @@ public class UserDao {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
+    @Transactional
     public int createUserByPhone(PostUserByPhoneReq postUserByPhoneReq) {
         String createUserQuery = "insert into User (phoneNumber, birthDate, nickname, password, profileImageUrl) VALUES (?,?,?,?,?)";
         Object[] createUserParams = new Object[]{postUserByPhoneReq.getPhoneNumber(), postUserByPhoneReq.getBirthDate(), postUserByPhoneReq.getNickname(), postUserByPhoneReq.getPassword(), postUserByPhoneReq.getProfileImageUrl()};
@@ -28,6 +30,7 @@ public class UserDao {
         return this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
     }
 
+    @Transactional
     public int createUserByEmail(PostUserByEmailReq postUserByEmailReq) {
         String createUserQuery = "insert into User (emailAddress, birthDate, nickname, password, profileImageUrl) VALUES (?,?,?,?,?)";
         Object[] createUserParams = new Object[]{postUserByEmailReq.getEmailAddress(), postUserByEmailReq.getBirthDate(), postUserByEmailReq.getNickname(), postUserByEmailReq.getPassword(), postUserByEmailReq.getProfileImageUrl()};
@@ -122,6 +125,8 @@ public class UserDao {
                 getUserParams);
     }
 
+
+
     public int updateUserInfo(PatchUserReq patchUserReq) {
         String updateUserInfoQuery = "update User set name = ?, introduce = ?, gender = ? where userId = ?";
         Object[] updateUserInfoParams = new Object[]{patchUserReq.getName(), patchUserReq.getIntroduce(), patchUserReq.getGender(), patchUserReq.getUserId()};
@@ -168,8 +173,8 @@ public class UserDao {
     }
 
     public int modifyProfileImage(PatchProfileImageReq patchProfileImageReq) {
-        String modifyProfileImageQuery ="update User set profileImageUrl = ? where userId = ?";
-        Object[] modifyProfileImageParams = new Object[]{patchProfileImageReq.getProfileImageUrl(),patchProfileImageReq.getUserId()};
-        return this.jdbcTemplate.update(modifyProfileImageQuery,modifyProfileImageParams);
+        String modifyProfileImageQuery = "update User set profileImageUrl = ? where userId = ?";
+        Object[] modifyProfileImageParams = new Object[]{patchProfileImageReq.getProfileImageUrl(), patchProfileImageReq.getUserId()};
+        return this.jdbcTemplate.update(modifyProfileImageQuery, modifyProfileImageParams);
     }
 }
