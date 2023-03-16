@@ -148,11 +148,14 @@ public class PostDao {
         String Query = "select postLikeId,postLikeStatus from PostUser where userId = ? and postId = ?";
         Object[] params = new Object[]{userId,postId};
         try{
-            return this.jdbcTemplate.queryForObject(Query,
+            System.out.println("postId = " + postId);
+            GetWhetherDTO gets= this.jdbcTemplate.queryForObject(Query,
                     (rs, rowNum) -> GetWhetherDTO.builder()
                             .on(rs.getInt("postLikeStatus"))
                             .id(rs.getInt("postLikeId"))
                             .build(), params);
+            System.out.println("gets = " + gets);
+            return gets;
         }catch (EmptyResultDataAccessException e) {
             return GetWhetherDTO.builder()
                     .on(0)
@@ -309,7 +312,7 @@ public class PostDao {
                 postPostsReq.getLikeShowStatus(),
                 postPostsReq.getCommentShowStatus()
         };
-        this.jdbcTemplate.update(insertPostQuery, postParams);
+        if( this.jdbcTemplate.update(insertPostQuery, postParams)==0) return 0;
         String lastInsertIdQuery = "select last_insert_id()";
         int postId =  this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
 
@@ -321,19 +324,25 @@ public class PostDao {
     }
 
     public int addPostLike (int postId,int userId){
-        String Query = "insert into PostUser (userId,postId) values (?,?)";
+        String Query = "insert into PostUser (userId,postId) values (?,?)" +
+                "SELECT 'userId', 'postId'\n" +
+                "FROM DUAL WHERE NOT EXISTS(SELECT * FROM PostUser WHERE column1 = 'userId' AND column2 = 'postId');";
         Object[] params = new Object[]{userId, postId};
         return this.jdbcTemplate.update(Query,params);
     }
 
     public int addPostScrap (int postId,int userId){
-        String Query = "insert into Scrap (userId,postId) values (?,?)";
+        String Query = "insert into Scrap (userId,postId) values (?,?)"+
+                "SELECT 'userId', 'postId'\n" +
+                "FROM DUAL WHERE NOT EXISTS(SELECT * FROM Scrap WHERE column1 = 'userId' AND column2 = 'postId');";
         Object[] params = new Object[]{userId, postId};
         return this.jdbcTemplate.update(Query,params);
     }
 
     public int addCommentLike (int commentId,int userId){
-        String Query = "insert into CommentLike (userId,commentId) values (?,?)";
+        String Query = "insert into CommentLike (userId,commentId) values (?,?)"+
+                "SELECT 'userId', 'commentId'\n" +
+                "FROM DUAL WHERE NOT EXISTS(SELECT * FROM CommentLike WHERE column1 = 'userId' AND column2 = 'commentId');";
         Object[] params = new Object[]{userId, commentId};
         return this.jdbcTemplate.update(Query,params);
     }
@@ -410,7 +419,7 @@ public class PostDao {
     public int createComment (int userId, PostCommentReq postCommentReq) {
         String Query = "insert into Comment (userId,postId,groupId,comment) values (?,?,?,?)";
         Object[] params = new Object[]{userId, postCommentReq.getPostId(), postCommentReq.getGroupId(), postCommentReq.getComment()};
-        this.jdbcTemplate.update(Query, params);
+        if(this.jdbcTemplate.update(Query, params)==0) return 0;
         String lastInsertIdQuery = "select last_insert_id()";
         int commentId = this.jdbcTemplate.queryForObject(lastInsertIdQuery, int.class);
         return commentId;
@@ -428,37 +437,43 @@ public class PostDao {
         return this.jdbcTemplate.update(Query, params);
     }
 
-    public int deletePhoto (int postId, String photoUrl){
-        String Query = "update Post set status = false where postId = ? and tagWord = ?";
-        Object[] params = new Object[]{postId,photoUrl};
-        return this.jdbcTemplate.update(Query, params);
+    public int deletePhoto (int postId, int index, String photoUrl){
+        String postQuery = "update Post set photoUrl?= \"\" where postId = ? and photoUrl? = ?";
+        String userTagQuery = "update UserTag set status = false where postId = ? and photoUrl = ?";
+        Object[] postparams = new Object[]{index,postId,photoUrl};
+        Object[] userTagParams = new Object[]{postId,photoUrl};
+        if(this.jdbcTemplate.update(postQuery, postparams)==0) return 0;
+        if(this.jdbcTemplate.update(userTagQuery, userTagParams)==0) return 0;
+        return 1;
     }
 
     public int deleteComment (int commentId){
         String commentQuery = "update Comment set status = false where commentId = ?";
         String commentLikeQuery = "update CommentLike set status = false where commentId = ?";
-        this.jdbcTemplate.update(commentQuery, commentId);
-        return this.jdbcTemplate.update(commentLikeQuery, commentId);
+        if (this.jdbcTemplate.update(commentQuery, commentId)==0) return 0;
+        if (this.jdbcTemplate.update(commentLikeQuery, commentId)==0) return 0;
+        return 1;
     }
 
-    public void deletePost (int postId){
+    public int deletePost (int postId){
         String PostQuery = "update Post set status = false where postId = ?";
         String ContentTagQuery = "update ContentTag set status = false where postId = ?";
         String UserTagQuery = "update UserTag set status = false where postId = ?";
         String PostUserQuery = "update PostUser set status = false where postId = ?";
         String ScrapQuery = "update Scrap set status = false where postId = ?";
         String commentQuery = "select commentId from Comment where postId = ?";
-        this.jdbcTemplate.update(PostQuery, postId);
-        this.jdbcTemplate.update(ContentTagQuery, postId);
-        this.jdbcTemplate.update(UserTagQuery, postId);
-        this.jdbcTemplate.update(PostUserQuery, postId);
-        this.jdbcTemplate.update(ScrapQuery, postId);
+        if(this.jdbcTemplate.update(PostQuery, postId)==0) return 0;
+        if(this.jdbcTemplate.update(ContentTagQuery, postId)==0) return 0;
+        if(this.jdbcTemplate.update(UserTagQuery, postId)==0) return 0;
+        if(this.jdbcTemplate.update(PostUserQuery, postId)==0) return 0;
+        if(this.jdbcTemplate.update(ScrapQuery, postId)==0) return 0;
         List<Integer> commentList = this.jdbcTemplate.query(commentQuery,
                 (rs, rowNum) -> rs.getInt("commentId"),
                 postId);
         for (int commentId : commentList){
-            deleteComment(commentId);
+            if(deleteComment(commentId)==0) return 0;
         }
+        return 1;
     }
 
     public void deleteUserPost (int userId){

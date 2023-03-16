@@ -262,6 +262,24 @@ public class PostController {
     }
 
     /**
+     * 게시물 사진 삭제 API
+     * [PATCH] /app/posts/picture/deleted
+     * @return BaseResponse<String>
+     */
+
+    @PatchMapping("/picture/deleted")
+    public BaseResponse<String> deletePhoto (@Valid @RequestBody DeletePhotoReq deletePhotoReq){
+        try{
+            int userIdByJwt = jwtService.getUserId();
+            postService.deletePhoto(deletePhotoReq,userIdByJwt);
+            String result = "";
+            return new BaseResponse<>(result);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    /**
      * 게시물 태그 삭제 API
      * [PATCH] /app/posts/content-tag/deleted
      * @return BaseResponse<String>
@@ -301,11 +319,11 @@ public class PostController {
 
     /**
      * 게시물 장소 삭제 API
-     * [PATCH] /app/posts/place/:post-id
+     * [PATCH] /app/posts/place/deleted/:post-id
      * @return BaseResponse<String>
      */
 
-    @PatchMapping("/place/{post-id}")
+    @PatchMapping("/place/deleted/{post-id}")
     public BaseResponse<String> deletePlace (@PathVariable("post-id") int postId){
         try{
             int userIdByJwt = jwtService.getUserId();
