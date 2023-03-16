@@ -101,6 +101,34 @@ public class PostService {
             throw new BaseException(POST_FAILED);
         }
     }
+
+    @Transactional
+    public void deleteUserTag(PatchUserTagReq patchUserTagReq, int userId) throws BaseException{
+        throwIfInvalidUserIdDetected(userId);
+        if (!(postDao.checkPostUser(userId, patchUserTagReq.getPostId()))){
+            throw new BaseException(NO_AUTHORIZED);
+        }
+        try{
+            postDao.deleteUserTag(patchUserTagReq.getPostId(), patchUserTagReq.getUserTagId(), patchUserTagReq.getPhotoUrl());
+        }catch (Exception exception) {
+            logger.error("Post - deleteUserTag Service Error", exception);
+            throw new BaseException(POST_FAILED);
+        }
+    }
+
+    @Transactional
+    public void deleteContentTag(PatchObjectReq patchObjectReq, int userId) throws BaseException{
+        throwIfInvalidUserIdDetected(userId);
+        if (!(postDao.checkPostUser(userId, patchObjectReq.getPostId()))){
+            throw new BaseException(NO_AUTHORIZED);
+        }
+        try{
+            postDao.deleteContentTag(patchObjectReq.getPostId(),patchObjectReq.getDetail());
+        }catch (Exception exception) {
+            logger.error("Post - deleteContentTag Service Error", exception);
+            throw new BaseException(POST_FAILED);
+        }
+    }
     @Transactional
     public void updatePlace (PatchObjectReq patchObjectReq, int userId) throws BaseException{
         throwIfInvalidUserIdDetected(userId);

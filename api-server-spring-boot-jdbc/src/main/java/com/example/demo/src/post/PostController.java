@@ -242,6 +242,43 @@ public class PostController {
         }
     }
 
+
+    /**
+     * 게시물 사용자 태그 삭제 API
+     * [PATCH] /app/posts/user-tag/deleted
+     * @return BaseResponse<String>
+     */
+
+    @PatchMapping("/user-tag/deleted")
+    public BaseResponse<String> deleteUserTag (@Valid @RequestBody PatchUserTagReq patchUserTagReq){
+        try{
+            int userIdByJwt = jwtService.getUserId();
+            postService.deleteUserTag(patchUserTagReq,userIdByJwt);
+            String result = "";
+            return new BaseResponse<>(result);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    /**
+     * 게시물 태그 삭제 API
+     * [PATCH] /app/posts/content-tag/deleted
+     * @return BaseResponse<String>
+     */
+
+    @PatchMapping("/content-tag/deleted")
+    public BaseResponse<String> deleteContentTag (@Valid @RequestBody PatchObjectReq patchObjectReq){
+        try{
+            int userIdByJwt = jwtService.getUserId();
+            postService.deleteContentTag(patchObjectReq,userIdByJwt);
+            String result = "";
+            return new BaseResponse<>(result);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
     /**
      * 게시물 장소 수정 API
      * [PATCH] /app/posts/place
@@ -354,10 +391,10 @@ public class PostController {
 
     /**
      * 게시물 스크랩 여부 수정 API
-     * [PATCH] /app/posts/srcaped/:scrap-id/:status
+     * [PATCH] /app/posts/scraped/:scrap-id/:status
      * @return BaseResponse<String>
      */
-    @PatchMapping("/srcaped/{scrap-id}/{status}")
+    @PatchMapping("/scraped/{scrap-id}/{status}")
     public BaseResponse<String> updateScrapOn(@PathVariable("scrap-id") int scrapId,
                                                         @PathVariable("status") boolean status){
         try{
