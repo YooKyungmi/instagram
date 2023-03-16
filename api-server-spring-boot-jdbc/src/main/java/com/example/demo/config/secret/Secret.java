@@ -8,5 +8,8 @@ public class Secret {
 
     public static String USER_INFO_PASSWORD_KEY = "xdgfhjhvcdyfuioljkn,bvcsrt4e5768945679oiut#$%^&(Kbvfiolkjm";
 
+    public static String COOL_SMS_API_KEY = "NCSVOKQLXGG2O0RJ";
+
+    public static String COOL_SMS_API_SECRET_KEY = "QMDC63TENMXWZXSANIEJU2KFSIGTXGDR";
 
 }

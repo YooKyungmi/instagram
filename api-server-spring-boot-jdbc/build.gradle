@@ -26,6 +26,9 @@ dependencies {
     implementation 'org.jetbrains:annotations:23.0.0'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
+    //coolsms
+    implementation group: 'net.nurigo', name: 'javaSDK', version: '2.2'
+
 
     // Spring Boot Starter
     testImplementation ('org.springframework.boot:spring-boot-starter-test')
