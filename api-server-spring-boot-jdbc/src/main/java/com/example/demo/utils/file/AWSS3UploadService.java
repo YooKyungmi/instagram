@@ -1,4 +1,3 @@
-/*
 package com.example.demo.utils.file;
 
 import com.amazonaws.services.s3.AmazonS3;
@@ -28,4 +27,3 @@ public class AWSS3UploadService implements UploadService {
         return amazonS3.getUrl(component.getBucket(), fileName).toString();
     }
 }
-*/
