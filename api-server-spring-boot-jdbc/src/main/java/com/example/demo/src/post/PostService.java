@@ -52,7 +52,7 @@ public class PostService {
         try {
             int result = postDao.addPostLike(postId, userId);
             if (result == 0) {
-                throw new BaseException(POST_FAILED);
+                postDao.updatePostLikeOn(postId,true,userId);
             }
         } catch (Exception exception) {
             logger.error("Post - addPostLike Service Error", exception);
@@ -65,7 +65,7 @@ public class PostService {
         try {
             int result = postDao.addPostScrap(postId, userId);
             if (result == 0) {
-                throw new BaseException(POST_FAILED);
+                postDao.updateScrapOn(postId,true,userId);
             }
         } catch (Exception exception) {
             logger.error("Post - addPostScrap Service Error", exception);
@@ -78,10 +78,10 @@ public class PostService {
         try {
             int result=postDao.addCommentLike(commentId, userId);
             if (result == 0) {
-                throw new BaseException(POST_FAILED);
+                postDao.updateCommentLikeOn(commentId,true,userId);
             }
         } catch (Exception exception) {
-            logger.error("Post - addPostScrap Service Error", exception);
+            logger.error("Post - addCommentLike Service Error", exception);
             throw new BaseException(POST_FAILED);
         }
     }
