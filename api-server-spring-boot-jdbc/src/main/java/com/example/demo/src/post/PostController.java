@@ -56,6 +56,7 @@ public class PostController {
      * [GET] /app/posts/profiles/user?user-id=
      * @return BaseResponse<List<GetPostRes>>
      */
+    @ResponseBody
     @GetMapping("/profiles/user")
     public BaseResponse<List<GetPostRes>> getPostProfile(@RequestParam("user-id") Integer searchUserId) {
         try{
@@ -73,6 +74,7 @@ public class PostController {
      * [GET] /app/posts/scraped
      * @return BaseResponse<List<GetPostRes>>
      */
+    @ResponseBody
     @GetMapping("/scraped")
     public BaseResponse<List<GetPostRes>> getPostScrap() {
         try{
@@ -89,6 +91,7 @@ public class PostController {
      * [GET] /app/posts/followings
      * @return BaseResponse<List<GetPostRes>>
      */
+    @ResponseBody
     @GetMapping("/followings")
     public BaseResponse<List<GetPostRes>> getPostFollowing() {
         try{
@@ -102,11 +105,48 @@ public class PostController {
     }
 
     /**
+     * 사용자 팔로우 게시물 조회 API
+     * [GET] /app/posts/content-tag/:tag-word
+     * @return BaseResponse<List<GetPostRes>>
+     */
+    @ResponseBody
+    @GetMapping("/content-tag/{tag-word}")
+    public BaseResponse<List<GetPostRes>> getPostContentTag(@PathVariable("tag-word") String tagWord) {
+        try{
+
+            int userIdByJwt = jwtService.getUserId();
+            List<GetPostRes> getPostRes = postProvider.getPostContentTag(userIdByJwt,tagWord);
+            return new BaseResponse<>(getPostRes);
+        } catch(BaseException exception){
+            return new BaseResponse<>((exception.getStatus()));
+        }
+    }
+
+    /**
+     * 사용자 팔로우 게시물 조회 API
+     * [GET] /app/posts/content-tag/:tag-word
+     * @return BaseResponse<List<GetPostRes>>
+     */
+//    @ResponseBody
+//    @GetMapping("/content-tag/{tag-word}")
+//    public BaseResponse<List<GetPostRes>> getPostUserTag(@PathVariable("tag-word") String tagWord) {
+//        try{
+//
+//            int userIdByJwt = jwtService.getUserId();
+//            List<GetPostRes> getPostRes = postProvider.getPostContentTag(userIdByJwt,tagWord);
+//            return new BaseResponse<>(getPostRes);
+//        } catch(BaseException exception){
+//            return new BaseResponse<>((exception.getStatus()));
+//        }
+//    }
+
+
+    /**
      * 특정 게시물 조회 API
      * [GET] /app/posts/:post-id
      * @return BaseResponse<GetPostRes>
      */
-
+    @ResponseBody
     @GetMapping("/recommended")
     public BaseResponse<List<GetPostRecommendRes>> getPostRecommend(){
         try{
