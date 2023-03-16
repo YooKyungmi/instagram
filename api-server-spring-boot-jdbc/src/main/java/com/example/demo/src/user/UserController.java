@@ -324,6 +324,7 @@ public class UserController {
         }
     }
 
+    //S3
     /**
      * 프로필 사진 추가 API
      * [PATCH] /app/users/profile-images/:user-id
@@ -354,5 +355,30 @@ public class UserController {
         }
     }*/
 
+    /**
+     * 프로필 사진 추가 API
+     * [PATCH] /app/users/profile-images/:user-id
+     *
+     * @return BaseResponse<String>
+     */
+    @ResponseBody
+    @PatchMapping("/profile-images/{user-id}")
+    public BaseResponse<String> modifyProfileImage(@PathVariable("user-id") Integer userId, @RequestBody PatchProfileImageReq patchProfileImageReq){
+        if(patchProfileImageReq.getProfileImageUrl()==null || patchProfileImageReq.getProfileImageUrl()==""){
+            patchProfileImageReq.setProfileImageUrl(defaultProfileImageUrl);
+        }
+        try {
+            int userIdByJwt = jwtService.getUserId();
+            if (userId != userIdByJwt) {
+                return new BaseResponse<>(INVALID_USER_JWT);
+            }
+            String result = "";
+            patchProfileImageReq.setUserId(userId);
+            userService.modifyProfileImage(patchProfileImageReq);
+            return new BaseResponse<>(result);
+        } catch (BaseException exception) {
+            return new BaseResponse<>(exception.getStatus());
+        }
+    }
 
 }
