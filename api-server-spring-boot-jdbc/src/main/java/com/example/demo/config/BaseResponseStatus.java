@@ -87,6 +87,12 @@ public enum BaseResponseStatus {
     //request 형식 오류 어노테이션으로 잡기
     WRONG_REQUEST(false,2060,"올바른 request 형식이 들어오지 않았습니다."),
 
+    //message
+
+    //[GET] /app/messages?phone-number=
+    POST_MESSAGES_EMPTY_CODE(false,2055,"인증번호를 입력해주세요."),
+    POST_MESSAGES_INVALID_CODE(false,2056,"인증번호 형식(숫자 6자리)를 확인해주세요."),
+
     /**
      * 3000 : Response 오류
      */
@@ -136,7 +142,15 @@ public enum BaseResponseStatus {
     POST_HIGHLIGHTS_INVALID_STORY_ID(false, 3014, "존재하지 않는 스토리입니다."),
 
     //[GET] /app/highlights/:highlight-id
-    GET_HIGHLIGHTS_INVALID_HIGHLIGHT_ID(false,3015,"존재하지 않는 하이라이트입니다."),
+    GET_HIGHLIGHTS_INVALID_HIGHLIGHT_ID(false,3017,"존재하지 않는 하이라이트입니다."),
+
+    //message
+
+    //[GET] /app/messages?phone-number=
+    FAILED_TO_SEND_MESSAGE(false,3018,"메세지 전송에 실패하였습니다."),
+    FAILED_TO_SAVE_CODE(false,3019,"인증번호 저장에 실패하였습니다."),
+    FAILED_TO_DELETE_CODE(false,3021,"인증번호 삭제에 실패하였습니다."),
+
 
     NO_AUTHORIZED(false,3020,"해당 데이터에 대해 수정 권한이 없습니다."),
 
