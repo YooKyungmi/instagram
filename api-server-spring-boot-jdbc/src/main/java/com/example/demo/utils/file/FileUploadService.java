@@ -1,3 +1,4 @@
+/*
 package com.example.demo.utils.file;
 
 import com.amazonaws.services.s3.model.ObjectMetadata;
@@ -43,3 +44,4 @@ public class FileUploadService {
         }
     }
 }
+*/

@@ -6,9 +6,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class DemoApplication {
 
-   static {
+/*   static {
         System.setProperty("com.amazonaws.sdk.disableEc2Metadata", "true");
-    }
+    }*/
 
     public static void main(String[] args) {
 

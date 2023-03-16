@@ -1,3 +1,4 @@
+/*
 package com.example.demo.config;
 
 import com.amazonaws.ClientConfiguration;
@@ -39,3 +40,4 @@ public class AwsS3Config {
 
 
 }
+*/
