@@ -320,88 +320,90 @@ public class PostDao {
         return postId;
     }
 
-    public void addPostLike (int postId,int userId){
+    public int addPostLike (int postId,int userId){
         String Query = "insert into PostUser (userId,postId) values (?,?)";
         Object[] params = new Object[]{userId, postId};
-        this.jdbcTemplate.update(Query,params);
+        return this.jdbcTemplate.update(Query,params);
     }
 
-    public void addPostScrap (int postId,int userId){
+    public int addPostScrap (int postId,int userId){
         String Query = "insert into Scrap (userId,postId) values (?,?)";
         Object[] params = new Object[]{userId, postId};
-        this.jdbcTemplate.update(Query,params);
+        return this.jdbcTemplate.update(Query,params);
     }
 
-    public void addCommentLike (int commentId,int userId){
+    public int addCommentLike (int commentId,int userId){
         String Query = "insert into CommentLike (userId,commentId) values (?,?)";
         Object[] params = new Object[]{userId, commentId};
-        this.jdbcTemplate.update(Query,params);
+        return this.jdbcTemplate.update(Query,params);
     }
 
-    public void addContentTag (int postId, List<String> tagWordList){
+    public int addContentTag (int postId, List<String> tagWordList){
         String ContentTagQuery = "insert into ContentTag (postId, tagWord) values (?,?)";
             for (String tagWord : tagWordList) {
                 Object[] ContentTagParams = new Object[]{postId, tagWord};
-                this.jdbcTemplate.update(ContentTagQuery, ContentTagParams);
+                if( this.jdbcTemplate.update(ContentTagQuery, ContentTagParams) ==0 )
+                    return 0;
         }
+            return 1;
     }
 
-    public void addUserTag (int postId, List<Photo> tagPhoto){
+    public int addUserTag (int postId, List<Photo> tagPhoto){
         String UserTagQuery = "insert into UserTag (userId, postId, photoUrl) values (?,?,?)";
         for (Photo photo : tagPhoto ) {
             for (String userTagId : photo.getUserTagId()) {
                 Object[] userTagParams = new Object[]{userTagId, postId, photo.getPhotoUrl()};
-                this.jdbcTemplate.update(UserTagQuery, userTagParams);
+                return this.jdbcTemplate.update(UserTagQuery, userTagParams);
             }
         }
     }
 
-    public void updatePlace (int postId, String place, int userId){
+    public int updatePlace (int postId, String place, int userId){
         String ContentTagQuery = "update Post set place = ? where postId = ? and userId = ?";
             Object[] Params = new Object[]{place,postId,userId};
-            this.jdbcTemplate.update(ContentTagQuery, Params);
+        return this.jdbcTemplate.update(ContentTagQuery, Params);
     }
 
-    public void deletePlace (int postId, int userId){
+    public int deletePlace (int postId, int userId){
         String ContentTagQuery = "update Post set place = \"\" where postId = ? and userId = ?";
         Object[] Params = new Object[]{postId,userId};
-        this.jdbcTemplate.update(ContentTagQuery, Params);
+        return this.jdbcTemplate.update(ContentTagQuery, Params);
     }
 
-    public void updatePostsContent (int postId, String content, int userId){
+    public int updatePostsContent (int postId, String content, int userId){
         String ContentTagQuery = "update Post set content = ? where postId = ? and userId = ?";
         Object[] Params = new Object[]{content,postId,userId};
-        this.jdbcTemplate.update(ContentTagQuery, Params);
+        return this.jdbcTemplate.update(ContentTagQuery, Params);
     }
 
-    public void updateLikeShowStatus (int postId, Boolean status, int userId){
+    public int updateLikeShowStatus (int postId, Boolean status, int userId){
         String Query = "update Post set likeShowStatus = ? where postId = ? and userId = ?";
         Object[] Params = new Object[]{status,postId,userId};
-        this.jdbcTemplate.update(Query, Params);
+        return  this.jdbcTemplate.update(Query, Params);
     }
 
-    public void updateCommentShowStatus (int postId, Boolean status, int userId){
+    public int updateCommentShowStatus (int postId, Boolean status, int userId){
         String Query = "update Post set commentShowStatus = ? where postId = ? and userId = ?";
         Object[] Params = new Object[]{status,postId,userId};
-        this.jdbcTemplate.update(Query, Params);
+        return this.jdbcTemplate.update(Query, Params);
     }
 
-    public void updatePostLikeOn (int postLikeId, Boolean status, int userId){
+    public int updatePostLikeOn (int postLikeId, Boolean status, int userId){
         String Query = "update PostUser set postLikeStatus = ? where postLikeId = ? and status = true and userId = ?";
         Object[] Params = new Object[]{status,postLikeId,userId};
-        this.jdbcTemplate.update(Query, Params);
+        return this.jdbcTemplate.update(Query, Params);
     }
 
-    public void updateScrapOn (int scrapId, Boolean status, int userId){
+    public int updateScrapOn (int scrapId, Boolean status, int userId){
         String Query = "update Scrap set status = ? where scrapId = ? and userId = ? ";
         Object[] Params = new Object[]{status,scrapId,userId};
-        this.jdbcTemplate.update(Query, Params);
+        return  this.jdbcTemplate.update(Query, Params);
     }
 
-    public void updateCommentLikeOn (int commentLikeId, Boolean status, int userId){
+    public int updateCommentLikeOn (int commentLikeId, Boolean status, int userId){
         String Query = "update CommentLike set status = ? where commentLikeId = ? and userId = ? ";
         Object[] Params = new Object[]{status,commentLikeId,userId};
-        this.jdbcTemplate.update(Query, Params);
+        return  this.jdbcTemplate.update(Query, Params);
     }
     public int createComment (int userId, PostCommentReq postCommentReq) {
         String Query = "insert into Comment (userId,postId,groupId,comment) values (?,?,?,?)";
@@ -412,11 +414,29 @@ public class PostDao {
         return commentId;
     }
 
-    public void deleteComment (int commentId){
+    public int deleteContentTag (int postId, String tagWord){
+        String Query = "update ContentTag set status = false where postId = ? and tagWord = ?";
+        Object[] params = new Object[]{postId,tagWord};
+        return this.jdbcTemplate.update(Query, params);
+    }
+
+    public int deleteUserTag (int postId, int userId, String photoUrl){
+        String Query = "update UserTag set status = false where postId = ? and userId = ? and photoUrl = ?";
+        Object[] params = new Object[]{postId,userId,photoUrl};
+        return this.jdbcTemplate.update(Query, params);
+    }
+
+    public int deletePhoto (int postId, String photoUrl){
+        String Query = "update Post set status = false where postId = ? and tagWord = ?";
+        Object[] params = new Object[]{postId,photoUrl};
+        return this.jdbcTemplate.update(Query, params);
+    }
+
+    public int deleteComment (int commentId){
         String commentQuery = "update Comment set status = false where commentId = ?";
         String commentLikeQuery = "update CommentLike set status = false where commentId = ?";
         this.jdbcTemplate.update(commentQuery, commentId);
-        this.jdbcTemplate.update(commentLikeQuery, commentId);
+        return this.jdbcTemplate.update(commentLikeQuery, commentId);
     }
 
     public void deletePost (int postId){
