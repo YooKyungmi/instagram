@@ -354,7 +354,7 @@ public class PostDao {
 
     public int addPostScrap (int postId,int userId){
         String Query = "insert into Scrap (userId,postId) "+
-                "SELECT ?, ?" +
+                "SELECT ?, ? " +
                 "FROM DUAL WHERE NOT EXISTS(SELECT * FROM Scrap WHERE userId =  ? AND postId =  ?)";
         Object[] params = new Object[]{userId, postId,userId, postId};
         return this.jdbcTemplate.update(Query,params);
@@ -362,7 +362,7 @@ public class PostDao {
 
     public int addCommentLike (int commentId,int userId){
         String Query = "insert into CommentLike (userId,commentId)"+
-                " SELECT ?, ?" +
+                " SELECT ?, ? " +
                 " FROM DUAL WHERE NOT EXISTS(SELECT * FROM CommentLike WHERE userId = ? AND commentId = ?)";
         Object[] params = new Object[]{userId, commentId,userId, commentId};
         return this.jdbcTemplate.update(Query,params);
@@ -464,7 +464,7 @@ public class PostDao {
         Object[] postparams = new Object[]{postId,photoUrl};
         Object[] userTagParams = new Object[]{postId,photoUrl};
         if(this.jdbcTemplate.update(postQuery, postparams)==0) return 0;
-        if(this.jdbcTemplate.update(userTagQuery, userTagParams)==0) return 0;
+        this.jdbcTemplate.update(userTagQuery, userTagParams);
         return 1;
     }
 
@@ -491,8 +491,9 @@ public class PostDao {
         List<Integer> commentList = this.jdbcTemplate.query(commentQuery,
                 (rs, rowNum) -> rs.getInt("commentId"),
                 postId);
+        System.out.println("commentList = " + commentList);
         for (int commentId : commentList){
-            if(deleteComment(commentId)==0) return 0;
+            deleteComment(commentId);
         }
         return 1;
     }
@@ -517,14 +518,17 @@ public class PostDao {
 
 
     public boolean checkPostUser (int userId, int postId){
-        String PostQuery = "select ifnull(max(postId),0) postId from Post where userId = ? and postId = ? and status = true";
+        String PostQuery = "select count(postId) from Post where userId = ? and postId = ? and status = true";
         Object[] params = new Object[]{userId,postId};
-        int check =  this.jdbcTemplate.queryForObject(PostQuery, int.class,params);
+        System.out.println("userId = " + params.toString());
+        System.out.println("postId = " + PostQuery);
+        int check =  this.jdbcTemplate.queryForObject(PostQuery, int.class, params);
+        System.out.println("check = " + check);
         return (check!= 0);
     }
 
     public boolean checkCommentUser (int userId, int commentId){
-        String PostQuery = "select ifnull(max(commentId),0) commentId from Comment where userId = ? and commentId = ? and status = true";
+        String PostQuery = "select count(commentId) from Comment where userId = ? and commentId = ? and status = true";
         Object[] params = new Object[]{userId,commentId};
         int check =  this.jdbcTemplate.queryForObject(PostQuery, int.class,params);
         return (check!= 0);
