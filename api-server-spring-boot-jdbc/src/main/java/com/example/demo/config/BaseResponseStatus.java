@@ -202,12 +202,13 @@ public enum BaseResponseStatus {
     PATCH_FAILED(false, 4017, "요청하신 데이터를 수정할 수 없습니다."),
 
     // [POST] /app/posts
-    POST_FAILED(false, 4016, "요청하신 데이터를 추가할 수 없습니다.");
+    POST_FAILED(false, 4016, "요청하신 데이터를 추가할 수 없습니다."),
 
 
 
 
-    // 5000 : 필요시 만들어서 쓰세요
+    // 5000 : 로그인
+    NOT_SUPPORTED(false,5001,"현재 지원하지 않는 Oauth2 클라이언트 입니다.");
     // 6000 : 필요시 만들어서 쓰세요
 
 

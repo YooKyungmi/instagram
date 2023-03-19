@@ -164,6 +164,7 @@ public class PostService {
         try{
             int result =postDao.deleteContentTag(patchObjectReq.getPostId(),patchObjectReq.getDetail());
             if (result == 0) {
+                System.out.println("result = " + result);
                 throw new BaseException(PATCH_FAILED);
             }
         }catch (Exception exception) {

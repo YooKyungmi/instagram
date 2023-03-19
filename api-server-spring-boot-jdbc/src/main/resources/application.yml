@@ -43,3 +43,20 @@ spring:
 #      amazonaws:
 #        util:
 #          EC2MetadataUtils: ERROR
+
+
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 989086367613-tdrfmeim3tdnsnv7bnc1l8diec1jik49.apps.googleusercontent.com
+            client-secret: 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
+            scope:
+                - email
+                - profile
+
+  logging:
+    level:
+      org.springframework: debug
