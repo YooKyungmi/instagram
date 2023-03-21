@@ -203,6 +203,7 @@ public class PostDao {
 
     public List<GetPostRes> getPostFollowing(int userId,List<Integer> followingsList){
         List<GetPostRes> getPostResList  = new ArrayList<>();
+        followingsList.add(userId);
         String followList=followingsList.toString();
         String Query ="select postId from Post where userId in ("+followList.substring(1, followList.length()-1) +") and status = true order by createdAt DESC";
         List<Integer> postList = this.jdbcTemplate.query(Query,
